@@ -26,7 +26,7 @@ services:
   #
   ##############################################################################
   proxy:
-    container_name: stocks-in-motion.proxy.development
+    container_name: base.proxy.development
 
     # We can use the latest version of Nginx.
     image: nginx:latest
@@ -58,7 +58,7 @@ services:
   #
   ##############################################################################
   client:
-    container_name: stocks-in-motion.client.development
+    container_name: base.client.development
 
     # We always want to restart when things go wrong.
     restart: always
@@ -95,7 +95,7 @@ services:
   #
   ##############################################################################
   api:
-    container_name: stocks-in-motion.api.development
+    container_name: base.api.development
 
     # We always want to restart when things go wrong.
     restart: always
