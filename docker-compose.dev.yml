@@ -73,6 +73,9 @@ services:
       # Tell the client where to reach the client and the API.
       - API_URL=http://localhost:8007/api/
       - CLIENT_URL=http://localhost:8007/
+      
+      # Tell the client what port to use.
+      - PORT=8000
 
     # We can expose the client service in the container network.
     expose:

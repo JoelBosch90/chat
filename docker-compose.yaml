@@ -38,7 +38,7 @@ services:
     # We can use volumes to copy our reverse proxy configuration into Nginx.
     volumes:
       # Use the production configuration to expose only what's necessary.
-      # - ./proxy/production.conf:/etc/nginx/nginx.conf                         - Temporarily commented out to use the static hello world instead.
+      - ./proxy/production.conf:/etc/nginx/nginx.conf
       - ./proxy/logs:/etc/nginx/error_log.log
 
       # Temporary line to help Nginx serve the static files.
