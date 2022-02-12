@@ -26,14 +26,14 @@ services:
   #
   ##############################################################################
   proxy:
-    container_name: base.proxy.development
+    container_name: chat.proxy.development
 
     # We can use the latest version of Nginx.
     image: nginx:latest
 
-    # We want to expose at port 8005.
+    # We want to expose at port 8007.
     ports:
-      - 8005:80
+      - 8007:80
 
     # We can use volumes to copy our reverse proxy configuration into Nginx.
     volumes:
@@ -58,7 +58,7 @@ services:
   #
   ##############################################################################
   client:
-    container_name: base.client.development
+    container_name: chat.client.development
 
     # We always want to restart when things go wrong.
     restart: always
@@ -71,8 +71,8 @@ services:
     # Pass on the environment variables to the client service.
     environment:
       # Tell the client where to reach the client and the API.
-      - API_URL=http://localhost:8005/api/
-      - CLIENT_URL=http://localhost:8005/
+      - API_URL=http://localhost:8007/api/
+      - CLIENT_URL=http://localhost:8007/
 
     # We can expose the client service in the container network.
     expose:
@@ -95,7 +95,7 @@ services:
   #
   ##############################################################################
   api:
-    container_name: base.api.development
+    container_name: chat.api.development
 
     # We always want to restart when things go wrong.
     restart: always
@@ -110,8 +110,8 @@ services:
     # environment variables.
     environment:
       # Tell the API where to reach the client and the API.
-      - API_URL=http://localhost:8005/api/
-      - CLIENT_URL=http://localhost:8005/
+      - API_URL=http://localhost:8007/api/
+      - CLIENT_URL=http://localhost:8007/
 
     # We can expose the api service in the container network.
     expose:
