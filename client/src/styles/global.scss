@@ -1,0 +1,19 @@
+/**
+ *  File that imports all basic styles.
+ */
+
+// Import more specific styles.
+@forward 'elements';
+
+// Target all top level elements so that we can install some resets.
+// A container with the ID of 'root' is added by React to wrap the entire
+// application.
+html, body, #root
+{
+  // Reset the default browser margins.
+  margin: 0;
+  
+  // Make sure we take up all available space.
+  position: absolute;
+  inset: 0;
+}

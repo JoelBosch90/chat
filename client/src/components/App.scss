@@ -1,0 +1,40 @@
+/**
+ *  Styling for the app layout.
+ */
+.app
+{
+  // Make sure we keep some minimal distance from the edge of the window.
+  padding: 2em;
+
+  // Use all available height.
+  height: 100%;
+
+  // Make sure we don't use the padding in the height calculation.
+  box-sizing: border-box;
+
+  // Target the container that houses the main content.
+  main
+  {
+    // Use all available height.
+    height: 100%;
+
+    // Use grid to create a layout for the different parts of the app.
+    display: grid;
+  
+    // Give the chat list all the room it needs, then use the rest for the
+    // chatbox.
+    grid-template-columns: max-content 3fr;
+
+    // Make sure our interface does not grow ridiculously large.
+    max-width: 100em;
+  
+    // Give the interface some rounded corners for a friendlier look.
+    border-radius: 1em;
+
+    // Hide all overflow.
+    overflow: hidden;
+
+    // Center the main content on the page horizontally.
+    margin: 0 auto;
+  }
+}

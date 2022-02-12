@@ -1,0 +1,15 @@
+/**
+ *  Styling for the chatbox input.
+ */
+.chatbox-input
+{
+  // Use a dark background color.
+  background-color: #141414;
+  
+  // Take up full width.
+  width: 100%;
+
+  // Placeholder height.
+  // @todo: get height from the content itself.
+  min-height: 5em;
+}

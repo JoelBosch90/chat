@@ -1,0 +1,42 @@
+/**
+ *  Styling for the list of chatgroups.
+ */
+.chatgroup-list
+{
+  // Use a dark background color.
+  background-color: #0A0A0A;
+
+  // For now, just use a fixed width.
+  // @todo: find a better way to determine the width of this list.
+  min-width: 25em;
+
+  // Make sure none of the list items can escape this container.
+  overflow-y: auto;
+
+  // Target the list.
+  ol
+  {
+    // Take up all vailable height.
+    height: 100%;
+
+    // We don't want to use any paddings or margins here.
+    padding: 0;
+    margin: 0;
+
+    // Use Flexbox to create a layout to list the chat groups.
+    display: flex;
+
+    // List the group vertically by default.
+    flex-direction: column;
+    
+    // Display a tiny gap to distinguish different groups.
+    gap: 1px;
+
+    // We should always have a single column.
+    flex-wrap: nowrap;
+
+    // Allow users to scroll down to see older chat groups if they're out of
+    // view.
+    overflow-y: auto;
+  }
+}

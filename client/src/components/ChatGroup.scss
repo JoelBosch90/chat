@@ -1,0 +1,29 @@
+/**
+ *  Styling for an chatgroup in the list of chat groups.
+ */
+.chatgroup
+{
+  // Use a dark background color.
+  background-color: #141414;
+
+  // Take up all horizontal space.
+  width: 100%;
+
+  // Placeholder height.
+  // @todo: get a better source of height.
+  min-height: 5em;
+
+  // Use some padding.
+  padding: 1em 2em;
+
+  // Include paddings with the calculations of the dimension of this element.
+  box-sizing: border-box;
+
+  // Target the currently opened chat group.
+  &.opened
+  {
+    // Use a background-color similar to the chat itself to indicate that this
+    // chat group belong to the currently open chat.
+    background-color: #1F1F1F;
+  }
+}

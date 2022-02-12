@@ -1,0 +1,46 @@
+/**
+ *  Styling for the chatbox.
+ */
+.chatbox
+{
+  // Use a dark background color.
+  background-color: #1F1F1F;
+
+  // Use Flexbox to create a layout.
+  display: grid;
+
+  // Create a vertical layout.
+  grid-template-rows: 1fr max-content;
+
+  // Prevent elements from leaving this container.
+  overflow: hidden;
+
+  // Target the container for the messages.
+  .chatbox-messages
+  {
+    // Make sure we include the padding in the width calculation.
+    box-sizing: border-box;
+
+    // Use Flexbox to create a layout for the messages.
+    display: flex;
+
+    // Display messages from the bottom up.
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+
+    // Keep some space between messages.
+    gap: 1em;
+
+    // We should always have a single column.
+    flex-wrap: nowrap;
+
+    // Allow users to scroll up to see older messages when they're out of view.
+    overflow-y: auto;
+
+    // Align items to the left by default.
+    align-items: flex-start;
+
+    // Keep some distance from the edges of the container.
+    padding: 1em;
+  }
+}

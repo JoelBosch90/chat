@@ -1,0 +1,23 @@
+/**
+ *  Styling for the list of chat messages.
+ */
+.chatbox-message
+{
+  // Use a dark background color.
+  background-color: #141414;
+
+  // Give each text message a more friendly text-bubble appearance with rounded
+  // corners.
+  border-radius: 1em;
+
+  // Placeholder dimensions.
+  width: 50em;
+  min-height: 5em;
+
+  // Target sent messages.
+  &.sent
+  {
+    // Align to the right.
+    align-self: flex-end;
+  }
+}
