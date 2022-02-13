@@ -4,12 +4,59 @@
 .chatbox-input
 {
   // Use a dark background color.
-  background-color: #141414;
+  background-color: #1F1F1F;
   
+  // Provide a contrasting color for text.
+  color: #858585;
+
   // Take up full width.
   width: 100%;
 
-  // Placeholder height.
-  // @todo: get height from the content itself.
-  min-height: 5em;
+  // Make sure we include padding in the width.
+  box-sizing: border-box;
+
+  // Provide some padding.
+  padding: 1em;
+
+  // Provide some distance between the text and the button.
+  gap: .5em;
+
+  // Use grid to create a layout.
+  display: grid;
+
+  // Give the send button all the room it needs, then use the rest for the
+  // input.
+  grid-template-columns: 1fr max-content;
+
+  // Target the button and the input because they share some styling.
+  button, input
+  {
+    // Use a transparent background.
+    background: transparent;
+
+    // Get rid of the border.
+    border: none;
+
+    // Get rid of the default outline.
+    outline: none;
+
+    // Make sure we inherit the local text styling.
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  // Target the button specifically.
+  button
+  {
+    // Make sure that it is clear that this is clickable.
+    cursor: pointer;
+
+    // Target the button when the cursor hovers it.
+    &:hover
+    {
+      // Make the button light up slightly.
+      filter: brightness(125%);
+    }
+  }
 }

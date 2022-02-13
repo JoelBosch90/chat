@@ -4,14 +4,20 @@
 .chatgroup
 {
   // Use a dark background color.
-  background-color: #141414;
+  background-color: #1F1F1F;
+
+  // Provide a contrasting color for text.
+  color: #5C5C5C;
 
   // Take up all horizontal space.
   width: 100%;
 
+  // Makes sure all contents are contained.
+  overflow: hidden;
+
   // Placeholder height.
   // @todo: get a better source of height.
-  min-height: 5em;
+  min-height: 4em;
 
   // Use some padding.
   padding: 1em 2em;
@@ -20,10 +26,39 @@
   box-sizing: border-box;
 
   // Target the currently opened chat group.
-  &.opened
+  &.selected
   {
     // Use a background-color similar to the chat itself to indicate that this
     // chat group belong to the currently open chat.
-    background-color: #1F1F1F;
+    background-color: #333333;
+
+    // Provide a contrasting color for text.
+    color: #858585;
+  }
+
+  // Target only the top row of content.
+  .chatgroup-toprow
+  {
+    // Use a slightly more constrasting text color.
+    color: #ADADAD;
+
+    // Use Flexbox to create a layout.
+    display: flex;
+
+    // Make sure that we use all space and align the time to the right.
+    justify-content: space-between;
+  }
+
+  // Target both content rows.
+  .chatgroup-toprow, .chatgroup-bottomrow
+  {
+    // Make sure that we only use a single line to display text.
+    white-space: nowrap;
+
+    // Cut off text where we need to.
+    overflow: hidden;
+
+    // Show where we cut off text.
+    text-overflow: ellipsis;
   }
 }

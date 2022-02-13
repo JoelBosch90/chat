@@ -3,21 +3,49 @@
  */
 .chatbox-message
 {
+  // Make sure that we never use the full width so that we can always see if a
+  // message is right or left aligned.
+  max-width: 80%;
+
   // Use a dark background color.
-  background-color: #141414;
+  background-color: #1F1F1F;
+
+  // Provide a contrasting color for text.
+  color: #ADADAD;
 
   // Give each text message a more friendly text-bubble appearance with rounded
   // corners.
   border-radius: 1em;
 
-  // Placeholder dimensions.
-  width: 50em;
-  min-height: 5em;
+  // Give the message some padding to give it some text balloon appearance.
+  padding: .75em 1.5em;
 
   // Target sent messages.
   &.sent
   {
     // Align to the right.
     align-self: flex-end;
+  }
+
+  // Target the top row.
+  .chatbox-message-toprow
+  {
+    // Use Flexbox to create a layout.
+    display: flex;
+
+    // Make the color for message 
+    color: #858585;
+
+    // Use all space that we have in the top row.
+    justify-content: space-between;
+
+    // Make sure that we only use a single line to display text.
+    white-space: nowrap;
+
+    // Cut off text where we need to.
+    overflow: hidden;
+
+    // Show where we cut off text.
+    text-overflow: ellipsis;
   }
 }

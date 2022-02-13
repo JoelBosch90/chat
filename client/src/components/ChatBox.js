@@ -4,44 +4,16 @@ import ChatBoxMessage from './ChatBoxMessage.js'
 import './ChatBox.scss'
 
 export default class ChatBox extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-
-      // Provide some placeholder data.
-      // @todo: get actual chat groups to display.
-      messages: [
-        {
-          id: 0,
-          sent: false,
-        },
-        {
-          id: 1,
-          sent: true,
-        },
-        {
-          id: 2,
-          sent: false,
-        },
-        {
-          id: 3,
-          sent: false,
-        },
-        {
-          id: 4,
-          sent: true,
-        }
-      ]
-    }
-  }
-  
   render () {
 
     // Create a list of chat messages.
-    const messages = this.state.messages.map((message) => {
+    const messages = this.props.messages.map((message) => {
       return <ChatBoxMessage
         key={message.id}
-        sent={message.sent}
+        sent={message.sender.id === this.props.currentSender.id}
+        text={message.text}
+        time={message.time}
+        sender={message.sender.name}
       />
     })
 

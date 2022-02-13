@@ -2,9 +2,24 @@ import React from 'react'
 import './ChatGroup.scss'
 
 export default function ChatGroup(props) {
+
+  // Process the last message.
+  const last = props.messages.at(-1)
+  const lastText = last.text
+  const lastTime = new Date(last.time)
+  const lastHours = ("0" + lastTime.getHours()).slice(-2)
+  const lastMinutes = ("0" + lastTime.getMinutes()).slice(-2)
+  const lastTimeStamp = `${lastHours}:${lastMinutes}`
+
   return (
-    <div className={`chatgroup${props.opened ? ' opened' : ''}`}>
-      
+    <div className={`chatgroup${props.selected ? ' selected' : ''}`}>
+      <div className="chatgroup-toprow">
+        <span className="chatgroup-name">{props.name}</span>
+        <span className="chatgroup-time">{lastTimeStamp}</span>
+      </div>
+      <div className="chatgroup-bottomrow">
+        <span className="chatgroup-text">{lastText}</span>
+      </div>
     </div>
   )
 }
