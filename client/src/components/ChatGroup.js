@@ -12,7 +12,7 @@ export default function ChatGroup(props) {
   const lastTimeStamp = `${lastHours}:${lastMinutes}`
 
   return (
-    <div
+    <button
       className={`chatgroup${props.selected ? ' selected' : ''}`}
       onClick={props.onClick}
     >
@@ -23,6 +23,6 @@ export default function ChatGroup(props) {
       <div className="chatgroup-bottomrow">
         <span className="chatgroup-text">{lastText}</span>
       </div>
-    </div>
+    </button>
   )
 }

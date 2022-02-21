@@ -3,6 +3,16 @@
  */
 .chatgroup
 {
+  // Get rid of the border.
+  border: none;
+
+  // Get rid of the default outline.
+  outline: none;
+
+  // Make sure we inherit the local text styling.
+  font-family: inherit;
+  font-size: inherit;
+
   // Use a dark background color.
   background-color: #1F1F1F;
 
@@ -29,7 +39,7 @@
   cursor: pointer;
 
   // Target the group when the cursor hovers over it, or when it is selected.
-  &:hover, :focus
+  &:hover, &:focus
   {
     // Make it light up slightly.
     filter: brightness(125%);

@@ -61,7 +61,7 @@
     cursor: pointer;
 
     // Target the button when the cursor hovers it, or when it is selected.
-    &:hover, :focus
+    &:hover, &:focus
     {
       // Make the button light up slightly.
       filter: brightness(125%);
