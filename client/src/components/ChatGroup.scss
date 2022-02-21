@@ -29,7 +29,7 @@
   cursor: pointer;
 
   // Target the group when the cursor hovers over it, or when it is selected.
-  &:hover, :active
+  &:hover, :focus
   {
     // Make it light up slightly.
     filter: brightness(125%);
