@@ -25,6 +25,16 @@
   // Include paddings with the calculations of the dimension of this element.
   box-sizing: border-box;
 
+  // Show that the groups are interactive.
+  cursor: pointer;
+
+  // Target the group when the cursor hovers over it, or when it is selected.
+  &:hover, :active
+  {
+    // Make it light up slightly.
+    filter: brightness(125%);
+  }
+
   // Target the currently opened chat group.
   &.selected
   {
