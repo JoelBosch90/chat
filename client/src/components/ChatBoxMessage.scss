@@ -32,6 +32,10 @@
   {
     // Use Flexbox to create a layout.
     display: flex;
+    
+    // Keep at least one character's width worth of space between the message
+    // owner and the time.
+    column-gap: 1ch;
 
     // Make the color for message 
     color: #858585;

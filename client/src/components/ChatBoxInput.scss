@@ -46,8 +46,16 @@
     font-size: inherit;
   }
 
-  // Target the button specifically.
-  button
+  // Target the input's placeholder text and the button when no text has been
+  // entered.
+  input::placeholder, input:placeholder-shown + button
+  {
+    // Make these elements stand out a little less.
+    color: #5C5C5C;
+  }
+
+  // Target the button when text has been entered.
+  input:not(:placeholder-shown) + button
   {
     // Make sure that it is clear that this is clickable.
     cursor: pointer;
