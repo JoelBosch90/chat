@@ -13,6 +13,7 @@ export default class ChatGroupList extends React.Component {
           selected={group.id === this.props.currentGroup}
           name={group.name}
           messages={group.messages}
+          onClick={() => this.props.selectGroup(group.id)}
         />
       )
     })

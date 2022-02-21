@@ -65,7 +65,7 @@ export default class App extends React.Component {
             {
               id: 1,
               time: Date.now() - 30000,
-              text: 'Example text message 1.',
+              text: 'Example text message 1.1.',
               sender: {
                 id: 1,
                 name: 'Sender 1'
@@ -89,7 +89,7 @@ export default class App extends React.Component {
             {
               id: 1,
               time: Date.now() - 65000,
-              text: 'Example text message 1.',
+              text: 'Example text message 1.2.',
               sender: {
                 id: 1,
                 name: 'Sender 1'
@@ -149,7 +149,7 @@ export default class App extends React.Component {
             {
               id: 1,
               time: Date.now() - 313000,
-              text: 'Example text message 1.',
+              text: 'Example text message 1.3.',
               sender: {
                 id: 1,
                 name: 'Sender 1'
@@ -173,7 +173,7 @@ export default class App extends React.Component {
             {
               id: 1,
               time: Date.now() - 30000,
-              text: 'Example text message 1.',
+              text: 'Example text message 1.4.',
               sender: {
                 id: 1,
                 name: 'Sender 1'
@@ -184,8 +184,10 @@ export default class App extends React.Component {
       ]
     }
 
-    // Make sure that we bind the send message to the state of this component.
+    // Make sure that we bind the send methods that we pass to the child
+    // components to the state of this component.
     this.sendMessage = this.sendMessage.bind(this)
+    this.selectGroup = this.selectGroup.bind(this)
   }
 
   /**
@@ -247,12 +249,15 @@ export default class App extends React.Component {
     })
   }
 
-  // /**
-  //  *  
-  //  */
-  // selectGroup () {
-
-  // }
+  /**
+   *  Method to select a new group.
+   *  @param  {integer} id  ID of the group to select.
+   */
+  selectGroup (id) {
+    this.setState({
+      currentGroup: id
+    })
+  }
 
   render () {
     return (
@@ -261,6 +266,7 @@ export default class App extends React.Component {
           <ChatGroupList
             groups={this.state.groups}
             currentGroup={this.state.currentGroup}
+            selectGroup={this.selectGroup}
           />
           <ChatBox 
             messages={this.currentGroupMessages()}
