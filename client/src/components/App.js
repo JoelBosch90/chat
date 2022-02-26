@@ -28,7 +28,7 @@ export default class App extends React.Component {
             },
             {
               id: 5,
-              time: Date.now() - 3000,
+              time: Date.now() - 300450,
               text: 'Example text message 5.',
               sender: {
                 id: 2,
@@ -37,7 +37,7 @@ export default class App extends React.Component {
             },
             {
               id: 4,
-              time: Date.now() - 5000,
+              time: Date.now() - 500053,
               text: 'Example text message 4.',
               sender: {
                 id: 1,
@@ -46,7 +46,7 @@ export default class App extends React.Component {
             },
             {
               id: 3,
-              time: Date.now() - 13000,
+              time: Date.now() - 1300012,
               text: 'Example text message 3.',
               sender: {
                 id: 2,
@@ -55,7 +55,7 @@ export default class App extends React.Component {
             },
             {
               id: 2,
-              time: Date.now() - 23000,
+              time: Date.now() - 2300340,
               text: 'Example text message 2.',
               sender: {
                 id: 1,
@@ -64,7 +64,7 @@ export default class App extends React.Component {
             },
             {
               id: 1,
-              time: Date.now() - 30000,
+              time: Date.now() - 3000430,
               text: 'Example text message 1.1.',
               sender: {
                 id: 1,
@@ -79,7 +79,7 @@ export default class App extends React.Component {
           messages: [
             {
               id: 2,
-              time: Date.now() - 60000,
+              time: Date.now() - 6000320,
               text: 'Example text message 2.',
               sender: {
                 id: 3,
@@ -88,7 +88,7 @@ export default class App extends React.Component {
             },
             {
               id: 1,
-              time: Date.now() - 65000,
+              time: Date.now() - 6500230,
               text: 'Example text message 1.2.',
               sender: {
                 id: 1,
@@ -103,7 +103,7 @@ export default class App extends React.Component {
           messages: [
             {
               id: 6,
-              time: Date.now() - 300000,
+              time: Date.now() - 30000450,
               text: 'Example text message 6. Example text message 6. Example text message 6. Example text message 6.',
               sender: {
                 id: 4,
@@ -112,7 +112,7 @@ export default class App extends React.Component {
             },
             {
               id: 5,
-              time: Date.now() - 303000,
+              time: Date.now() - 30300450,
               text: 'Example text message 5.',
               sender: {
                 id: 4,
@@ -121,7 +121,7 @@ export default class App extends React.Component {
             },
             {
               id: 4,
-              time: Date.now() - 305000,
+              time: Date.now() - 30500086,
               text: 'Example text message 4.',
               sender: {
                 id: 1,
@@ -130,7 +130,7 @@ export default class App extends React.Component {
             },
             {
               id: 3,
-              time: Date.now() - 306000,
+              time: Date.now() - 3060880,
               text: 'Example text message 3.',
               sender: {
                 id: 4,
@@ -139,7 +139,7 @@ export default class App extends React.Component {
             },
             {
               id: 2,
-              time: Date.now() - 312000,
+              time: Date.now() - 31200150,
               text: 'Example text message 2.',
               sender: {
                 id: 0,
@@ -148,7 +148,7 @@ export default class App extends React.Component {
             },
             {
               id: 1,
-              time: Date.now() - 313000,
+              time: Date.now() - 31300250,
               text: 'Example text message 1.3.',
               sender: {
                 id: 1,
@@ -163,7 +163,7 @@ export default class App extends React.Component {
           messages: [
             {
               id: 2,
-              time: Date.now() - 20000,
+              time: Date.now() - 2005200,
               text: 'Example text message 2.',
               sender: {
                 id: 5,
@@ -172,7 +172,7 @@ export default class App extends React.Component {
             },
             {
               id: 1,
-              time: Date.now() - 30000,
+              time: Date.now() - 3005200,
               text: 'Example text message 1.4.',
               sender: {
                 id: 1,
@@ -219,7 +219,7 @@ export default class App extends React.Component {
         groups: state.groups.map(group => {
 
           // All except the current group can stay the same.
-          if (group.id != state.currentGroup) return group
+          if (group.id !== state.currentGroup) return group
 
           // Construct the new ID by finding the largest ID in the current set
           // of messages, then add one.
