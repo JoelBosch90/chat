@@ -1,2 +1,2 @@
 # @todo: implement.
-FROM busybox:latest
+FROM elixir:alpine
