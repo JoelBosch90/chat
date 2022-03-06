@@ -8,8 +8,6 @@ defmodule Api.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      Api.Repo,
       # Start the Telemetry supervisor
       ApiWeb.Telemetry,
       # Start the PubSub system

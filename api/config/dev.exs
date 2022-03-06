@@ -1,14 +1,5 @@
 import Config
 
-# Configure your database
-config :api, Api.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "api_dev",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -22,7 +13,7 @@ config :api, ApiWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "FZm3+7R2TB7sYwG1CmS8eqrC4tt6yJ49aO9pD0DhSomwRlkg1mRXXJhP7ytDvuJH",
+  secret_key_base: "3wMDHcuje9rS4iR8F6Z0BMQGSY/stuSVJhOR7Kn5MoVcUQJYca5afX29yXvEXZh1",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}

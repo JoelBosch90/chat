@@ -10,6 +10,9 @@ COPY mix.exs mix.lock ./
 # Install our package manager.
 RUN mix local.hex --force
 
+# Install inotify for hot reloading.
+RUN apk update && apk add inotify-tools
+
 # Install dependencies.
 RUN mix deps.get
 
