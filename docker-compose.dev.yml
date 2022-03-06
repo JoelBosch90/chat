@@ -10,10 +10,6 @@ networks:
   # to be able to talk to the proxy.
   proxied:
 
-  # Then there are those services that don't need to be publicly accessible and
-  # only communicate with other services. They go into the protected network.
-  protected:
-
 # We want to spawn several separate services from Docker images and manage all
 # of them from this file.
 services:
@@ -29,7 +25,7 @@ services:
     container_name: chat.proxy.development
 
     # We can use the latest version of Nginx.
-    image: nginx:latest
+    image: nginx:1.21.0
 
     # We want to expose at port 8007.
     ports:
@@ -77,7 +73,7 @@ services:
       # Tell the client what port to use.
       - PORT=8000
 
-      # Tell React where to connect to for hot reloading.
+      # Tell React what port to connect to for hot reloading.
       - WDS_SOCKET_PORT=8007
 
     # We can expose the client service in the container network.
@@ -100,38 +96,35 @@ services:
   #   This is the service that serves all server-side requests.
   #
   ##############################################################################
-  # api:
-  #   container_name: chat.api.development
+  api:
+    container_name: chat.api.development
 
-  #   # We always want to restart when things go wrong.
-  #   restart: always
+    # We always want to restart when things go wrong.
+    restart: always
 
-  #   # We want to build from the development dockerfile in the API directory.
-  #   build:
-  #     context: ./api/
-  #     dockerfile: development.dockerfile
+    # We want to build from the development dockerfile in the API directory.
+    build:
+      context: ./api/
+      dockerfile: development.dockerfile
 
-  #   # The api will need to some hosting information. Any external information
-  #   # that is not set in this file is expected to be supplied through
-  #   # environment variables.
-  #   environment:
-  #     # Tell the API where to reach the client and the API.
-  #     - API_URL=http://localhost:8007/api/
-  #     - CLIENT_URL=http://localhost:8007/
+    # The api will need to some hosting information. Any external information
+    # that is not set in this file is expected to be supplied through
+    # environment variables.
+    environment:
+      # Tell the API where to reach the client and the API.
+      - API_URL=http://localhost:8007/api/
+      - CLIENT_URL=http://localhost:8007/
 
-  #   # We can expose the api service in the container network.
-  #   expose:
-  #     - "3000"
+    # We can expose the api service in the container network.
+    expose:
+      - "3000"
 
-  #   # We want to bind the changes inside the container to a local folder so that
-  #   # we can update the code in real time.
-  #   volumes:
-  #     - ./api:/api
+    # We want to bind the changes inside the container to a local folder so that
+    # we can update the code in real time.
+    volumes:
+      - ./api:/api
 
-  #   # We need the reverse proxy to expose the API publicly, so we need to
-  #   # give it access to the API service. In addition, it needs to be able to
-  #   # communicate to the database, so it also requires access to the protected
-  #   # network.
-  #   networks:
-  #     - proxied
-  #     - protected
+    # We need the reverse proxy to expose the API publicly, so we need to
+    # give it access to the API service.
+    networks:
+      - proxied

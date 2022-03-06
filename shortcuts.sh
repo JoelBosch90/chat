@@ -22,11 +22,11 @@
 #       For example, to update the local repository and then run a local
 #       development environment, you can run the following:
 #
-#           chat update dev
+#           chatx update dev
 #
 #       Some command require an extra argument. You can call these like this:
 #
-#           chat commit "Commit message"
+#           chatx commit "Commit message"
 #
 #   Requirements
 #
@@ -40,7 +40,7 @@
 #           Add a shortcut so that you can execute this file from anywhere and
 #           no longer need to write the extension:
 #
-#               sudo ln -s ~/Projects/chat/shortcuts.sh /usr/bin/chat
+#               sudo ln -s ~/Projects/chat/shortcuts.sh /usr/bin/chatx
 #
 ################################################################################
 
@@ -158,7 +158,7 @@ while [[ $# -gt 0 ]]; do
   # Determine per command what to do.
   case "$command" in
 
-    # Run `chat commit "Commit message"` to commit and push all recent
+    # Run `chatx commit "Commit message"` to commit and push all recent
     # changes to the current branch.
     c|commit)
       commit "$argument"
@@ -166,27 +166,27 @@ while [[ $# -gt 0 ]]; do
       shift # Skip once extra because we used an extra argument for this.
       ;;
 
-    # Run `chat update` to update the local repository.
+    # Run `chatx update` to update the local repository.
     u|up|update)
       updateProject
       shift # Get ready to process the next command.
       ;;
 
-    # Run `chat release` to release the current version of the
+    # Run `chatx release` to release the current version of the
     # development branch and roll those changes out to the live version.
     r|release)
       release
       shift # Get ready to process the next command.
       ;;
 
-    # Run `chat development` to run a local development instance of the
+    # Run `chatx development` to run a local development instance of the
     # chat application.
     d|dev|development)
       runDevelopment "$argument"
       shift # Get ready to process the next command.
       ;;
 
-    # Run `chat production` to run a local example of the production release
+    # Run `chatx production` to run a local example of the production release
     # of the chat application.
     p|prod|production)
       runProduction "$argument"
