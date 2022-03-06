@@ -1,6 +1,7 @@
 defmodule ApiWeb.Router do
   use ApiWeb, :router
 
+  # Handles HTML requests.
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -10,18 +11,21 @@ defmodule ApiWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  # Handles JSON requests.
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  # Process default page requests.
   scope "/", ApiWeb do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/hello/:data", HelloController, :message
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", ApiWeb do
-  #   pipe_through :api
-  # end
+  # Process API calls.
+  scope "/api", ApiWeb do
+    pipe_through :api
+  end
 end

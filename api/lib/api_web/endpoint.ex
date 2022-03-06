@@ -30,9 +30,11 @@ defmodule ApiWeb.Endpoint do
     plug Phoenix.CodeReloader
   end
 
+  # These plugs are used to log information about requests.
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
+  # This plug allows for parsing request bodies for different content types.
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
@@ -40,6 +42,10 @@ defmodule ApiWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
+
+  # Stores the sessions in a cookie with a signature.
   plug Plug.Session, @session_options
+
+  # Pass the request to the router.
   plug ApiWeb.Router
 end
