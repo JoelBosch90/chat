@@ -1,9 +1,9 @@
-defmodule HelloPhoenix.MixProject do
+defmodule Api.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :hello_phoenix,
+      app: :api,
       version: "0.1.0",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,7 +19,7 @@ defmodule HelloPhoenix.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {HelloPhoenix.Application, []},
+      mod: {Api.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

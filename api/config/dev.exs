@@ -1,11 +1,11 @@
 import Config
 
 # Configure your database
-config :hello_phoenix, HelloPhoenix.Repo,
+config :api, Api.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
-  database: "hello_phoenix_dev",
+  database: "api_dev",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -15,14 +15,14 @@ config :hello_phoenix, HelloPhoenix.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with esbuild to bundle .js and .css sources.
-config :hello_phoenix, HelloPhoenixWeb.Endpoint,
+config :api, ApiWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {0, 0, 0, 0}, port: 3000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "1zDp/OScvznrs+O8XHiQLNx4j+OeJC+4fyu0/JVIRPYw4DlXQi5StY3COPb68wyb",
+  secret_key_base: "FZm3+7R2TB7sYwG1CmS8eqrC4tt6yJ49aO9pD0DhSomwRlkg1mRXXJhP7ytDvuJH",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
@@ -53,13 +53,13 @@ config :hello_phoenix, HelloPhoenixWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :hello_phoenix, HelloPhoenixWeb.Endpoint,
+config :api, ApiWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/hello_phoenix_web/(live|views)/.*(ex)$",
-      ~r"lib/hello_phoenix_web/templates/.*(eex)$"
+      ~r"lib/api_web/(live|views)/.*(ex)$",
+      ~r"lib/api_web/templates/.*(eex)$"
     ]
   ]
 

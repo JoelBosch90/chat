@@ -1,4 +1,4 @@
-# HelloPhoenix
+# Api
 
 To start your Phoenix server:
 

@@ -7,15 +7,15 @@
 # General application configuration
 import Config
 
-config :hello_phoenix,
-  ecto_repos: [HelloPhoenix.Repo]
+config :api,
+  ecto_repos: [Api.Repo]
 
 # Configures the endpoint
-config :hello_phoenix, HelloPhoenixWeb.Endpoint,
+config :api, ApiWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: HelloPhoenixWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: HelloPhoenix.PubSub,
-  live_view: [signing_salt: "8yDXRb0K"]
+  render_errors: [view: ApiWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: Api.PubSub,
+  live_view: [signing_salt: "T4BJt8Tk"]
 
 # Configures the mailer
 #
@@ -24,7 +24,7 @@ config :hello_phoenix, HelloPhoenixWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :hello_phoenix, HelloPhoenix.Mailer, adapter: Swoosh.Adapters.Local
+config :api, Api.Mailer, adapter: Swoosh.Adapters.Local
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false

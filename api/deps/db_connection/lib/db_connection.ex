@@ -68,6 +68,9 @@ defmodule DBConnection do
   require Logger
 
   alias DBConnection.Holder
+
+  require Holder
+
   defstruct [:pool_ref, :conn_ref, :conn_mode]
 
   defmodule EncodeError do
@@ -324,6 +327,8 @@ defmodule DBConnection do
   """
   @callback disconnect(err :: Exception.t(), state :: any) :: :ok
 
+  @connection_module_key :connection_module
+
   @doc """
   Use `DBConnection` to set the behaviour.
   """
@@ -361,7 +366,7 @@ defmodule DBConnection do
       See "Connection listeners" below
     * `:name` - A name to register the started process (see the `:name` option
       in `GenServer.start_link/3`)
-    * `:pool` - Chooses the pool to be started
+    * `:pool` - Chooses the pool to be started (default: `DBConnection.ConnectionPool`)
     * `:pool_size` - Chooses the size of the pool
     * `:idle_interval` - Controls the frequency we check for idle connections
       in the pool. We then notify each idle connection to ping the database.
@@ -427,16 +432,13 @@ defmodule DBConnection do
 
   Measurements:
 
-    * `:error` A fixed-value measurement which always measures 1.
+    * `:count` - A fixed-value measurement which always measures 1.
 
   Metadata
 
-    * `:connection_listeners` The list of connection listeners (as described above) passed to
-    the connection pool. Can be used to relay this event to the proper connection listeners.
+    * `:error` - The `DBConnection.ConnectionError` struct which triggered the event.
 
-    * `:connection_error` The `DBConnection.ConnectionError` struct which triggered the event.
-
-    * `:pool` The connection pool in which this event was triggered.
+    * `:opts` - All options given to the pool operation
 
   """
   @spec start_link(module, opts :: Keyword.t()) :: GenServer.on_start()
@@ -1086,6 +1088,35 @@ defmodule DBConnection do
 
     enum = resource(conn, declare, &stream_fetch/3, &stream_deallocate/3, opts)
     enum.(acc, fun)
+  end
+
+  @doc false
+  def register_as_pool(conn_module) do
+    Process.put(@connection_module_key, conn_module)
+  end
+
+  @doc """
+  Returns connection module used by the given connection pool.
+
+  When given a process that is not a connection pool, returns an `:error`.
+  """
+  @spec connection_module(conn) :: {:ok, module} | :error
+  def connection_module(conn) do
+    with pid when pid != nil <- pool_pid(conn),
+         {:dictionary, dictionary} <- Process.info(pid, :dictionary),
+         {:ok, module} <- fetch_from_dictionary(dictionary, @connection_module_key),
+         do: {:ok, module},
+         else: (_ -> :error)
+  end
+
+  defp pool_pid(%DBConnection{pool_ref: Holder.pool_ref(pool: pid)}), do: pid
+  defp pool_pid(conn), do: GenServer.whereis(conn)
+
+  defp fetch_from_dictionary(dictionary, key) do
+    Enum.find_value(dictionary, :error, fn
+      {^key, value} -> {:ok, value}
+      _pair -> nil
+    end)
   end
 
   ## Helpers
