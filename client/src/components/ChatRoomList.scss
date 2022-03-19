@@ -1,9 +1,9 @@
 /**
- *  Styling for the list of chatgroups.
+ *  Styling for the list of chatrooms.
  */
-.chatgroup-list
+.chatroom-list
 {
-  // Stick to a fixed width to display all chat groups.
+  // Stick to a fixed width to display all chat rooms.
   width: 20em;
 
   // Make sure none of the list items can escape this container.
@@ -20,19 +20,19 @@
     padding: 0;
     margin: 0;
 
-    // Use Flexbox to create a layout to list the chat groups.
+    // Use Flexbox to create a layout to list the chat rooms.
     display: flex;
 
-    // List the group vertically by default.
+    // List the room vertically by default.
     flex-direction: column;
     
-    // Display a tiny gap to distinguish different groups.
+    // Display a tiny gap to distinguish different rooms.
     gap: 1px;
 
     // We should always have a single column.
     flex-wrap: nowrap;
 
-    // Allow users to scroll down to see older chat groups if they're out of
+    // Allow users to scroll down to see older chat rooms if they're out of
     // view.
     overflow-y: auto;
   }

@@ -1,5 +1,6 @@
 import React from 'react'
-import ChatGroupList from './ChatGroupList.js'
+import { Socket } from 'phoenix'
+import ChatRoomList from './ChatRoomList.js'
 import ChatBox from './ChatBox.js'
 import './App.scss'
 
@@ -11,11 +12,10 @@ export default class App extends React.Component {
         id: 1,
         name: 'Sender 1'
       },
-      currentGroup: 3,
-      groups: [
-        {
-          id: 1,
-          name: 'Group 1',
+      currentRoom: 'Room 2',
+      rooms: {
+        'Room 1': {
+          channel: null,
           messages: [
             {
               id: 6,
@@ -73,9 +73,8 @@ export default class App extends React.Component {
             },
           ]
         },
-        {
-          id: 2,
-          name: 'Group 1',
+        'Room 2': {
+          channel: null,
           messages: [
             {
               id: 2,
@@ -97,9 +96,8 @@ export default class App extends React.Component {
             },
           ]
         },
-        {
-          id: 3,
-          name: 'Group 3',
+        'Room 3': {
+          channel: null,
           messages: [
             {
               id: 6,
@@ -155,121 +153,175 @@ export default class App extends React.Component {
                 name: 'Sender 1'
               }
             },
-          ]
+          ],
         },
-        {
-          id: 4,
-          name: 'Group 4',
-          messages: [
-            {
-              id: 2,
-              time: Date.now() - 2005200,
-              text: 'Example text message 2.',
-              sender: {
-                id: 5,
-                name: 'Sender 5'
-              }
-            },
-            {
-              id: 1,
-              time: Date.now() - 3005200,
-              text: 'Example text message 1.4.',
-              sender: {
-                id: 1,
-                name: 'Sender 1'
-              }
-            },
-          ]
-        },
-      ]
+      },
+
+      // Create a live websocket connection to the message server.
+      connection: this.connect()
     }
 
     // Make sure that we bind the send methods that we pass to the child
     // components to the state of this component.
     this.sendMessage = this.sendMessage.bind(this)
-    this.selectGroup = this.selectGroup.bind(this)
+    this.receiveMessage = this.receiveMessage.bind(this)
+    this.selectRoom = this.selectRoom.bind(this)
+    this.connect = this.connect.bind(this)
+    this.joinRoom = this.joinRoom.bind(this)
   }
 
   /**
-   *  Method to find the messages for the current group.
-   *  @returns  array
+   *  Method to connect to the message server to start receiving messages.
+   *  @return {Object}
    */
-  currentGroupMessages () {
-    
-    // Look through the groups to find the one that matches the ID of the
-    // current group. Then return its messages.
-    for (const group of this.state.groups) {
-      if (group.id === this.state.currentGroup) return group.messages
-    }
+  connect () {
 
+    // Construct the socket connection object.
+    const socket = new Socket(`ws://${process.env.REACT_APP_API_URL}socket`, {
+      params: {},
+    })
+
+    // Connect to the server.
+    socket.connect()
+
+    // Expose the socket.
+    return socket
+  }
+
+  /**
+   *  Method to join a room.
+   *  @param  {string}  name  The name of the room to join.
+   */
+  joinRoom (name) {
+
+    // Construct the room object.
+    const channel = this.state.connection.channel("room:lobby", {})
+
+    // Join the room and start listening for messages.
+    channel.join()
+      .receive('ok', response => void console.log('joined!'))
+      .receive('receive_message', console.log)
+
+    // Add the new room to our state.
+    this.setState(state => { return {
+      rooms: Object.assign({}, state.rooms, {
+        [name]: {
+          channel,
+          messages: []
+        },
+      })
+    }})
+  }
+
+  /**
+   *  Method to find the messages for the current room.
+   *  @returns  {array}
+   */
+  currentRoomMessages () {
+
+    // Get the current rom from the state.
+    const room = this.state.rooms[this.state.currentRoom]
+
+    // Return the room's messages if it exists.
+    if (room) return room.messages
+    
     // Default to an empty array.
-    return []
+    else return []
   }
 
   /**
    *  Method to send a message.
    *  @todo   This currently only updates state. Later on the message will have
    *          to come from the server to have a reliable ID.
-   *  @param  {string}  text  New message to send.
+   *  @param  {string}  text      Text of the new message to send.
    */
   sendMessage (text) {
+
+    // Get the current room.
+    const room = this.state.rooms[this.state.currentRoom]
+
+    // Construc the new message object.
+    const message = {
+      // Temporarily construct the IDs client-side.
+      id: room.messages.reduce((id, message) => {
+        return id > message.id ? id : message.id
+      }, 1) + 1,
+      time: Date.now(),
+      text,
+      sender: this.state.currentSender,
+    }
+
+    // Send the message to the server.
+    room.channel.push("send_chat", { message })
+
+    // Add this message to the room.
+    // this.receiveMessage(this.state.currentRoom, message)
+  }
+
+  /**
+   *  Message to process receiving a new message.
+   *  @param  {string}  roomName  Name of the chat room in which a message is
+   *                              received.
+   *  @param  {Object}  message   Received message object.
+   *    @property {Number}  id      Unique message identifier.
+   *    @property {Date}    time    Message timestamp.
+   *    @property {string}  text    Message text.
+   *    @property {Object}  sender  Sender of the message.
+   */
+  receiveMessage (roomName, message) {
     this.setState(state => {
+
+      // Get the named room.
+      const room = state.rooms[roomName]
+
+      // Update the named room with this new message.
       return {
-        // We only need to update the groups.
-        groups: state.groups.map(group => {
-
-          // All except the current group can stay the same.
-          if (group.id !== state.currentGroup) return group
-
-          // Construct the new ID by finding the largest ID in the current set
-          // of messages, then add one.
-          const id = group.messages.reduce((id, message) => {
-            return id > message.id ? id : message.id
-          }, 1) + 1
-
-          // Add the new message, ignore everything else.
-          return {
-            ...group,
+        rooms: Object.assign({}, state.rooms, {
+          [roomName]: Object.assign({}, room, {
             messages: [
 
               // Add the new message to the beginning of the array.
-              {
-                id,
-                time: Date.now(),
-                text,
-                sender: state.currentSender,
-              },
+              message,
 
               // Keep the other messages.
-              ...group.messages
+              ...this.currentRoomMessages(),
             ]
-          }
+          })
         })
       }
     })
   }
 
   /**
-   *  Method to select a new group.
-   *  @param  {integer} id  ID of the group to select.
+   *  Method to select a new room.
+   *  @param  {string} name  Name of the room to select.
    */
-  selectGroup (id) {
+  selectRoom (name) {
     this.setState({
-      currentGroup: id
+      currentRoom: name
     })
+  }
+
+  /**
+   *  Method called when the React app is about to be mounted.
+   */
+  componentWillMount () {
+    
+    // Join the initial lobby room.
+    this.joinRoom('Lobby')
   }
 
   render () {
     return (
       <div className="app">
         <main> 
-          <ChatGroupList
-            groups={this.state.groups}
-            currentGroup={this.state.currentGroup}
-            selectGroup={this.selectGroup}
+          <ChatRoomList
+            rooms={this.state.rooms}
+            currentRoom={this.state.currentRoom}
+            selectRoom={this.selectRoom}
           />
           <ChatBox 
-            messages={this.currentGroupMessages()}
+            messages={this.currentRoomMessages()}
             currentSender={this.state.currentSender}
             sendMessage={this.sendMessage}
           />

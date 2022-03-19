@@ -1,7 +1,7 @@
 /**
- *  Styling for an chatgroup in the list of chat groups.
+ *  Styling for an chatroom in the list of chat rooms.
  */
-.chatgroup
+.chatroom
 {
   // Get rid of the border.
   border: none;
@@ -31,21 +31,21 @@
   // Include paddings with the calculations of the dimension of this element.
   box-sizing: border-box;
 
-  // Show that the groups are interactive.
+  // Show that the rooms are interactive.
   cursor: pointer;
 
-  // Target the group when the cursor hovers over it, or when it is selected.
+  // Target the room when the cursor hovers over it, or when it is selected.
   &:hover, &:focus
   {
     // Make it light up slightly.
     filter: brightness(125%);
   }
 
-  // Target the currently opened chat group.
+  // Target the currently opened chat room.
   &.selected
   {
     // Use a background-color similar to the chat itself to indicate that this
-    // chat group belong to the currently open chat.
+    // chat room belong to the currently open chat.
     background-color: #333333;
 
     // Provide a contrasting color for text.
@@ -53,7 +53,7 @@
   }
 
   // Target only the top row of content.
-  .chatgroup-top
+  .chatroom-top
   {
     // Use a slightly more constrasting text color.
     color: #ADADAD;
@@ -65,8 +65,8 @@
     justify-content: space-between;
   }
 
-  // Target both content groups.
-  .chatgroup-top, .chatgroup-bottom
+  // Target both content rooms.
+  .chatroom-top, .chatroom-bottom
   {
     // Use Flexbox to create a layout.
     display: flex;
@@ -84,7 +84,7 @@
     text-align: left;
 
     // Target only the top row of content.
-    &.chatgroup-top
+    &.chatroom-top
     {
       // Make sure that we use all space and align the time to the right.
       justify-content: space-between;
@@ -94,7 +94,7 @@
     }
 
     // Target only the bottom row of content.
-    &.chatgroup-bottom
+    &.chatroom-bottom
     {    
       // Align all text to the start.
       justify-content: flex-start;
