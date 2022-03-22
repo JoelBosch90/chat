@@ -204,7 +204,19 @@ export default class App extends React.Component {
     channel.join().receive('ok', () => {
 
       // Forward chat messages to the receive message method.
-      channel.on('message', data => { console.log(data); this.receiveMessage(name, data.message); })
+      channel.on('message', data => {
+        console.log(data)
+
+        // Process receiving the message.
+        this.receiveMessage(name, {
+          text: data.message.text,
+          sender: data.message.sender,
+
+          // Use the server provided time and message id.
+          time: data.time,
+          id: data.id,
+        });
+      })
     })
 
     // Add the new room to our state.
@@ -340,9 +352,8 @@ export default class App extends React.Component {
   componentDidMount () {
     
     // Join the initial lobby room.
-    this.joinRoom('lobby1')
-    this.joinRoom('lobby2')
-    this.joinRoom('lobby3')
+    this.joinRoom('Room 4')
+    this.joinRoom('Room 5')
   }
 
   render () {
