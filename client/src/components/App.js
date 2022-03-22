@@ -163,11 +163,14 @@ export default class App extends React.Component {
 
     // Make sure that we bind the send methods that we pass to the child
     // components to the state of this component.
+    this.connect = this.connect.bind(this)
+    this.joinRoom = this.joinRoom.bind(this)
+    this.currentRoomMessages = this.currentRoomMessages.bind(this)
+    this.currentRoom = this.currentRoom.bind(this)
+    this.newMessageID = this.newMessageID.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.receiveMessage = this.receiveMessage.bind(this)
     this.selectRoom = this.selectRoom.bind(this)
-    this.connect = this.connect.bind(this)
-    this.joinRoom = this.joinRoom.bind(this)
   }
 
   /**
@@ -195,12 +198,14 @@ export default class App extends React.Component {
   joinRoom (name) {
 
     // Construct the room object.
-    const channel = this.state.connection.channel("room:lobby", {})
+    const channel = this.state.connection.channel(`room:${name}`, {})
 
     // Join the room and start listening for messages.
-    channel.join()
-      .receive('ok', response => void console.log('joined!'))
-      .receive('receive_message', console.log)
+    channel.join().receive('ok', () => {
+
+      // Forward chat messages to the receive message method.
+      channel.on('message', data => { console.log(data); this.receiveMessage(name, data.message); })
+    })
 
     // Add the new room to our state.
     this.setState(state => { return {
@@ -219,14 +224,47 @@ export default class App extends React.Component {
    */
   currentRoomMessages () {
 
-    // Get the current rom from the state.
-    const room = this.state.rooms[this.state.currentRoom]
+    // Get the current room.
+    const room = this.currentRoom()
 
     // Return the room's messages if it exists.
     if (room) return room.messages
     
     // Default to an empty array.
     else return []
+  }
+
+  /**
+   *  Method to get the current room object.
+   *  @returns  {Object}
+   */
+  currentRoom () {
+
+    // Get the current room from the state.
+    return this.state.rooms[this.state.currentRoom]
+  }
+
+  /**
+   *  Method to construct a new message ID. We temporarily create them
+   *  client-side.
+   *  @returns {Number}
+   */
+  newMessageID () {
+
+    // Get the messages from the current room.
+    const messages = this.currentRoomMessages()
+
+    // Find the greatest id of any message in the current room.
+    const greatestId = messages.reduce((id, message) => {
+
+      // Replace the accumulator with any id that is greater.
+      return id > message.id ? id : message.id
+
+    // Start at zero.
+    }, 0);
+
+    // Add one to get the new id.
+    return greatestId + 1
   }
 
   /**
@@ -238,24 +276,18 @@ export default class App extends React.Component {
   sendMessage (text) {
 
     // Get the current room.
-    const room = this.state.rooms[this.state.currentRoom]
+    const room = this.currentRoom()
 
     // Construc the new message object.
     const message = {
-      // Temporarily construct the IDs client-side.
-      id: room.messages.reduce((id, message) => {
-        return id > message.id ? id : message.id
-      }, 1) + 1,
+      id: this.newMessageID(),
       time: Date.now(),
       text,
       sender: this.state.currentSender,
     }
 
     // Send the message to the server.
-    room.channel.push("send_chat", { message })
-
-    // Add this message to the room.
-    // this.receiveMessage(this.state.currentRoom, message)
+    room.channel.push("new_message", { message })
   }
 
   /**
@@ -303,12 +335,14 @@ export default class App extends React.Component {
   }
 
   /**
-   *  Method called when the React app is about to be mounted.
+   *  Method called when the React app has been mounted.
    */
-  componentWillMount () {
+  componentDidMount () {
     
     // Join the initial lobby room.
-    this.joinRoom('Lobby')
+    this.joinRoom('lobby1')
+    this.joinRoom('lobby2')
+    this.joinRoom('lobby3')
   }
 
   render () {

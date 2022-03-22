@@ -10,7 +10,6 @@ export default class ChatRoomList extends React.Component {
 
     // Fill the list.
     for(const [name, room] of Object.entries(this.props.rooms)) {
-      console.log(room)
       rooms.push(
         <ChatRoom
           key={name}
