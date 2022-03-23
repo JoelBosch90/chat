@@ -231,8 +231,6 @@ export default class App extends React.Component {
     // Create a copy of the state.
     const state = Object.assign({}, this.state)
 
-    console.log({ state })
-
     // Remove all references to channel objects. JSON cannot handle these
     // references.
     for (const room in state.rooms) delete state.rooms[room].channel
