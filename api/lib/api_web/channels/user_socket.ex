@@ -1,8 +1,10 @@
 defmodule ApiWeb.UserSocket do
   use Phoenix.Socket
 
+  # Use websockets to communicate.
   transport :websocket, Phoenix.Transports.WebSocket
 
+  # Refer all requests to join chat rooms to the room channel.
   channel "room:*", ApiWeb.RoomChannel
 
   # Socket params are passed from the client and can
@@ -16,8 +18,11 @@ defmodule ApiWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(params, socket, _connect_info) do
+
+    # Assign a random unique number for the current session to identify a
+    # user.
+    {:ok, assign(socket, :sender_id, System.unique_integer([:positive]))}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -30,5 +35,5 @@ defmodule ApiWeb.UserSocket do
   #     ApiWeb.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket), do: "users_socket:#{socket.assigns.sender_id}"
 end

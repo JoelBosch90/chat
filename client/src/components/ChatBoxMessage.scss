@@ -20,8 +20,8 @@
   // Give the message some padding to give it some text balloon appearance.
   padding: .75em 1.5em;
 
-  // Target sent messages.
-  &.sent
+  // Target messages from the user itself.
+  &.self
   {
     // Align to the right.
     align-self: flex-end;

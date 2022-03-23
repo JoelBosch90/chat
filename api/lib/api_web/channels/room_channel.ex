@@ -3,11 +3,13 @@ defmodule ApiWeb.RoomChannel do
 
   # Allow users to join any room.
   def join("room:" <> _room_name, _message, socket) do
-    {:ok, socket}
+
+    # Reply with the current id to the user.
+    {:ok, %{ sender_id: socket.assigns.sender_id }, socket}
   end
 
   # Handle new chat messages sent by users.
-  def handle_in("new_message", %{"message" => message}, socket) do
+  def handle_in("new_message", %{"text" => text, "sender_name" => sender_name}, socket) do
 
     # Get the current date and time.
     now = DateTime.utc_now
@@ -17,8 +19,12 @@ defmodule ApiWeb.RoomChannel do
 
     # Broadcast each chat message to all users.
     broadcast!(socket, "message", %{
-      message: message,
+      text: text,
       time: now,
+      sender_name: sender_name,
+
+      # Add the user's assigned id.
+      sender_id: socket.assigns.sender_id,
 
       # Simply combining the timestamp with the unique runtime ID should always
       # give us a unique message ID.

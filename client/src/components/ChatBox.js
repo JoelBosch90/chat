@@ -10,10 +10,10 @@ export default class ChatBox extends React.Component {
     const messages = this.props.messages.map((message) => {
       return <ChatBoxMessage
         key={message.id}
-        sent={message.sender.id === this.props.currentSender.id}
+        self={message.self}
         text={message.text}
         time={message.time}
-        sender={message.sender.name}
+        sender={message.senderName}
       />
     })
 

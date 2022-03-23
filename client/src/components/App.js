@@ -5,161 +5,57 @@ import ChatBox from './ChatBox.js'
 import './App.scss'
 
 export default class App extends React.Component {
+
+  /**
+   *  Constructor.
+   *  @param  {Object}  props   Any properties passed down to this component.
+   */
   constructor(props) {
+
+    // First call the parent constructor.
     super(props)
-    this.state = {
-      currentSender: {
-        id: 1,
-        name: 'Sender 1'
-      },
-      currentRoom: 'Room 2',
+
+    // Recover the state from local storage if we can. Otherwise, we set the
+    // default settings.
+    this.state = JSON.parse(window.localStorage.getItem('state')) || {
+      senderId: 0,
+      senderName: 'Sender 1',
+      currentRoom: 'Room 1',
       rooms: {
         'Room 1': {
           channel: null,
           messages: [
             {
-              id: 6,
-              time: Date.now(),
-              text: 'Example text message 6.',
-              sender: {
-                id: 2,
-                name: 'Sender 2'
-              }
-            },
-            {
-              id: 5,
-              time: Date.now() - 300450,
-              text: 'Example text message 5.',
-              sender: {
-                id: 2,
-                name: 'Sender 2'
-              }
-            },
-            {
-              id: 4,
-              time: Date.now() - 500053,
-              text: 'Example text message 4.',
-              sender: {
-                id: 1,
-                name: 'Sender 1'
-              }
-            },
-            {
               id: 3,
               time: Date.now() - 1300012,
               text: 'Example text message 3.',
-              sender: {
-                id: 2,
-                name: 'Sender 2'
-              }
+              senderId: 2886,
+              senderName: 'Self',
+              self: true,
             },
             {
               id: 2,
               time: Date.now() - 2300340,
               text: 'Example text message 2.',
-              sender: {
-                id: 1,
-                name: 'Sender 1'
-              }
+              senderId: 2886,
+              senderName: 'Other',
+              self: false,
             },
             {
               id: 1,
               time: Date.now() - 3000430,
               text: 'Example text message 1.1.',
-              sender: {
-                id: 1,
-                name: 'Sender 1'
-              }
+              senderId: 2886,
+              senderName: 'Self',
+              self: true,
             },
           ]
-        },
-        'Room 2': {
-          channel: null,
-          messages: [
-            {
-              id: 2,
-              time: Date.now() - 6000320,
-              text: 'Example text message 2.',
-              sender: {
-                id: 3,
-                name: 'Sender 3'
-              }
-            },
-            {
-              id: 1,
-              time: Date.now() - 6500230,
-              text: 'Example text message 1.2.',
-              sender: {
-                id: 1,
-                name: 'Sender 1'
-              }
-            },
-          ]
-        },
-        'Room 3': {
-          channel: null,
-          messages: [
-            {
-              id: 6,
-              time: Date.now() - 30000450,
-              text: 'Example text message 6. Example text message 6. Example text message 6. Example text message 6.',
-              sender: {
-                id: 4,
-                name: 'Sender 4'
-              }
-            },
-            {
-              id: 5,
-              time: Date.now() - 30300450,
-              text: 'Example text message 5.',
-              sender: {
-                id: 4,
-                name: 'Sender 4'
-              }
-            },
-            {
-              id: 4,
-              time: Date.now() - 30500086,
-              text: 'Example text message 4.',
-              sender: {
-                id: 1,
-                name: 'Sender 1'
-              }
-            },
-            {
-              id: 3,
-              time: Date.now() - 3060880,
-              text: 'Example text message 3.',
-              sender: {
-                id: 4,
-                name: 'Sender 4'
-              }
-            },
-            {
-              id: 2,
-              time: Date.now() - 31200150,
-              text: 'Example text message 2.',
-              sender: {
-                id: 0,
-                name: 'Sender 1'
-              }
-            },
-            {
-              id: 1,
-              time: Date.now() - 31300250,
-              text: 'Example text message 1.3.',
-              sender: {
-                id: 1,
-                name: 'Sender 1'
-              }
-            },
-          ],
         },
       },
-
-      // Create a live websocket connection to the message server.
-      connection: this.connect()
     }
+
+    // Create a new connection on each page refresh.
+    this.state.connection = this.connect()
 
     // Make sure that we bind the send methods that we pass to the child
     // components to the state of this component.
@@ -167,7 +63,6 @@ export default class App extends React.Component {
     this.joinRoom = this.joinRoom.bind(this)
     this.currentRoomMessages = this.currentRoomMessages.bind(this)
     this.currentRoom = this.currentRoom.bind(this)
-    this.newMessageID = this.newMessageID.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.receiveMessage = this.receiveMessage.bind(this)
     this.selectRoom = this.selectRoom.bind(this)
@@ -201,30 +96,27 @@ export default class App extends React.Component {
     const channel = this.state.connection.channel(`room:${name}`, {})
 
     // Join the room and start listening for messages.
-    channel.join().receive('ok', () => {
+    channel.join().receive('ok', response => {
+
+      // Update our sender id with the response  for joining each channel.
+      this.setState({ senderId: response.sender_id })
 
       // Forward chat messages to the receive message method.
-      channel.on('message', data => {
-        console.log(data)
-
-        // Process receiving the message.
-        this.receiveMessage(name, {
-          text: data.message.text,
-          sender: data.message.sender,
-
-          // Use the server provided time and message id.
-          time: data.time,
-          id: data.id,
-        });
-      })
+      channel.on('message', message => void this.receiveMessage(name, message))
     })
 
     // Add the new room to our state.
     this.setState(state => { return {
       rooms: Object.assign({}, state.rooms, {
+
+        // Override an existing room if need be.
         [name]: {
+
+          // Add the channel to the room.
           channel,
-          messages: []
+
+          // Inherit messages from a previous room if possible.
+          messages: state.rooms[name] ? state.rooms[name].messages : []
         },
       })
     }})
@@ -257,49 +149,21 @@ export default class App extends React.Component {
   }
 
   /**
-   *  Method to construct a new message ID. We temporarily create them
-   *  client-side.
-   *  @returns {Number}
-   */
-  newMessageID () {
-
-    // Get the messages from the current room.
-    const messages = this.currentRoomMessages()
-
-    // Find the greatest id of any message in the current room.
-    const greatestId = messages.reduce((id, message) => {
-
-      // Replace the accumulator with any id that is greater.
-      return id > message.id ? id : message.id
-
-    // Start at zero.
-    }, 0);
-
-    // Add one to get the new id.
-    return greatestId + 1
-  }
-
-  /**
    *  Method to send a message.
    *  @todo   This currently only updates state. Later on the message will have
    *          to come from the server to have a reliable ID.
-   *  @param  {string}  text      Text of the new message to send.
+   *  @param  {string}  text    Text of the new message to send.
    */
   sendMessage (text) {
 
     // Get the current room.
     const room = this.currentRoom()
 
-    // Construc the new message object.
-    const message = {
-      id: this.newMessageID(),
-      time: Date.now(),
+    // Send the message and the current name of the sender to the server.
+    room.channel.push("new_message", {
       text,
-      sender: this.state.currentSender,
-    }
-
-    // Send the message to the server.
-    room.channel.push("new_message", { message })
+      sender_name: this.state.senderName
+    })
   }
 
   /**
@@ -307,10 +171,11 @@ export default class App extends React.Component {
    *  @param  {string}  roomName  Name of the chat room in which a message is
    *                              received.
    *  @param  {Object}  message   Received message object.
-   *    @property {Number}  id      Unique message identifier.
-   *    @property {Date}    time    Message timestamp.
-   *    @property {string}  text    Message text.
-   *    @property {Object}  sender  Sender of the message.
+   *    @property {Number}  id            Unique message identifier.
+   *    @property {Date}    time          Message timestamp.
+   *    @property {string}  text          Message text.
+   *    @property {Number}  sender_id     Unique sender identifier.
+   *    @property {string}  sender_name   Sender's name.
    */
   receiveMessage (roomName, message) {
     this.setState(state => {
@@ -324,8 +189,22 @@ export default class App extends React.Component {
           [roomName]: Object.assign({}, room, {
             messages: [
 
-              // Add the new message to the beginning of the array.
-              message,
+              // Insert the message object.
+              {
+                id: message.id,
+                time: message.time,
+                text: message.text,
+
+                // Remap the message to fit React naming conventions.
+                senderId: message.sender_id,
+                senderName: message.sender_name,
+
+                // The sender id might change on a page refresh or disconnect,
+                // but we want to remember that the user sent this message, so
+                // we want to store a persistent boolean value here rather than
+                // a dynamically calculated value.
+                self: message.sender_id === this.state.senderId,
+              },
 
               // Keep the other messages.
               ...this.currentRoomMessages(),
@@ -341,21 +220,59 @@ export default class App extends React.Component {
    *  @param  {string} name  Name of the room to select.
    */
   selectRoom (name) {
-    this.setState({
-      currentRoom: name
-    })
+    this.setState({ currentRoom: name })
   }
 
   /**
-   *  Method called when the React app has been mounted.
+   *  Method to store the state to local storage.
    */
-  componentDidMount () {
-    
-    // Join the initial lobby room.
-    this.joinRoom('Room 4')
-    this.joinRoom('Room 5')
+  storeState () {
+
+    // Create a copy of the state.
+    const state = Object.assign({}, this.state)
+
+    console.log({ state })
+
+    // Remove all references to channel objects. JSON cannot handle these
+    // references.
+    for (const room in state.rooms) delete state.rooms[room].channel
+
+    // Also remove the connection object.
+    delete state.connection
+
+    // Now we can store the entire state.
+    window.localStorage.setItem('state', JSON.stringify(state))
   }
 
+  /**
+   *  Method called when the component has been mounted.
+   */
+  componentDidMount () {
+
+    // Join all existing rooms.
+    for(const room in this.state.rooms) this.joinRoom(room)
+
+    // Store the state when a user leaves the page.
+    window.addEventListener('beforeunload', this.storeState.bind(this))
+  }
+
+  /**
+   *  Method called when the componet is about to be unmounted.
+   */
+  componentWillUnmount () {
+
+    // First, store the state.
+    this.storeState()
+
+    // Now, we can stop listening for when the user leaves the page as this
+    // component will no longer be part of the part.
+    window.removeEventListener('beforeunload', this.storeState.bind(this))
+  }
+
+  /**
+   *  Method called to render the component.
+   *  @returns {Object}
+   */
   render () {
     return (
       <div className="app">
@@ -367,7 +284,7 @@ export default class App extends React.Component {
           />
           <ChatBox 
             messages={this.currentRoomMessages()}
-            currentSender={this.state.currentSender}
+            senderId={this.state.senderId}
             sendMessage={this.sendMessage}
           />
         </main>

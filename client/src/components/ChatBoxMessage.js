@@ -10,7 +10,7 @@ export default function ChatBoxMessage(props) {
   const timeStamp = `${hours}:${minutes}`
 
   return (
-    <div className={`chatbox-message${props.sent ? ' sent' : ''}`}>
+    <div className={`chatbox-message${props.self ? ' self' : ''}`}>
       <div className="chatbox-message-toprow">
         <span className="chatbox-message-sender">{props.sender}</span>
         <span>{timeStamp}</span>
