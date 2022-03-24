@@ -1,0 +1,96 @@
+/**
+ *  Styling for the list of chatrooms.
+ */
+.chatroom-navigation
+{
+  // Stick to a fixed width to display the chatroom navigation.
+  width: 20em;
+
+  // Make sure none of the list items can escape this container.
+  overflow-y: auto;
+
+  // Anchor absolute child components to this container.
+  position: relative;
+
+  // Target the list of rooms.
+  > ol
+  {
+    // Take up all available width.
+    width: 100%;
+
+    // We don't want to use any paddings or margins here.
+    padding: 0;
+    margin: 0;
+
+    // Use Flexbox to create a layout to list the chat rooms.
+    display: flex;
+
+    // List the room vertically by default.
+    flex-direction: column;
+    
+    // Display a tiny gap to distinguish different rooms.
+    gap: 1px;
+
+    // We should always have a single column.
+    flex-wrap: nowrap;
+
+    // Allow users to scroll down to see older chat rooms if they're out of
+    // view.
+    overflow-y: auto;
+
+    // Remove markers from the direct list items in this list.
+    > li { list-style-type: none; }
+  }
+  
+  // Target the buttons container.
+  .chatroom-navigation-buttons
+  {
+    // Take up all available width.
+    width: 100%;
+
+    // Take padding and borders into account when calculating the width.
+    box-sizing: border-box;
+
+    // Increase the font size to make these buttons easy to click.
+    font-size: 1.25em;
+
+    // Use Flexbox to create a layout.
+    display: flex;
+
+    // Evenly space out all buttons.
+    justify-content: space-evenly;
+
+    // Add some space around the button.
+    padding: 1em;
+
+    // Target all buttons.
+    > button
+    {
+      // Use a transparent background.
+      background: transparent;
+
+      // Use a light color that contrasts well against the dark background.
+      color: #858585;
+
+      // Get rid of the border.
+      border: none;
+
+      // Get rid of the default outline.
+      outline: none;
+
+      // Make sure we inherit the local text styling.
+      font-family: inherit;
+      font-size: inherit;
+
+      // Make sure that it is clear that this is clickable.
+      cursor: pointer;
+      
+      // Target the button when the cursor hovers it, or when it is selected.
+      &:hover, &:focus
+      {
+        // Make the button light up slightly.
+        filter: brightness(125%);
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+/**
+ *  Basic styling for the input elements.
+ */
+
+input
+{
+  // Use a transparent background.
+  background: transparent;
+
+  // Get rid of the border.
+  border: none;
+
+  // Get rid of the default outline.
+  outline: none;
+
+  // Make sure we inherit the local text styling.
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}

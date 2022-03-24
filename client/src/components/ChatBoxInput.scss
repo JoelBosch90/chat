@@ -28,24 +28,6 @@
   // input.
   grid-template-columns: 1fr max-content;
 
-  // Target the button and the input because they share some styling.
-  button, input
-  {
-    // Use a transparent background.
-    background: transparent;
-
-    // Get rid of the border.
-    border: none;
-
-    // Get rid of the default outline.
-    outline: none;
-
-    // Make sure we inherit the local text styling.
-    color: inherit;
-    font-family: inherit;
-    font-size: inherit;
-  }
-
   // Target the input's placeholder text and the button when no text has been
   // entered.
   input::placeholder, input:placeholder-shown + button
@@ -54,17 +36,13 @@
     color: #5C5C5C;
   }
 
-  // Target the button when text has been entered.
-  input:not(:placeholder-shown) + button
+  // Target the button when no text has been entered.
+  input:placeholder-shown + button
   {
-    // Make sure that it is clear that this is clickable.
-    cursor: pointer;
+    // Indicate that the button is currently not clickable.
+    cursor: auto;
 
-    // Target the button when the cursor hovers it, or when it is selected.
-    &:hover, &:focus
-    {
-      // Make the button light up slightly.
-      filter: brightness(125%);
-    }
+    // Remove on hover effects.
+    &:hover, &:focus { filter: none; }
   }
 }

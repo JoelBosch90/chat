@@ -1,9 +1,7 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
-import './ChatBoxInput.scss'
+import './OverlayInput.scss'
 
-export default class ChatBoxInput extends React.Component {
+export default class OverlayInput extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -32,8 +30,8 @@ export default class ChatBoxInput extends React.Component {
     // Make sure that we do not reload the page.
     event.preventDefault();
 
-    // Only send a message if there's something to send.
-    if (this.state.input) this.props.sendMessage(this.state.input)
+    // Only call the on submit method when we have some input to share.
+    if (this.state.input) this.props.onSubmit(this.state.input)
 
     // Reset the input value.
     this.setState({ input: '' })
@@ -45,15 +43,17 @@ export default class ChatBoxInput extends React.Component {
    */
   render () {
     return (
-      <form className="chatbox-input" onSubmit={this.submit}>
+      <form
+        className={`overlay-input${this.props.visible ? '' : ' hidden'}`}
+        onSubmit={this.submit}
+      >
+        <h1>{this.props.title}</h1>
         <input
-          placeholder="Write a message..."
+          placeholder={this.props.placeholder}
           value={this.state.input}
           onChange={this.change}
         />
-        <button>
-          <FontAwesomeIcon icon={faPaperPlane} />
-        </button>
+        <button>Join</button>
       </form>
     )
   }

@@ -1,0 +1,27 @@
+/**
+ *  Basic styling for the button elements.
+ */
+
+button
+{
+  // Use a dark background color.
+  background-color: transparent;
+
+  // Get rid of the border.
+  border: none;
+
+  // Get rid of the default outline.
+  outline: none;
+
+  // Make sure we inherit the local text styling.
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+
+  // Make sure that it is clear that this is clickable.
+  cursor: pointer;
+
+  // Subtly light up the button when the cursor hovers it or when it is selected
+  // to show that it is an interactive element.
+  &:hover, &:focus { filter: brightness(125%); }
+}

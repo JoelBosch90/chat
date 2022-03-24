@@ -1,6 +1,6 @@
 import React from 'react'
 import { Socket } from 'phoenix'
-import ChatRoomList from './ChatRoomList.js'
+import ChatRoomNavigation from './ChatRoomNavigation.js'
 import ChatBox from './ChatBox.js'
 import './App.scss'
 
@@ -19,11 +19,11 @@ export default class App extends React.Component {
     // default settings.
     this.state = JSON.parse(window.localStorage.getItem('state')) || {
       senderId: 0,
-      senderName: 'Sender 1',
       currentRoom: 'Room 1',
       rooms: {
         'Room 1': {
           channel: null,
+          senderName: 'Self',
           messages: [
             {
               id: 3,
@@ -62,10 +62,13 @@ export default class App extends React.Component {
     this.connect = this.connect.bind(this)
     this.joinRoom = this.joinRoom.bind(this)
     this.currentRoomMessages = this.currentRoomMessages.bind(this)
+    this.currentRoomSenderName = this.currentRoomSenderName.bind(this)
     this.currentRoom = this.currentRoom.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.receiveMessage = this.receiveMessage.bind(this)
     this.selectRoom = this.selectRoom.bind(this)
+    this.updateRoom = this.updateRoom.bind(this)
+    this.setSenderName = this.setSenderName.bind(this)
   }
 
   /**
@@ -139,6 +142,22 @@ export default class App extends React.Component {
   }
 
   /**
+   *  Method to find the sender name for the current room.
+   *  @returns  {string}
+   */
+  currentRoomSenderName () {
+
+    // Get the current room.
+    const room = this.currentRoom()
+
+    // Return the room's sender name if it exists.
+    if (room) return room.senderName
+    
+    // Default to an empty string.
+    else return ''
+  }
+
+  /**
    *  Method to get the current room object.
    *  @returns  {Object}
    */
@@ -162,7 +181,29 @@ export default class App extends React.Component {
     // Send the message and the current name of the sender to the server.
     room.channel.push("new_message", {
       text,
-      sender_name: this.state.senderName
+      sender_name: room.senderName
+    })
+  }
+
+  /**
+   *  Method to update the state for a single room.
+   *  @param  {string}  roomName  Name of the room to update.
+   *  @param  {Object}  update    Object containing the updates for this room.  
+   */
+  updateRoom(roomName, update) {
+    this.setState(state => {
+
+      // Get the named room.
+      const room = state.rooms[roomName]
+
+      // Update the named room with the new state.
+      return {
+        rooms: Object.assign({}, state.rooms, {
+
+          // Keep all of the rooms previous properties if possible.
+          [roomName]: Object.assign({}, room, update)
+        })
+      }
     })
   }
 
@@ -178,40 +219,29 @@ export default class App extends React.Component {
    *    @property {string}  sender_name   Sender's name.
    */
   receiveMessage (roomName, message) {
-    this.setState(state => {
+    this.updateRoom(roomName, {
+      messages: [
 
-      // Get the named room.
-      const room = state.rooms[roomName]
+        // Insert the message object.
+        {
+          id: message.id,
+          time: message.time,
+          text: message.text,
 
-      // Update the named room with this new message.
-      return {
-        rooms: Object.assign({}, state.rooms, {
-          [roomName]: Object.assign({}, room, {
-            messages: [
+          // Remap the message to fit React naming conventions.
+          senderId: message.sender_id,
+          senderName: message.sender_name,
 
-              // Insert the message object.
-              {
-                id: message.id,
-                time: message.time,
-                text: message.text,
+          // The sender id might change on a page refresh or disconnect,
+          // but we want to remember that the user sent this message, so
+          // we want to store a persistent boolean value here rather than
+          // a dynamically calculated value.
+          self: message.sender_id === this.state.senderId,
+        },
 
-                // Remap the message to fit React naming conventions.
-                senderId: message.sender_id,
-                senderName: message.sender_name,
-
-                // The sender id might change on a page refresh or disconnect,
-                // but we want to remember that the user sent this message, so
-                // we want to store a persistent boolean value here rather than
-                // a dynamically calculated value.
-                self: message.sender_id === this.state.senderId,
-              },
-
-              // Keep the other messages.
-              ...this.currentRoomMessages(),
-            ]
-          })
-        })
-      }
+        // Keep the other messages.
+        ...this.currentRoomMessages(),
+      ]
     })
   }
 
@@ -224,22 +254,30 @@ export default class App extends React.Component {
   }
 
   /**
+   *  Method to set a new sender name for the current room.
+   *  @param  {string} name  New sender name.
+   */
+  setSenderName (name) {
+
+    // Update the senderName property for the current room.
+    this.updateRoom(this.state.currentRoom, { senderName: name })
+  }
+
+  /**
    *  Method to store the state to local storage.
    */
   storeState () {
 
-    // Create a copy of the state.
+    // Create a copy of the state that we can change.
     const state = Object.assign({}, this.state)
 
-    // Remove all references to channel objects. JSON cannot handle these
-    // references.
+    // Remove all references to channel and connection objects. JSON cannot
+    // handle these references and we do not need them.
     for (const room in state.rooms) delete state.rooms[room].channel
-
-    // Also remove the connection object.
     delete state.connection
 
     // Now we can store the entire state.
-    window.localStorage.setItem('state', JSON.stringify(state))
+    // window.localStorage.setItem('state', JSON.stringify(state))
   }
 
   /**
@@ -269,21 +307,24 @@ export default class App extends React.Component {
 
   /**
    *  Method called to render the component.
-   *  @returns {Object}
+   *  @returns {JSX.Element}
    */
   render () {
     return (
       <div className="app">
         <main> 
-          <ChatRoomList
+          <ChatRoomNavigation
             rooms={this.state.rooms}
             currentRoom={this.state.currentRoom}
             selectRoom={this.selectRoom}
+            joinRoom={this.joinRoom}
           />
           <ChatBox 
             messages={this.currentRoomMessages()}
+            senderName={this.currentRoomSenderName()}
             senderId={this.state.senderId}
             sendMessage={this.sendMessage}
+            updateName={this.setSenderName}
           />
         </main>
       </div>

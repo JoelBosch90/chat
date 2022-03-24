@@ -14,6 +14,9 @@
 
   // Prevent elements from leaving this container.
   overflow: hidden;
+  
+  // Anchor absolute child components to this container.
+  position: relative;
 
   // Target the container for the messages.
   .chatbox-messages

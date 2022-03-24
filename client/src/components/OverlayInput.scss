@@ -1,0 +1,95 @@
+/**
+ *  Styling for the overlay input.
+ */
+.overlay-input
+{
+  // Position this overlay on top of other elements.
+  position: absolute;
+
+  // Take up all available space.
+  inset: 0;
+
+  // Overlay the default depth.
+  z-index: 2;
+
+  // Use Flexbox to create a layout.
+  display: flex;
+
+  // Create the layout from top to bottom.
+  flex-direction: column;
+
+  // Group the elements at the center vertically.
+  justify-content: center;
+
+  // Align the elements around the center axis horizontally.
+  align-items: center;
+
+  // Keep a minimal distance between the different elements on the overlay.
+  gap: 1em;
+
+  // Keep a minimal distance from the edge of the overlay.
+  padding: 1em;
+
+  // Use a dark background color.
+  background-color: #0A0A0A;
+  
+  // Provide a contrasting color for text.
+  color: #858585;
+
+  // Target the title.
+  h1
+  {
+    // Make the title only ever so slightly larger than normal text.
+    font-size: 1.1em;
+
+    // Give Flexbox full control over the layout.
+    margin: 0;
+
+    // Don't display this element if there is no title text.
+    &:empty { display: none; }
+  }
+
+  // Target only the input.
+  input
+  {
+    // Use a dark background color.
+    background-color: #1F1F1F;
+
+    // Use all width that's available.
+    width: 100%;
+
+    // Include paddings and borders into the width calculations.
+    box-sizing: border-box;
+
+    // Use slightly rounded edges for a friendlier look.
+    border-radius: 0.25em;
+
+    // Give the input text some room from the edges.
+    padding: 0.5em;
+
+    // Subtly light up the input field when the cursor hovers it or when it is
+    // selected to show that it is an interactive element.
+    &:hover { filter: brightness(125%); }
+  }
+
+  // Target the input's placeholder text and the button when no text has been
+  // entered.
+  input::placeholder, input:placeholder-shown + button
+  {
+    // Make these elements stand out a little less.
+    color: #5C5C5C;
+  }
+
+  // Target the button when no text has been entered.
+  input:placeholder-shown + button
+  {
+    // Indicate that the button is currently not clickable.
+    cursor: auto;
+
+    // Remove on hover effects.
+    &:hover, &:focus { filter: none; }
+  }
+
+  // Hide the entire overlay when the hidden class is added.
+  &.hidden { display: none; }
+}
