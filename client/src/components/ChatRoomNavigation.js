@@ -69,7 +69,7 @@ export default class ChatRoomNavigation extends React.Component {
       <nav className="chatroom-navigation">
         <OverlayInput
           visible={this.state.showOverlay}
-          title="Enter the name of the lobby"
+          title="Which room do you want to join?"
           placeholder="E.g. Lobby 1..."
           button="Join"
           onSubmit={room => this.joinRoom(room)}
