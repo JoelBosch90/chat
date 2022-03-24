@@ -5,7 +5,7 @@ FROM node:alpine
 WORKDIR /client
 
 # Copy the package files that contain our dependencies.
-COPY package*.json .
+COPY package*.json ./
 
 # Install all dependencies.
 RUN npm install

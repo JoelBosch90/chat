@@ -14,7 +14,7 @@ COPY --chown=node:node package*.json ./
 USER node
 
 # Copy the package files that contain our dependencies.
-COPY package*.json .
+COPY package*.json ./
 
 # Copy the application files to the directory.
 COPY --chown=node:node . .
