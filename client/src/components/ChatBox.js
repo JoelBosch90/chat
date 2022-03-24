@@ -28,7 +28,7 @@ export default class ChatBox extends React.Component {
           visible={!this.props.senderName}
           title="What should we call you in this room?"
           placeholder="E.g. John Malkovich..."
-          button="Select"
+          button="Select name"
           onSubmit={this.props.updateName}
         />
         <div className="chatbox-messages">

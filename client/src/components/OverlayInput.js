@@ -11,11 +11,12 @@ export default class OverlayInput extends React.Component {
     // Bind the methods to this component.
     this.change = this.change.bind(this)
     this.submit = this.submit.bind(this)
+    this.cancel = this.cancel.bind(this)
   }
 
   /**
    *  Handler for keeping the React state up to date with the input.
-   *  @param  {Event} event The event to handle.
+   *  @param  {Event} event   The event to handle.
    */
   change(event) {
     this.setState({ input: event.target.value })
@@ -23,7 +24,7 @@ export default class OverlayInput extends React.Component {
 
   /**
    *  Handler for submit events.
-   *  @param  {Event} event The event to handle.
+   *  @param  {Event} event   The event to handle.
    */
   submit(event) {
 
@@ -35,6 +36,19 @@ export default class OverlayInput extends React.Component {
 
     // Reset the input value.
     this.setState({ input: '' })
+  }
+
+  /**
+   *  Method that processes a click on the cancel button.
+   *  @param  {Event} event   The click event for the cancel button.
+   */
+  cancel (event) {
+
+    // Don't do anything if there is no cancel method installed.
+    if (!this.props.onCancel) return;
+
+    // Otherwise, call that cancel method.
+    this.props.onCancel(event);
   }
 
   /**
@@ -53,7 +67,13 @@ export default class OverlayInput extends React.Component {
           value={this.state.input}
           onChange={this.change}
         />
-        <button>Join</button>
+        <button>{this.props.button}</button>
+        <button
+          className={this.props.onCancel ? '' : ' hidden'}
+          onClick={this.cancel}
+        >
+          Cancel
+        </button>
       </form>
     )
   }

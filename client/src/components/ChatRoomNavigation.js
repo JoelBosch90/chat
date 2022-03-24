@@ -16,6 +16,7 @@ export default class ChatRoomNavigation extends React.Component {
     // Bind the methods to this component.
     this.joinRoom = this.joinRoom.bind(this)
     this.showOverlay = this.showOverlay.bind(this)
+    this.hideOverlay = this.hideOverlay.bind(this)
   }
 
   /**
@@ -32,9 +33,14 @@ export default class ChatRoomNavigation extends React.Component {
   }
 
   /**
-   *  Method to toggle showing the overlay.
+   *  Method to show the overlay.
    */
   showOverlay () { this.setState({ showOverlay: true }) }
+
+  /**
+   *  Method to hide the overlay.
+   */
+  hideOverlay () { this.setState({ showOverlay: false }) }
 
   /**
    *  Method called to render the component.
@@ -67,6 +73,7 @@ export default class ChatRoomNavigation extends React.Component {
           placeholder="E.g. Lobby 1..."
           button="Join"
           onSubmit={room => this.joinRoom(room)}
+          onCancel={this.hideOverlay}
         />
         <ol>
           {rooms}

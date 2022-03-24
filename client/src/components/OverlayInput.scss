@@ -90,6 +90,7 @@
     &:hover, &:focus { filter: none; }
   }
 
-  // Hide the entire overlay when the hidden class is added.
-  &.hidden { display: none; }
+  // Hide the entire overlay or a specific button when the hidden class is
+  // added.
+  &.hidden, button.hidden { display: none; }
 }
