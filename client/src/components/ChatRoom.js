@@ -4,7 +4,7 @@ import './ChatRoom.scss'
 export default function ChatRoom(props) {
 
   // Process the last message.
-  const last = props.messages.at(0)
+  const last = props.messages ? props.messages.at(0) : null
   const lastSender = last ? last.senderName : ''
   const lastText = last ? last.text : ''
   const lastTime = last ? new Date(last.time) : undefined

@@ -10,10 +10,6 @@ networks:
   # to be able to talk to the proxy.
   proxied:
 
-  # Then there are those services that don't need to be publicly accessible and
-  # only communicate with other services. They go into the protected network.
-  protected:
-
 # We want to spawn several separate services from Docker images and manage all
 # of them from this file.
 services:
@@ -26,10 +22,10 @@ services:
   #
   ##############################################################################
   proxy:
-    container_name: chat.proxy.production
+    container_name: chat.proxy.development
 
     # We can use the latest version of Nginx.
-    image: nginx:latest
+    image: nginx:1.21.0
 
     # We want to expose at port 8007.
     ports:
@@ -37,12 +33,9 @@ services:
 
     # We can use volumes to copy our reverse proxy configuration into Nginx.
     volumes:
-      # Use the production configuration to expose only what's necessary.
-      - ./proxy/production.conf:/etc/nginx/nginx.conf
+      # Use the development configuration to expose only what's necessary.
+      - ./proxy/development.conf:/etc/nginx/nginx.conf
       - ./proxy/logs:/etc/nginx/error_log.log
-
-      # Temporary line to help Nginx serve the static files.
-      - ./client/static:/usr/share/nginx/html
 
     # The proxy needs access to the publicly accessible services.
     depends_on:
@@ -61,25 +54,37 @@ services:
   #
   ##############################################################################
   client:
-    container_name: chat.client.production
+    container_name: chat.client.development
 
     # We always want to restart when things go wrong.
     restart: always
 
-    # We want to build from the production dockerfile in the client directory.
+    # We want to build from the development dockerfile in the client directory.
     build:
       context: ./client/
-      dockerfile: production.dockerfile
+      dockerfile: development.dockerfile
 
     # Pass on the environment variables to the client service.
     environment:
-      # Tell the client where to reach the client and the API.
-      - API_URL=http://localhost:8007/api/
-      - CLIENT_URL=http://localhost:8007/
+      # Tell the client where to reach the client and the API. In React, custom
+      # environment variables need to be prefixed.
+      - REACT_APP_API_URL=localhost:8007/api/
+      - REACT_APP_CLIENT_URL=localhost:8007/
+
+      # Tell the client what port to use.
+      - PORT=8000
+
+      # Tell React what port to connect to for hot reloading.
+      - WDS_SOCKET_PORT=8007
 
     # We can expose the client service in the container network.
     expose:
       - "8000"
+
+    # We want to bind the changes inside the container to a local folder so that
+    # we can update the code in real time.
+    volumes:
+      - ./client:/client
 
     # We need the reverse proxy to expose the client publicly, so we need to
     # give it access to the client service.
@@ -93,32 +98,34 @@ services:
   #
   ##############################################################################
   api:
-    container_name: chat.api.production
+    container_name: chat.api.development
 
     # We always want to restart when things go wrong.
     restart: always
 
-    # We want to build from the production dockerfile in the API directory.
+    # We want to build from the development dockerfile in the API directory.
     build:
       context: ./api/
-      dockerfile: production.dockerfile
+      dockerfile: development.dockerfile
 
     # The api will need to some hosting information. Any external information
     # that is not set in this file is expected to be supplied through
     # environment variables.
     environment:
       # Tell the API where to reach the client and the API.
-      - API_URL=http://localhost:8007/api/
-      - CLIENT_URL=http://localhost:8007/
+      - API_URL=localhost:8007/api/
+      - CLIENT_URL=localhost:8007/
 
     # We can expose the api service in the container network.
     expose:
       - "3000"
 
+    # We want to bind the changes inside the container to a local folder so that
+    # we can update the code in real time.
+    volumes:
+      - ./api:/api
+
     # We need the reverse proxy to expose the API publicly, so we need to
-    # give it access to the API service. In addition, it needs to be able to
-    # communicate to the database, so it also requires access to the protected
-    # network.
+    # give it access to the API service.
     networks:
       - proxied
-      - protected

@@ -58,6 +58,9 @@
     // Use all width that's available.
     width: 100%;
 
+    // Don't let this input grow too large.
+    max-width: 30em;
+
     // Include paddings and borders into the width calculations.
     box-sizing: border-box;
 

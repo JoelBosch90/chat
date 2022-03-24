@@ -2,6 +2,7 @@ import React from 'react'
 import { Socket } from 'phoenix'
 import ChatRoomNavigation from './ChatRoomNavigation.js'
 import ChatBox from './ChatBox.js'
+import OverlayInput from './OverlayInput.js'
 import './App.scss'
 
 export default class App extends React.Component {
@@ -19,40 +20,11 @@ export default class App extends React.Component {
     // default settings.
     this.state = JSON.parse(window.localStorage.getItem('state')) || {
       senderId: 0,
-      currentRoom: 'Room 1',
-      rooms: {
-        'Room 1': {
-          channel: null,
-          senderName: 'Self',
-          messages: [
-            {
-              id: 3,
-              time: Date.now() - 1300012,
-              text: 'Example text message 3.',
-              senderId: 2886,
-              senderName: 'Self',
-              self: true,
-            },
-            {
-              id: 2,
-              time: Date.now() - 2300340,
-              text: 'Example text message 2.',
-              senderId: 2886,
-              senderName: 'Other',
-              self: false,
-            },
-            {
-              id: 1,
-              time: Date.now() - 3000430,
-              text: 'Example text message 1.1.',
-              senderId: 2886,
-              senderName: 'Self',
-              self: true,
-            },
-          ]
-        },
-      },
+      currentRoom: null,
+      rooms: {},
     }
+
+    console.log({ localState: window.localStorage.getItem('state'), state: this.state, rooms: this.state.rooms })
 
     // Create a new connection on each page refresh.
     this.state.connection = this.connect()
@@ -107,6 +79,10 @@ export default class App extends React.Component {
       // Forward chat messages to the receive message method.
       channel.on('message', message => void this.receiveMessage(name, message))
     })
+
+    // Make sure that we immediately select the new room if we've not selected
+    // any yet.
+    if (!this.state.currentRoom) this.setState({ currentRoom: name })
 
     // Add the new room to our state.
     this.setState(state => { return {
@@ -312,7 +288,7 @@ export default class App extends React.Component {
   render () {
     return (
       <div className="app">
-        <main> 
+        <main>
           <ChatRoomNavigation
             rooms={this.state.rooms}
             currentRoom={this.state.currentRoom}
@@ -325,6 +301,13 @@ export default class App extends React.Component {
             senderId={this.state.senderId}
             sendMessage={this.sendMessage}
             updateName={this.setSenderName}
+          />
+          <OverlayInput
+            visible={!Object.keys(this.state.rooms).length}
+            title="What is the first room you want to join?"
+            placeholder="E.g. Lobby 1..."
+            button="Join"
+            onSubmit={room => this.joinRoom(room)}
           />
         </main>
       </div>

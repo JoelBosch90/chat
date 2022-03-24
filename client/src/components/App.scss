@@ -39,5 +39,8 @@
 
     // Center the main content on the page horizontally.
     margin: 0 auto;
+
+    // Anchor absolute child components to this container.
+    position: relative;
   }
 }
