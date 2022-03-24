@@ -277,7 +277,7 @@ export default class App extends React.Component {
     delete state.connection
 
     // Now we can store the entire state.
-    // window.localStorage.setItem('state', JSON.stringify(state))
+    window.localStorage.setItem('state', JSON.stringify(state))
   }
 
   /**
