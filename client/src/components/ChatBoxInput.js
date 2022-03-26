@@ -10,9 +10,11 @@ export default class ChatBoxInput extends React.Component {
       input: props.value || '',
     }
 
-    // Bind the methods to this component.
-    this.change = this.change.bind(this)
-    this.submit = this.submit.bind(this)
+    // Make sure that we bind all methods that are shared with other components
+    // to this component so that they keep access to this component's state.
+    for(const method of [
+      'change', 'submit'
+    ]) this[method] = this[method].bind(this)
   }
 
   /**
@@ -50,6 +52,8 @@ export default class ChatBoxInput extends React.Component {
           placeholder="Write a message..."
           value={this.state.input}
           onChange={this.change}
+          autoFocus
+          key={this.props.roomName}
         />
         <button>
           <FontAwesomeIcon icon={faPaperPlane} />

@@ -19,13 +19,19 @@ export default class App extends React.Component {
     // Recover the state from local storage if we can. Otherwise, we set the
     // default settings.
     this.state = JSON.parse(window.localStorage.getItem('state')) || {
-      senderId: 0,
+      senderId: null,
       currentRoom: null,
       rooms: {},
     }
 
     // Create a new connection on each page refresh.
     this.state.connection = this.connect()
+
+    // Make sure that we bind all methods that are shared with other components
+    // to this component so that they keep access to this component's state.
+    for(const method of [
+      'selectRoom', 'joinRoom', 'sendMessage', 'setSenderName',
+    ]) this[method] = this[method].bind(this)
   }
 
   /**
@@ -71,6 +77,9 @@ export default class App extends React.Component {
 
     // Add the new room to our state.
     this.updateRoom(name, { channel })
+
+    // Also immediately select the new room.
+    this.selectRoom(name)
   }
 
   /**
@@ -144,8 +153,8 @@ export default class App extends React.Component {
       // Get the named room or create one with all defaults.
       const room = state.rooms[roomName] || {
         channel: null,
-        senderName: 'Anonymous',
-        message: [],
+        senderName: null,
+        messages: [],
       }
 
       // Update the named room with the new state.
@@ -270,23 +279,23 @@ export default class App extends React.Component {
           <ChatRoomNavigation
             rooms={this.state.rooms}
             currentRoom={this.state.currentRoom}
-            selectRoom={this.selectRoom.bind(this)}
-            joinRoom={this.joinRoom.bind(this)}
+            selectRoom={this.selectRoom}
+            joinRoom={this.joinRoom}
           />
           <ChatBox 
             roomName={this.state.currentRoom}
             messages={this.currentRoomMessages()}
             senderName={this.currentRoomSenderName()}
             senderId={this.state.senderId}
-            sendMessage={this.sendMessage.bind(this)}
-            updateName={this.setSenderName.bind(this)}
+            sendMessage={this.sendMessage}
+            updateName={this.setSenderName}
           />
           <OverlayInput
             visible={!Object.keys(this.state.rooms).length}
             title="What is the first room you want to join?"
             placeholder="E.g. Lobby 1..."
             button="Join"
-            onSubmit={room => this.joinRoom(room).bind(this)}
+            onSubmit={room => this.joinRoom(room)}
           />
         </main>
       </div>

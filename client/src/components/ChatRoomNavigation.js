@@ -13,10 +13,11 @@ export default class ChatRoomNavigation extends React.Component {
       showOverlay: false,
     }
 
-    // Bind the methods to this component.
-    this.joinRoom = this.joinRoom.bind(this)
-    this.showOverlay = this.showOverlay.bind(this)
-    this.hideOverlay = this.hideOverlay.bind(this)
+    // Make sure that we bind all methods that are shared with other components
+    // to this component so that they keep access to this component's state.
+    for(const method of [
+      'showOverlay', 'hideOverlay'
+    ]) this[method] = this[method].bind(this)
   }
 
   /**

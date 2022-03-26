@@ -8,10 +8,11 @@ export default class OverlayInput extends React.Component {
       input: props.value || '',
     }
 
-    // Bind the methods to this component.
-    this.change = this.change.bind(this)
-    this.submit = this.submit.bind(this)
-    this.cancel = this.cancel.bind(this)
+    // Make sure that we bind all methods that are shared with other components
+    // to this component so that they keep access to this component's state.
+    for(const method of [
+      'change', 'submit', 'cancel'
+    ]) this[method] = this[method].bind(this)
   }
 
   /**
@@ -66,6 +67,8 @@ export default class OverlayInput extends React.Component {
           placeholder={this.props.placeholder}
           value={this.state.input}
           onChange={this.change}
+          autoFocus
+          key={this.props.visible}
         />
         <button>{this.props.button}</button>
         <button

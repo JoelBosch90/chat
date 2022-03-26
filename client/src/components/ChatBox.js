@@ -36,6 +36,7 @@ export default class ChatBox extends React.Component {
         </div>
         <ChatBoxInput
           sendMessage={this.props.sendMessage}
+          roomName={this.props.roomName}
         />
       </section>
     )

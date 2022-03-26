@@ -22,7 +22,7 @@ services:
   #
   ##############################################################################
   proxy:
-    container_name: chat.proxy.development
+    container_name: chat.proxy.production
 
     # We can use the latest version of Nginx.
     image: nginx:1.21.0
@@ -33,8 +33,8 @@ services:
 
     # We can use volumes to copy our reverse proxy configuration into Nginx.
     volumes:
-      # Use the development configuration to expose only what's necessary.
-      - ./proxy/development.conf:/etc/nginx/nginx.conf
+      # Use the production configuration to expose only what's necessary.
+      - ./proxy/production.conf:/etc/nginx/nginx.conf
       - ./proxy/logs:/etc/nginx/error_log.log
 
     # The proxy needs access to the publicly accessible services.
@@ -54,15 +54,15 @@ services:
   #
   ##############################################################################
   client:
-    container_name: chat.client.development
+    container_name: chat.client.production
 
     # We always want to restart when things go wrong.
     restart: always
 
-    # We want to build from the development dockerfile in the client directory.
+    # We want to build from the production dockerfile in the client directory.
     build:
       context: ./client/
-      dockerfile: development.dockerfile
+      dockerfile: production.dockerfile
 
     # Pass on the environment variables to the client service.
     environment:
@@ -81,11 +81,6 @@ services:
     expose:
       - "8000"
 
-    # We want to bind the changes inside the container to a local folder so that
-    # we can update the code in real time.
-    volumes:
-      - ./client:/client
-
     # We need the reverse proxy to expose the client publicly, so we need to
     # give it access to the client service.
     networks:
@@ -98,15 +93,15 @@ services:
   #
   ##############################################################################
   api:
-    container_name: chat.api.development
+    container_name: chat.api.production
 
     # We always want to restart when things go wrong.
     restart: always
 
-    # We want to build from the development dockerfile in the API directory.
+    # We want to build from the production dockerfile in the API directory.
     build:
       context: ./api/
-      dockerfile: development.dockerfile
+      dockerfile: production.dockerfile
 
     # The api will need to some hosting information. Any external information
     # that is not set in this file is expected to be supplied through
@@ -119,11 +114,6 @@ services:
     # We can expose the api service in the container network.
     expose:
       - "3000"
-
-    # We want to bind the changes inside the container to a local folder so that
-    # we can update the code in real time.
-    volumes:
-      - ./api:/api
 
     # We need the reverse proxy to expose the API publicly, so we need to
     # give it access to the API service.
