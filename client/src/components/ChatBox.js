@@ -26,7 +26,7 @@ export default class ChatBox extends React.Component {
       <section className="chatbox">
         <OverlayInput
           visible={!this.props.senderName}
-          title="What should we call you in this room?"
+          title={`What should we call you in room '${this.props.roomName}'?`}
           placeholder="E.g. John Malkovich..."
           button="Select name"
           onSubmit={this.props.updateName}

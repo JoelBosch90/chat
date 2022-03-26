@@ -24,23 +24,8 @@ export default class App extends React.Component {
       rooms: {},
     }
 
-    console.log({ localState: window.localStorage.getItem('state'), state: this.state, rooms: this.state.rooms })
-
     // Create a new connection on each page refresh.
     this.state.connection = this.connect()
-
-    // Make sure that we bind the send methods that we pass to the child
-    // components to the state of this component.
-    this.connect = this.connect.bind(this)
-    this.joinRoom = this.joinRoom.bind(this)
-    this.currentRoomMessages = this.currentRoomMessages.bind(this)
-    this.currentRoomSenderName = this.currentRoomSenderName.bind(this)
-    this.currentRoom = this.currentRoom.bind(this)
-    this.sendMessage = this.sendMessage.bind(this)
-    this.receiveMessage = this.receiveMessage.bind(this)
-    this.selectRoom = this.selectRoom.bind(this)
-    this.updateRoom = this.updateRoom.bind(this)
-    this.setSenderName = this.setSenderName.bind(this)
   }
 
   /**
@@ -85,20 +70,17 @@ export default class App extends React.Component {
     if (!this.state.currentRoom) this.setState({ currentRoom: name })
 
     // Add the new room to our state.
-    this.setState(state => { return {
-      rooms: Object.assign({}, state.rooms, {
+    this.updateRoom(name, { channel })
+  }
 
-        // Override an existing room if need be.
-        [name]: {
+  /**
+   *  Method to get the current room object.
+   *  @returns  {Object}
+   */
+  currentRoom () {
 
-          // Add the channel to the room.
-          channel,
-
-          // Inherit messages from a previous room if possible.
-          messages: state.rooms[name] ? state.rooms[name].messages : []
-        },
-      })
-    }})
+    // Get the current room from the state.
+    return this.state.rooms[this.state.currentRoom]
   }
 
   /**
@@ -134,16 +116,6 @@ export default class App extends React.Component {
   }
 
   /**
-   *  Method to get the current room object.
-   *  @returns  {Object}
-   */
-  currentRoom () {
-
-    // Get the current room from the state.
-    return this.state.rooms[this.state.currentRoom]
-  }
-
-  /**
    *  Method to send a message.
    *  @todo   This currently only updates state. Later on the message will have
    *          to come from the server to have a reliable ID.
@@ -169,14 +141,20 @@ export default class App extends React.Component {
   updateRoom(roomName, update) {
     this.setState(state => {
 
-      // Get the named room.
-      const room = state.rooms[roomName]
+      // Get the named room or create one with all defaults.
+      const room = state.rooms[roomName] || {
+        channel: null,
+        senderName: 'Anonymous',
+        message: [],
+      }
 
       // Update the named room with the new state.
       return {
+
+        // Keep all other rooms.
         rooms: Object.assign({}, state.rooms, {
 
-          // Keep all of the rooms previous properties if possible.
+          // Keep all of the room's previous properties if possible.
           [roomName]: Object.assign({}, room, update)
         })
       }
@@ -292,22 +270,23 @@ export default class App extends React.Component {
           <ChatRoomNavigation
             rooms={this.state.rooms}
             currentRoom={this.state.currentRoom}
-            selectRoom={this.selectRoom}
-            joinRoom={this.joinRoom}
+            selectRoom={this.selectRoom.bind(this)}
+            joinRoom={this.joinRoom.bind(this)}
           />
           <ChatBox 
+            roomName={this.state.currentRoom}
             messages={this.currentRoomMessages()}
             senderName={this.currentRoomSenderName()}
             senderId={this.state.senderId}
-            sendMessage={this.sendMessage}
-            updateName={this.setSenderName}
+            sendMessage={this.sendMessage.bind(this)}
+            updateName={this.setSenderName.bind(this)}
           />
           <OverlayInput
             visible={!Object.keys(this.state.rooms).length}
             title="What is the first room you want to join?"
             placeholder="E.g. Lobby 1..."
             button="Join"
-            onSubmit={room => this.joinRoom(room)}
+            onSubmit={room => this.joinRoom(room).bind(this)}
           />
         </main>
       </div>
