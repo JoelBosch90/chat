@@ -40,8 +40,12 @@ export default class App extends React.Component {
    */
   connect () {
 
+    // If the website is running over HTTPS, we should also secure our
+    // websocket connections.
+    const protocol = window.location.protocol == 'https' ? 'wss' : 'ws';
+
     // Construct the socket connection object.
-    const socket = new Socket(`ws://${window.location.host}/api/socket`, {
+    const socket = new Socket(`${protocol}://${window.location.host}/api/socket`, {
       params: {},
     })
 
