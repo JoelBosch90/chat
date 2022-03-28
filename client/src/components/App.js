@@ -62,13 +62,16 @@ export default class App extends React.Component {
    */
   joinRoom (name) {
 
+    // If the room already exists, we can immediately select it instead.
+    if (name in this.state.rooms) return this.selectRoom(name)
+
     // Construct the room object.
     const channel = this.state.connection.channel(`room:${name}`, {})
 
     // Join the room and start listening for messages.
     channel.join().receive('ok', response => {
 
-      // Update our sender id with the response  for joining each channel.
+      // Update our sender id with the response for joining each channel.
       this.setState({ senderId: response.sender_id })
 
       // Forward chat messages to the receive message method.
