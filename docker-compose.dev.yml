@@ -25,7 +25,7 @@ services:
     container_name: chat.proxy.development
 
     # We can use the latest version of Nginx.
-    image: nginx:1.21.0
+    image: nginx:stable-alpine
 
     # We want to expose at port 8007.
     ports:
@@ -66,11 +66,7 @@ services:
 
     # Pass on the environment variables to the client service.
     environment:
-      # Tell the client where to reach the client and the API. In React, custom
-      # environment variables need to be prefixed.
-      - REACT_APP_API_URL=API_URL
-      - PUBLIC_URL=localhost:8007/
-
+    
       # Tell the client what port to use.
       - PORT=8000
 
@@ -113,8 +109,8 @@ services:
     # environment variables.
     environment:
       # Tell the API where to reach the client and the API.
-      - API_URL=API_URL
-      - CLIENT_URL=CLIENT_URL
+      - API_URL=${API_URL}
+      - CLIENT_URL=${CLIENT_URL}
 
     # We can expose the api service in the container network.
     expose:

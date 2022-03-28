@@ -41,7 +41,7 @@ export default class App extends React.Component {
   connect () {
 
     // Construct the socket connection object.
-    const socket = new Socket(`ws://${process.env.REACT_APP_API_URL}socket`, {
+    const socket = new Socket(`ws://${window.location.host}/api/socket`, {
       params: {},
     })
 

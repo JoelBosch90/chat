@@ -1,5 +1,5 @@
 # Get a light NodeJS base image.
-FROM node:alpine
+FROM node:alpine as build
 
 # Create the working directory and give ownership to the node user.
 RUN mkdir -p /client && chown -R node:node /client
@@ -17,7 +17,7 @@ COPY --chown=node:node package*.json ./
 USER node
 
 # Install only the libraries that we need for production.
-RUN npm ci --only=production
+RUN npm install
 
 # Copy the application files to the directory.
 COPY --chown=node:node . .
@@ -25,5 +25,14 @@ COPY --chown=node:node . .
 # Make sure we optimize for production.
 RUN npm run build
 
-# Start the client server in production mode.
-CMD ["npm", "run", "start"]
+# Use Nginx to serve the production build.
+FROM nginx:stable-alpine
+
+# Copy the build to Nginx.
+COPY --from=build /client/build /usr/share/nginx/html
+
+# Copy over our Nginx configuration.
+COPY ./nginx/nginx.conf /etc/nginx
+
+# Run Nginx.
+CMD ["nginx", "-g", "daemon off;"]
