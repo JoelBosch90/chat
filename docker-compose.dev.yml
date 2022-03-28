@@ -68,8 +68,8 @@ services:
     environment:
       # Tell the client where to reach the client and the API. In React, custom
       # environment variables need to be prefixed.
-      - REACT_APP_API_URL=localhost:8007/api/
-      - REACT_APP_CLIENT_URL=localhost:8007/
+      - REACT_APP_API_URL=API_URL
+      - PUBLIC_URL=localhost:8007/
 
       # Tell the client what port to use.
       - PORT=8000
@@ -113,8 +113,8 @@ services:
     # environment variables.
     environment:
       # Tell the API where to reach the client and the API.
-      - API_URL=localhost:8007/api/
-      - CLIENT_URL=localhost:8007/
+      - API_URL=API_URL
+      - CLIENT_URL=CLIENT_URL
 
     # We can expose the api service in the container network.
     expose:
