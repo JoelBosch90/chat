@@ -133,8 +133,6 @@ export default class App extends React.Component {
 
   /**
    *  Method to send a message.
-   *  @todo   This currently only updates state. Later on the message will have
-   *          to come from the server to have a reliable ID.
    *  @param  {string}  text    Text of the new message to send.
    */
   sendMessage (text) {
