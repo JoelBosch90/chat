@@ -8,7 +8,7 @@ WORKDIR /api
 COPY mix.exs mix.lock ./
 
 # Install our package manager.
-RUN mix local.hex --force
+RUN mix local.rebar --force && mix local.hex --force
 
 # Install inotify for hot reloading.
 RUN apk update && apk add inotify-tools
@@ -17,7 +17,7 @@ RUN apk update && apk add inotify-tools
 RUN mix deps.get
 
 # Copy all files.
-COPY . .
+COPY . ./
 
 # Run the server.
 CMD ["mix", "phx.server"]
