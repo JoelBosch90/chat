@@ -59,7 +59,9 @@ be running! If you do not want this, you may stop the individual Docker
 containers in this network instead, like so:
 
 `docker stop chat.proxy.production`
+
 `docker stop chat.client.production`
+
 `docker stop chat.api.production`
 
 
