@@ -51,10 +51,11 @@ To run the environment (detached):
 
 
 To stop the environment:
-WARNING: this will also take down other Docker Compose networks you may 
-be running!
 
 `docker-compose down`
+
+WARNING: this will also take down other Docker Compose networks you may 
+be running!
 
 
 Access at:
