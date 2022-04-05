@@ -1,11 +1,11 @@
 import React from 'react'
 import { Socket } from 'phoenix'
-import ChatRoomNavigation from './ChatRoomNavigation.js'
-import ChatBox from './ChatBox.js'
-import OverlayInput from './OverlayInput.js'
-import './App.scss'
+import ChatNavigation from './Chat/Navigation.js'
+import ChatBox from './Chat/Box.js'
+import Overlay from './Overlay.js'
+import './Chat.scss'
 
-export default class App extends React.Component {
+export default class Chat extends React.Component {
 
   /**
    *  Constructor.
@@ -279,9 +279,9 @@ export default class App extends React.Component {
    */
   render () {
     return (
-      <div className="app">
+      <div className="chat">
         <main>
-          <ChatRoomNavigation
+          <ChatNavigation
             rooms={this.state.rooms}
             currentRoom={this.state.currentRoom}
             selectRoom={this.selectRoom}
@@ -295,7 +295,7 @@ export default class App extends React.Component {
             sendMessage={this.sendMessage}
             updateName={this.setSenderName}
           />
-          <OverlayInput
+          <Overlay
             visible={!Object.keys(this.state.rooms).length}
             title="What is the first room you want to join?"
             placeholder="E.g. Lobby 1..."

@@ -1,7 +1,7 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
-import './ChatBoxInput.scss'
+import './Input.scss'
 
 export default class ChatBoxInput extends React.Component {
   constructor(props) {
@@ -47,7 +47,7 @@ export default class ChatBoxInput extends React.Component {
    */
   render () {
     return (
-      <form className="chatbox-input" onSubmit={this.submit}>
+      <form className="chat-box-input" onSubmit={this.submit}>
         <input
           placeholder="Write a message..."
           value={this.state.input}

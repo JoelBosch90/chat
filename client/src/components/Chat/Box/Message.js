@@ -1,5 +1,5 @@
 import React from 'react'
-import './ChatBoxMessage.scss'
+import './Message.scss'
 
 export default function ChatBoxMessage(props) {
   
@@ -10,12 +10,12 @@ export default function ChatBoxMessage(props) {
   const timeStamp = `${hours}:${minutes}`
 
   return (
-    <div className={`chatbox-message${props.self ? ' self' : ''}`}>
-      <div className="chatbox-message-toprow">
-        <span className="chatbox-message-sender">{props.sender}</span>
+    <div className={`chat-box-message${props.self ? ' self' : ''}`}>
+      <div className="chat-box-message-toprow">
+        <span className="chat-box-message-sender">{props.sender}</span>
         <span>{timeStamp}</span>
       </div>
-      <div className="chatbox-message-bottomrow">
+      <div className="chat-box-message-bottomrow">
         <span>{props.text}</span>
       </div>
     </div>

@@ -1,11 +1,11 @@
 import React from 'react'
-import ChatRoom from './ChatRoom.js'
-import OverlayInput from './OverlayInput.js'
+import ChatNavigationRoom from './Navigation/Room.js'
+import Overlay from '../Overlay.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import './ChatRoomNavigation.scss'
+import './Navigation.scss'
 
-export default class ChatRoomNavigation extends React.Component {
+export default class ChatNavigation extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -56,7 +56,7 @@ export default class ChatRoomNavigation extends React.Component {
     for(const [name, room] of Object.entries(this.props.rooms)) {
       rooms.push(
         <li key={name} >
-          <ChatRoom
+          <ChatNavigationRoom
             selected={name === this.props.currentRoom}
             name={name}
             messages={room.messages}
@@ -67,8 +67,8 @@ export default class ChatRoomNavigation extends React.Component {
     }
 
     return (
-      <nav className="chatroom-navigation">
-        <OverlayInput
+      <nav className="chat-navigation">
+        <Overlay
           visible={this.state.showOverlay}
           title="Which room do you want to join?"
           placeholder="E.g. Lobby 1..."
@@ -79,7 +79,7 @@ export default class ChatRoomNavigation extends React.Component {
         <ol>
           {rooms}
         </ol>
-        <div className="chatroom-navigation-buttons">
+        <div className="chat-navigation-buttons">
           <button
             onClick={this.showOverlay}
           >

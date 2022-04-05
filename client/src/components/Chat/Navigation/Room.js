@@ -1,7 +1,7 @@
 import React from 'react'
-import './ChatRoom.scss'
+import './Room.scss'
 
-export default function ChatRoom(props) {
+export default function ChatNavigationRoom(props) {
 
   // Process the last message.
   const last = props.messages ? props.messages.at(0) : null
@@ -14,16 +14,16 @@ export default function ChatRoom(props) {
 
   return (
     <button
-      className={`chatroom${props.selected ? ' selected' : ''}`}
+      className={`chat-navigation-room${props.selected ? ' selected' : ''}`}
       onClick={props.onClick}
     >
-      <div className="chatroom-top">
-        <span className="chatroom-name">{props.name}</span>
-        <span className="chatroom-time">{lastTimeStamp}</span>
+      <div className="chat-navigation-room-top">
+        <span className="chat-navigation-room-name">{props.name}</span>
+        <span className="chat-navigation-room-time">{lastTimeStamp}</span>
       </div>
-      <div className="chatroom-bottom">
-        <span className="chatroom-sender">{lastSender}{lastText ? ':' : ''}</span>
-        <span className="chatroom-text">{lastText}</span>
+      <div className="chat-navigation-room-bottom">
+        <span className="chat-navigation-room-sender">{lastSender}{lastText ? ':' : ''}</span>
+        <span className="chat-navigation-room-text">{lastText}</span>
       </div>
     </button>
   )

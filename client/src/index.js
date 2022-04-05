@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './components/App.js'
+import Chat from './components/Chat.js'
 
 // Import global styling.
 import './styles/global.scss'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Chat />
   </React.StrictMode>,
   document.getElementById('root')
 );

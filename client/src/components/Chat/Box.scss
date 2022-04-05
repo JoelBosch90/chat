@@ -1,7 +1,7 @@
 /**
  *  Styling for the chatbox.
  */
-.chatbox
+.chat-box
 {
   // Use a dark background color.
   background-color: #333333;
@@ -19,7 +19,7 @@
   position: relative;
 
   // Target the container for the messages.
-  .chatbox-messages
+  .chat-box-messages
   {
     // Make sure we include the padding in the width calculation.
     box-sizing: border-box;

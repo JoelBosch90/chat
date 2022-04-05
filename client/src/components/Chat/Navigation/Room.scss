@@ -1,7 +1,7 @@
 /**
- *  Styling for an chatroom in the list of chat rooms.
+ *  Styling for an chat-navigation-room in the list of chat rooms.
  */
-.chatroom
+.chat-navigation-room
 {
   // Get rid of the border.
   border: none;
@@ -53,7 +53,7 @@
   }
 
   // Target only the top row of content.
-  .chatroom-top
+  .chat-navigation-room-top
   {
     // Use a slightly more constrasting text color.
     color: #ADADAD;
@@ -66,7 +66,7 @@
   }
 
   // Target both content rooms.
-  .chatroom-top, .chatroom-bottom
+  .chat-navigation-room-top, .chat-navigation-room-bottom
   {
     // Use Flexbox to create a layout.
     display: flex;
@@ -84,7 +84,7 @@
     text-align: left;
 
     // Target only the top row of content.
-    &.chatroom-top
+    &.chat-navigation-room-top
     {
       // Make sure that we use all space and align the time to the right.
       justify-content: space-between;
@@ -94,7 +94,7 @@
     }
 
     // Target only the bottom row of content.
-    &.chatroom-bottom
+    &.chat-navigation-room-bottom
     {    
       // Align all text to the start.
       justify-content: flex-start;
