@@ -1,22 +1,32 @@
 import React from 'react'
-import './Message.scss'
+import TimeStamp from '../../TimeStamp.js'
+import styles from './Message.module.scss'
 
+/**
+ *  Functional component that displays a single message in a chat box.
+ * 
+ *  @param    {Object}  props   React props passed by the parent element.
+ *  @returns  {JSX.Element}
+ */
 export default function ChatBoxMessage(props) {
+
+  // Extract the props that we want to use.
+  const { time, self, sender, text } = props
   
   // Format the time.
-  const time = new Date(props.time)
-  const hours = ("0" + time.getHours()).slice(-2)
-  const minutes = ("0" + time.getMinutes()).slice(-2)
+  const timeObject = new Date(time)
+  const hours = ("0" + timeObject.getHours()).slice(-2)
+  const minutes = ("0" + timeObject.getMinutes()).slice(-2)
   const timeStamp = `${hours}:${minutes}`
 
   return (
-    <div className={`chat-box-message${props.self ? ' self' : ''}`}>
-      <div className="chat-box-message-toprow">
-        <span className="chat-box-message-sender">{props.sender}</span>
-        <span>{timeStamp}</span>
+    <div className={`${styles.message} ${self ? styles.self : ''}`}>
+      <div className={styles.top}>
+        <span className={styles.sender}>{sender}</span>
+        <TimeStamp time={time} />
       </div>
-      <div className="chat-box-message-bottomrow">
-        <span>{props.text}</span>
+      <div className={styles.bottom}>
+        <span>{text}</span>
       </div>
     </div>
   )

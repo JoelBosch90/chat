@@ -2,43 +2,49 @@ import React from 'react'
 import ChatBoxInput from './Box/Input.js'
 import ChatBoxMessage from './Box/Message.js'
 import Overlay from '../Overlay.js'
-import './Box.scss'
+import styles from './Box.module.scss'
 
-export default class ChatBox extends React.Component {
-  /**
-   *  Method called to render the component.
-   *  @returns {JSX.Element}
-   */
-  render () {
+/**
+ *  Functional component that displays the chat box element that contains all
+ *  interface elements to interact with a single chat room. It contains the
+ *  previously sent messages in a single room and contains all interface
+ *  elements to interact with that room.
+ * 
+ *  @param    {Object}  props   React props passed by the parent element.
+ *  @returns  {JSX.Element}
+ */
+export default function ChatBox(props) {
 
-    // Create a list of chat messages.
-    const messages = this.props.messages.map((message) => {
-      return <ChatBoxMessage
-        key={message.id}
-        self={message.self}
-        text={message.text}
-        time={message.time}
-        sender={message.senderName}
+  // Extract the props that we want to use.
+  const { messages, senderName, roomName, updateName, sendMessage } = props
+
+  // Create a list of chat messages.
+  const messageElements = messages.map(message => {
+    return <ChatBoxMessage
+      key={message.id}
+      self={message.self}
+      text={message.text}
+      time={message.time}
+      sender={message.senderName}
+    />
+  })
+
+  return (
+    <section className={styles.box}>
+      <Overlay
+        visible={!senderName}
+        title={`What should we call you in room '${roomName}'?`}
+        placeholder="E.g. John Malkovich..."
+        button="Select name"
+        onSubmit={updateName}
       />
-    })
-
-    return (
-      <section className="chat-box">
-        <Overlay
-          visible={!this.props.senderName}
-          title={`What should we call you in room '${this.props.roomName}'?`}
-          placeholder="E.g. John Malkovich..."
-          button="Select name"
-          onSubmit={this.props.updateName}
-        />
-        <div className="chat-box-messages">
-          {messages}
-        </div>
-        <ChatBoxInput
-          sendMessage={this.props.sendMessage}
-          roomName={this.props.roomName}
-        />
-      </section>
-    )
-  }
+      <div className={styles.messages}>
+        {messageElements}
+      </div>
+      <ChatBoxInput
+        sendMessage={sendMessage}
+        roomName={roomName}
+      />
+    </section>
+  )
 }

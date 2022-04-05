@@ -1,64 +1,57 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
-import './Input.scss'
+import styles from './Input.module.scss'
 
-export default class ChatBoxInput extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      input: props.value || '',
-    }
+/**
+ *  Functional component that displays the input field in a chat box that is
+ *  used to send new messages.
+ * 
+ *  @param    {Object}  props   React props passed by the parent element.
+ *  @returns  {JSX.Element}
+ */
+export default function ChatBoxInput(props) {
 
-    // Make sure that we bind all methods that are shared with other components
-    // to this component so that they keep access to this component's state.
-    for(const method of [
-      'change', 'submit'
-    ]) this[method] = this[method].bind(this)
-  }
+  // Extract the props that we want to use.
+  const { value, roomName, sendMessage } = props
+
+  // We're going to keep an internal value for the input.
+  const [input, setInput] = useState(value)
 
   /**
    *  Handler for keeping the React state up to date with the input.
    *  @param  {Event} event The event to handle.
    */
-  change(event) {
-    this.setState({ input: event.target.value })
-  }
+  const change = event => { setInput(event.target.value) }
 
   /**
    *  Handler for submit events.
    *  @param  {Event} event The event to handle.
    */
-  submit(event) {
+  const submit = event => {
 
     // Make sure that we do not reload the page.
     event.preventDefault();
 
     // Only send a message if there's something to send.
-    if (this.state.input) this.props.sendMessage(this.state.input)
+    if (input) sendMessage(input)
 
     // Reset the input value.
-    this.setState({ input: '' })
+    setInput('')
   }
-
-  /**
-   *  Method called to render the component.
-   *  @returns {JSX.Element}
-   */
-  render () {
-    return (
-      <form className="chat-box-input" onSubmit={this.submit}>
-        <input
-          placeholder="Write a message..."
-          value={this.state.input}
-          onChange={this.change}
-          autoFocus
-          key={this.props.roomName}
-        />
-        <button>
-          <FontAwesomeIcon icon={faPaperPlane} />
-        </button>
-      </form>
-    )
-  }
+  
+  return (
+    <form className={styles.input} onSubmit={submit}>
+      <input
+        placeholder="Write a message..."
+        value={input}
+        onChange={change}
+        autoFocus
+        key={roomName}
+      />
+      <button>
+        <FontAwesomeIcon icon={faPaperPlane} />
+      </button>
+    </form>
+  )
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import TimeStamp from '../../TimeStamp.js'
 import styles from './Room.module.scss'
 
 /**
@@ -17,19 +18,15 @@ export default function ChatNavigationRoom(props) {
   const last = messages ? messages.at(0) : null
   const lastSender = last ? last.senderName : ''
   const lastText = last ? last.text : ''
-  const lastTime = last ? new Date(last.time) : undefined
-  const lastHours = lastTime ? ("0" + lastTime.getHours()).slice(-2) : ''
-  const lastMinutes = lastTime ? ("0" + lastTime.getMinutes()).slice(-2) : ''
-  const lastTimeStamp = lastMinutes ? `${lastHours}:${lastMinutes}` : ''
 
   return (
     <button
-      className={`${styles.room} ${selected ? ' selected' : ''}`}
+      className={`${styles.room} ${selected ? styles.selected : ''}`}
       onClick={onClick}
     >
       <div className={styles.top}>
         <span className={styles.name}>{name}</span>
-        <span className={styles.timer}>{lastTimeStamp}</span>
+        <TimeStamp className={styles.timer} time={last ? new Date(last.time) : undefined } />
       </div>
       <div className={styles.bottom}>
         <span className={styles.sender}>{lastSender}{lastText ? ':' : ''}</span>

@@ -36,7 +36,7 @@ export default function ChatNavigation(props) {
    *  Method to join a new room.
    *  @param  {string}  room  The name of the room to join.
    */
-  const join = (room) => {
+  const join = room => {
 
     // Call the prop method to actually join the room.
     joinRoom(room)

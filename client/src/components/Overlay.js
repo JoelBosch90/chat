@@ -23,13 +23,13 @@ export default function Overlay(props) {
    *  Handler for keeping the React state up to date with the input.
    *  @param  {Event} event   The event to handle.
    */
-  const change = (event) => { setInput(event.target.value) }
+  const change = event => { setInput(event.target.value) }
 
   /**
    *  Handler for submit events.
    *  @param  {Event} event   The event to handle.
    */
-  const submit = (event) => {
+  const submit = event => {
 
     // Make sure that we do not reload the page.
     event.preventDefault();
@@ -45,7 +45,7 @@ export default function Overlay(props) {
    *  Method that processes a click on the cancel button.
    *  @param  {Event} event   The click event for the cancel button.
    */
-  const cancel = (event) => {
+  const cancel = event => {
 
     // Don't do anything if no cancel method is installed.
     if (!onCancel) return;

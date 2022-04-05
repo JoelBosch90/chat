@@ -1,7 +1,7 @@
 /**
  *  Styling for the list of chat messages.
  */
-.chat-box-message
+.message
 {
   // Make sure that we never use the full width so that we can always see if a
   // message is right or left aligned.
@@ -28,7 +28,7 @@
   }
 
   // Target the top row.
-  .chat-box-message-toprow
+  .top
   {
     // Use Flexbox to create a layout.
     display: flex;
