@@ -1,7 +1,7 @@
 /**
  *  Styling for an chat-navigation-room in the list of chat rooms.
  */
-.chat-navigation-room
+.room
 {
   // Get rid of the border.
   border: none;
@@ -34,39 +34,8 @@
   // Show that the rooms are interactive.
   cursor: pointer;
 
-  // Target the room when the cursor hovers over it, or when it is selected.
-  &:hover, &:focus
-  {
-    // Make it light up slightly.
-    filter: brightness(125%);
-  }
-
-  // Target the currently opened chat room.
-  &.selected
-  {
-    // Use a background-color similar to the chat itself to indicate that this
-    // chat room belong to the currently open chat.
-    background-color: #333333;
-
-    // Provide a contrasting color for text.
-    color: #858585;
-  }
-
-  // Target only the top row of content.
-  .chat-navigation-room-top
-  {
-    // Use a slightly more constrasting text color.
-    color: #ADADAD;
-
-    // Use Flexbox to create a layout.
-    display: flex;
-
-    // Make sure that we use all space and align the time to the right.
-    justify-content: space-between;
-  }
-
   // Target both content rooms.
-  .chat-navigation-room-top, .chat-navigation-room-bottom
+  .top, .bottom
   {
     // Use Flexbox to create a layout.
     display: flex;
@@ -84,7 +53,7 @@
     text-align: left;
 
     // Target only the top row of content.
-    &.chat-navigation-room-top
+    &.top
     {
       // Make sure that we use all space and align the time to the right.
       justify-content: space-between;
@@ -94,7 +63,7 @@
     }
 
     // Target only the bottom row of content.
-    &.chat-navigation-room-bottom
+    &.bottom
     {    
       // Align all text to the start.
       justify-content: flex-start;
@@ -102,5 +71,23 @@
       // Keep some space between the sender and the text.
       column-gap: 1ch;
     }
+  }
+
+  // Target the room when the cursor hovers over it, or when it is selected.
+  &:hover, &:focus
+  {
+    // Make it light up slightly.
+    filter: brightness(125%);
+  }
+
+  // Target the currently opened chat room.
+  &.selected
+  {
+    // Use a background-color similar to the chat itself to indicate that this
+    // chat room belong to the currently open chat.
+    background-color: #333333;
+
+    // Provide a contrasting color for text.
+    color: #858585;
   }
 }

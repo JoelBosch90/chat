@@ -16,7 +16,7 @@ export default function Overlay(props) {
   // Extract the props that we want to use.
   const { value, visible, placeholder, button, title, onSubmit, onCancel } = props
 
-  // We're going to keep an internal value 
+  // We're going to keep an internal value for the input.
   const [input, setInput] = useState(value)
   
   /**

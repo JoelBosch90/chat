@@ -62,8 +62,9 @@ export default class Chat extends React.Component {
    */
   joinRoom (name) {
 
-    // If the room already exists, we can immediately select it instead.
-    if (name in this.state.rooms) return this.selectRoom(name)
+    // If the room already exists and has a valid channel object, we can
+    // immediately select it instead.
+    if (name in this.state.rooms && this.state.rooms[name].channel) return this.selectRoom(name)
 
     // Construct the room object.
     const channel = this.state.connection.channel(`room:${name}`, {})

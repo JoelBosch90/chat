@@ -1,7 +1,7 @@
 /**
  *  Styling for the list of chatrooms.
  */
-.chat-navigation
+.navigation
 {
   // Stick to a fixed width to display the chatroom navigation.
   width: 20em;
@@ -43,7 +43,7 @@
   }
   
   // Target the buttons container.
-  .chat-navigation-buttons
+  .buttons
   {
     // Take up all available width.
     width: 100%;
