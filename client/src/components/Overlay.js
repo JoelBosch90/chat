@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './Overlay.scss'
+import styles from './Overlay.module.scss'
 
 /**
  *  Functional component that can be used to display an overlay that displays a
@@ -47,7 +47,7 @@ export default function Overlay(props) {
    */
   const cancel = (event) => {
 
-    // Don't do anything if there is no cancel method installed.
+    // Don't do anything if no cancel method is installed.
     if (!onCancel) return;
 
     // Otherwise, call that cancel method.
@@ -56,7 +56,7 @@ export default function Overlay(props) {
 
   return (
     <form
-      className={`overlay${visible ? '' : ' hidden'}`}
+      className={`${styles.overlay} ${visible ? '' : styles.hidden}`}
       onSubmit={submit}
     >
       <h1>{title}</h1>

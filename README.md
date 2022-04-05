@@ -6,7 +6,9 @@ I've built up a habit of continually redoing this project. My earlier attempts
 documented, but I decided to pick that up from here.
 
 Now this has become my playground project to try out new technologies. In this
-iteration: React and Phoenix!
+iteration I'm playing with a more functional approach, featuring React and
+Phoenix.
+
 
 ## Demo
 A demo for this website is hosted at
