@@ -54,6 +54,16 @@ To stop the environment:
 
 `docker-compose down`
 
+WARNING: this will also take down other Docker Compose networks you may 
+be running! If you do not want this, you may stop the individual Docker
+containers in this network instead, like so:
+
+`docker stop chat.proxy.production`
+
+`docker stop chat.client.production`
+
+`docker stop chat.api.production`
+
 
 Access at:
 
