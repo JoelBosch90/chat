@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styles from './Overlay.module.scss'
 
 /**
@@ -14,10 +14,19 @@ import styles from './Overlay.module.scss'
 export default function Overlay(props) {
 
   // Extract the props that we want to use.
-  const { visible, placeholder, button, title, onSubmit, onCancel } = props
+  const { visible, placeholder, button, title, onSubmit, onCancel, focusRef } = props
 
   // We're going to keep an internal value for the input.
   const [ input, setInput ] = useState('')
+
+  // We may get a ref for the focus element from the props, but if that is not
+  // the case, we'll need to create an internal ref that we can use to
+  // reference the input element.
+  const internalRef = useRef()
+
+  // If we have a ref from the props, use that. If not, use our internal ref to
+  // reference the input element.
+  const inputRef = focusRef || internalRef
   
   /**
    *  Handler for keeping the React state up to date with the input.
@@ -42,7 +51,7 @@ export default function Overlay(props) {
   }
 
   /**
-   *  Method that processes a click on the cancel button.
+   *  Function that processes a click on the cancel button.
    *  @param  {Event} event   The click event for the cancel button.
    */
   const cancel = event => {
@@ -54,6 +63,15 @@ export default function Overlay(props) {
     onCancel(event);
   }
 
+  /**
+   *  Function to focus the input element.
+   */
+  const setFocus = () => { if (visible) inputRef.current.focus() }
+
+  // Refocus the input element when the overlay becomes visible or is
+  // specifically refocused.
+  useEffect(setFocus, [visible])
+
   return (
     <form
       className={`${styles.overlay} ${visible ? '' : styles.hidden}`}
@@ -61,15 +79,14 @@ export default function Overlay(props) {
     >
       <h1>{title}</h1>
       <input
+        ref={inputRef}
         placeholder={placeholder}
         value={input}
         onChange={change}
-        autoFocus
-        key={visible}
       />
       <button>{button}</button>
       <button
-        className={onCancel ? '' : ' hidden'}
+        className={onCancel ? '' : styles.hidden}
         onClick={cancel}
       >
         Cancel

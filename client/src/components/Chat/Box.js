@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import ChatBoxInput from './Box/Input.js'
 import ChatBoxMessage from './Box/Message.js'
 import Overlay from '../Overlay.js'
@@ -18,6 +18,9 @@ export default function ChatBox(props) {
   // Extract the props that we want to use.
   const { messages, senderName, roomName, updateName, sendMessage } = props
 
+  // Create references to set the correct focus.
+  const [ overlayRef, inputRef] = [ useRef(), useRef() ]
+
   // Create a list of chat messages.
   const messageElements = messages ? messages.map(message => {
     return <ChatBoxMessage
@@ -29,6 +32,23 @@ export default function ChatBox(props) {
     />
   }) : []
 
+  /**
+   *  Function to refocus the correct input.
+   */
+  const reFocus = () => {
+
+    // If we already have a sender name, we can focus the chat input.
+    if (senderName) inputRef.current.focus()
+
+    // Otherwise, the overlay is visible to get a sender name first. We should
+    // focus that instead.
+    else overlayRef.current.focus()
+  }
+
+  // Refocus the input element when the overlay becomes visible or is
+  // specifically refocused.
+  useEffect(reFocus, [roomName, senderName])
+
   return (
     <section className={styles.box}>
       <Overlay
@@ -37,6 +57,7 @@ export default function ChatBox(props) {
         placeholder="E.g. John Malkovich..."
         button="Select name"
         onSubmit={updateName}
+        focusRef={overlayRef}
       />
       <div className={styles.messages}>
         {messageElements}
@@ -44,6 +65,7 @@ export default function ChatBox(props) {
       <ChatBoxInput
         sendMessage={sendMessage}
         roomName={roomName}
+        focusRef={inputRef}
       />
     </section>
   )

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import styles from './Input.module.scss'
@@ -13,7 +13,7 @@ import styles from './Input.module.scss'
 export default function ChatBoxInput(props) {
 
   // Extract the props that we want to use.
-  const { value, roomName, sendMessage } = props
+  const { value, sendMessage, focusRef } = props
 
   // We're going to keep an internal value for the input. Default to a string
   // so that we can set up a controlled component.
@@ -44,11 +44,10 @@ export default function ChatBoxInput(props) {
   return (
     <form className={styles.input} onSubmit={submit}>
       <input
+        ref={focusRef}
         placeholder="Write a message..."
         value={input}
         onChange={change}
-        autoFocus
-        key={roomName}
       />
       <button>
         <FontAwesomeIcon icon={faPaperPlane} />
