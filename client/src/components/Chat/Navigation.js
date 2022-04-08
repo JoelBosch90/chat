@@ -46,7 +46,7 @@ export default function ChatNavigation(props) {
   }
 
   // Initialize a list of chat room elements.
-  const roomElements = Object.entries(rooms).map(([name, room]) => {
+  const roomElements = rooms ? Object.entries(rooms).map(([name, room]) => {
     return (
       <li key={name} >
         <ChatNavigationRoom
@@ -57,7 +57,7 @@ export default function ChatNavigation(props) {
         />
       </li>
     )
-  })
+  }) : []
 
   return (
     <nav className={styles.navigation}>

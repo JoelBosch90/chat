@@ -8,7 +8,6 @@ import styles from './Chat.module.scss'
 
 /**
  *  Functional component that displays the entire chat application.
- * 
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
@@ -37,7 +36,6 @@ export default function Chat(props) {
   }
 
   // Create the state values that we want to back up locally.
-  const [senderId, setSenderId] = useLocalState('senderId', 0)
   const [currentRoomName, setCurrentRoomName] = useLocalState('currentRoomName', '')
   const [rooms, setRooms] = useLocalState('rooms', {})
 
@@ -45,84 +43,46 @@ export default function Chat(props) {
   const [connection, setConnection] = useState(connect())
   const [channels, setChannels] = useState({})
 
+  // Define the default room settings.
+  const defaultRoom = { senderName: null, messages: [] }
+
   /**
    *  Function to get the current room object.
    *  @returns  {Object}
    */
   const currentRoom = () => {
 
-    // Can only get the current room if we remember its name.
-    if (!currentRoomName) return null
+    // Can only get the current room if we remember its name and if there's
+    // rooms to begin with.
+    if (!currentRoomName || !rooms || !Object.keys(rooms).length) return null
 
     // Get the current room from the rooms object if we can.
-    return currentRoomName in rooms ? rooms[currentRoomName] : null
+    return rooms[currentRoomName] ?? null
   }
 
   /**
    *  Function to find the messages for the current room.
    *  @returns  {array}
    */
-  const currentRoomMessages = () => {
-
-    // Get the current room.
-    const room = currentRoom()
-
-    // Return the room's messages if it exists.
-    if (room && room.messages) return room.messages
-    
-    // Default to an empty array.
-    else return []
-  }
-
-  /**
-   *  Method to update the state for a single room.
-   *  @param  {string}  roomName  Name of the room to update.
-   *  @param  {Object}  update    Object containing the updates for this room.  
-   */
-  const updateRoom = (roomName = '', update = {}) => {
-
-    // Get properties for an existing room if we can, but make sure we at least
-    // have some default values.
-    const room = {
-
-      // Start with the defaults.
-      ...{ senderName: null, messages: [] },
-
-      // Get properties from an existing room if we can.
-      ...rooms[roomName],
-
-      // Now add the update.
-      ...update,
-    }
-
-    // Update the named room with the new state.
-    setRooms({ ...rooms, [roomName]: room })
-  }
+  const currentRoomMessages = () =>  currentRoom()?.messages || []
 
   /**
    *  Function to find the sender name for the current room.
    *  @returns  {string}
    */
-  const currentRoomSenderName = () => {
-
-    // Get the current room.
-    const room = currentRoom()
-
-    // Return the room's sender name if it exists.
-    if (room) return room.senderName
-    
-    // Default to an empty string.
-    else return ''
-  }
+  const currentRoomSenderName = () => currentRoom()?.senderName || ''
 
   /**
    *  Function to set a new sender name for the current room.
-   *  @param  {string} name  New sender name.
+   *  @param  {string} senderName   New sender name.
    */
-  const setCurrentRoomSenderName = name => {
+  const setCurrentRoomSenderName = senderName => {
 
-    // Update the senderName property for the current room.
-    updateRoom(currentRoomName, { senderName: name })
+    // Cannot set the sender name for the current room if no room is selected.
+    if (!(currentRoomName in rooms)) return
+
+    // Update the sender name for the current room.
+    setRooms(rooms => ({ ...rooms, [currentRoomName]: { ...rooms[currentRoomName], senderName } }))
   }
 
   /**
@@ -149,6 +109,7 @@ export default function Chat(props) {
    *  Message to process receiving a new message.
    *  @param  {string}  roomName  Name of the chat room in which a message is
    *                              received.
+   *  @param  {string}  senderId  Identifier for the current user.
    *  @param  {Object}  message   Received message object.
    *    @property {Number}  id            Unique message identifier.
    *    @property {Date}    time          Message timestamp.
@@ -156,33 +117,35 @@ export default function Chat(props) {
    *    @property {Number}  sender_id     Unique sender identifier.
    *    @property {string}  sender_name   Sender's name.
    */
-  const receiveMessage = (roomName, message) => {
+  const receiveMessage = (roomName, senderId, message) => {
+    setRooms(rooms => {
 
-    console.log('receiveMessage', { senderName: rooms?.Kitchen?.senderName })
+      // Check if this room already exists. If not, use the default room.
+      const currentRoom = rooms[roomName] ?? defaultRoom
+      
+      // Construct the message object.
+      const newMessage = {
+        id: message.id,
+        time: message.time,
+        text: message.text,
 
-    updateRoom(roomName, {
-      messages: [
+        // Remap the message to fit React naming conventions.
+        senderId: message.sender_id,
+        senderName: message.sender_name,
 
-        // Insert the message object.
-        {
-          id: message.id,
-          time: message.time,
-          text: message.text,
+        // The sender id might change on a page refresh or disconnect,
+        // but we want to remember that the user sent this message, so
+        // we want to store a persistent boolean value here rather than
+        // a dynamically calculated value.
+        self: message.sender_id === senderId,
+      }
 
-          // Remap the message to fit React naming conventions.
-          senderId: message.sender_id,
-          senderName: message.sender_name,
-
-          // The sender id might change on a page refresh or disconnect,
-          // but we want to remember that the user sent this message, so
-          // we want to store a persistent boolean value here rather than
-          // a dynamically calculated value.
-          self: message.sender_id === senderId,
-        },
-
-        // Keep the other messages.
-        ...currentRoomMessages(),
-      ]
+      // Add the new messages to the current room. Make sure to also keep all
+      // previous messages. Make sure to add the new message in front.
+      const updatedRoom = { ...currentRoom, messages: [ newMessage, ...currentRoom.messages  ],  }
+      
+      // Add the new room to the existing rooms.
+      return {...rooms, [roomName]: updatedRoom }
     })
   }
 
@@ -199,27 +162,16 @@ export default function Chat(props) {
     // Construct a channel for this room.
     const channel = connection.channel(`room:${name}`, {})
 
-    // Join the room and start listening for messages.
+    // Join the room and start listening for messages. Update our sender id with
+    // the response for joining each channel.
     channel.join().receive('ok', response => {
 
-      // Update our sender id with the response for joining each channel.
-      setSenderId(response.sender_id)
-
-      console.log('joinChannelOk', { rooms, senderName: rooms?.Kitchen?.senderName })
-
       // Forward chat messages to the receive message method.
-      channel.on('message', message => { console.log('joinChannelMessage', { rooms, senderName: rooms?.Kitchen?.senderName }); receiveMessage(name, message) })
+      channel.on('message', message => void receiveMessage(name, response.sender_id, message))
     })
 
     // Add the channel to our collection.
-    setChannels({
-
-      // Make sure to keep the other channels.
-      ...channels,
-
-      // And add the new channel for this room.
-      [name]: channel,
-    })
+    setChannels({ ...channels, [name]: channel })
   }
 
   /**
@@ -230,13 +182,13 @@ export default function Chat(props) {
 
     // If the room already exists and has a valid channel object, we can
     // immediately select it instead.
-    if (name in rooms && channels[name]) return setCurrentRoomName(name)
+    if (rooms?.name && channels[name]) return setCurrentRoomName(name)
 
     // Join the channel for this room.
     joinChannel(name)
-
-    // Add the new room to our state.
-    updateRoom(name)
+    
+    // Add an empty room with this name.
+    setRooms(rooms => ({...rooms, [name]: defaultRoom }))
 
     // Also immediately select the new room.
     setCurrentRoomName(name)
@@ -258,12 +210,11 @@ export default function Chat(props) {
           roomName={currentRoomName}
           messages={currentRoomMessages()}
           senderName={currentRoomSenderName()}
-          senderId={senderId}
           sendMessage={sendMessage}
           updateName={setCurrentRoomSenderName}
         />
         <Overlay
-          visible={!Object.keys(rooms).length}
+          visible={!rooms || !Object.keys(rooms).length}
           title="What is the first room you want to join?"
           placeholder="E.g. Lobby 1..."
           button="Join"

@@ -15,8 +15,9 @@ export default function ChatBoxInput(props) {
   // Extract the props that we want to use.
   const { value, roomName, sendMessage } = props
 
-  // We're going to keep an internal value for the input.
-  const [input, setInput] = useState(value)
+  // We're going to keep an internal value for the input. Default to a string
+  // so that we can set up a controlled component.
+  const [input, setInput] = useState(value || '')
 
   /**
    *  Handler for keeping the React state up to date with the input.
