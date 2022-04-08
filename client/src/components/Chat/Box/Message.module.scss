@@ -27,7 +27,7 @@
     align-self: flex-end;
   }
 
-  // Target the top row.
+  // Target the top row containing the name and timestamp.
   .top
   {
     // Use Flexbox to create a layout.
@@ -51,5 +51,12 @@
 
     // Show where we cut off text.
     text-overflow: ellipsis;
+  }
+
+  // Target the bottom row containing the message.
+  .bottom
+  {
+    // Make sure that text cannot break out of the container.
+    overflow-wrap: break-word; 
   }
 }

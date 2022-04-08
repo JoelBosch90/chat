@@ -22,9 +22,6 @@
   // Take up all horizontal space.
   width: 100%;
 
-  // Makes sure all contents are contained.
-  overflow: hidden;
-
   // Use some padding.
   padding: 1em 2em;
 
@@ -39,18 +36,23 @@
   {
     // Use Flexbox to create a layout.
     display: flex;
+    
+    // Target the individual text containers for the name and the text of the
+    // first message in the room.
+    > span
+    {
+      // Make sure that we only use a single line to display text.
+      white-space: nowrap;
+  
+      // Cut off text where we need to.
+      overflow: hidden;
+      
+      // Show where we cut off text.
+      text-overflow: ellipsis;
 
-    // Make sure that we only use a single line to display text.
-    white-space: nowrap;
-
-    // Cut off text where we need to.
-    overflow: hidden;
-
-    // Show where we cut off text.
-    text-overflow: ellipsis;
-
-    // Make sure that text start at the left.
-    text-align: left;
+      // Make sure that the first item takes as much space as it needs.
+      &:first-child { flex-shrink: 0; }
+    }
 
     // Target only the top row of content.
     &.top

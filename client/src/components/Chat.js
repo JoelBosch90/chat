@@ -37,7 +37,7 @@ export default function Chat() {
   const [ rooms, setRooms ] = useLocalState('rooms', {})
 
   // Create the state values that need to be reset on page load.
-  const [ connection, setConnection ] = useState(connect())
+  const [ connection ] = useState(connect())
   const [ channels, setChannels ] = useState({})
 
   // Define the default room settings.
