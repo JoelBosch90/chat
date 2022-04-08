@@ -20,17 +20,17 @@ export default function ChatNavigation(props) {
   const { joinRoom, rooms, currentRoom, selectRoom } = props
 
   // We're going to keep an internal value for when we want to show the overlay.
-  const [overlayVisible, setOverlayVisible] = useState(false)
+  const [ overlayVisible, setOverlayVisible ] = useState(false)
 
   /**
    *  Method to show the overlay.
    */
-  const showOverlay = () => { setOverlayVisible(true) }
+  const showOverlay = () => void setOverlayVisible(true)
 
   /**
    *  Method to hide the overlay.
    */
-  const hideOverlay = () => { setOverlayVisible(false) }
+  const hideOverlay = () => void setOverlayVisible(false)
 
   /**
    *  Method to join a new room.

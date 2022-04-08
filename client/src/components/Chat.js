@@ -33,12 +33,12 @@ export default function Chat() {
   }
 
   // Create the state values that we want to back up locally.
-  const [currentRoomName, setCurrentRoomName] = useLocalState('currentRoomName', '')
-  const [rooms, setRooms] = useLocalState('rooms', {})
+  const [ currentRoomName, setCurrentRoomName ] = useLocalState('currentRoomName', '')
+  const [ rooms, setRooms ] = useLocalState('rooms', {})
 
   // Create the state values that need to be reset on page load.
-  const [connection, setConnection] = useState(connect())
-  const [channels, setChannels] = useState({})
+  const [ connection, setConnection ] = useState(connect())
+  const [ channels, setChannels ] = useState({})
 
   // Define the default room settings.
   const defaultRoom = { senderName: null, messages: [] }
@@ -135,7 +135,7 @@ export default function Chat() {
 
       // Add the new messages to the current room. Make sure to also keep all
       // previous messages. Make sure to add the new message in front.
-      const updatedRoom = { ...currentRoom, messages: [ newMessage, ...currentRoom.messages  ],  }
+      const updatedRoom = { ...currentRoom, messages: [ newMessage, ...currentRoom.messages ], }
       
       // Add the new room to the existing rooms.
       return {...rooms, [roomName]: updatedRoom }

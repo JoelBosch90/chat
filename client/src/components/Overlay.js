@@ -17,13 +17,13 @@ export default function Overlay(props) {
   const { visible, placeholder, button, title, onSubmit, onCancel } = props
 
   // We're going to keep an internal value for the input.
-  const [input, setInput] = useState('')
+  const [ input, setInput ] = useState('')
   
   /**
    *  Handler for keeping the React state up to date with the input.
    *  @param  {Event} event   The event to handle.
    */
-  const change = event => { setInput(event.target.value) }
+  const change = event => void setInput(event.target.value)
 
   /**
    *  Handler for submit events.

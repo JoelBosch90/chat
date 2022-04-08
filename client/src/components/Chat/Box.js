@@ -19,7 +19,7 @@ export default function ChatBox(props) {
   const { messages, senderName, roomName, updateName, sendMessage } = props
 
   // Create a list of chat messages.
-  const messageElements = messages.map(message => {
+  const messageElements = messages ? messages.map(message => {
     return <ChatBoxMessage
       key={message.id}
       self={message.self}
@@ -27,7 +27,7 @@ export default function ChatBox(props) {
       time={message.time}
       sender={message.senderName}
     />
-  })
+  }) : []
 
   return (
     <section className={styles.box}>
