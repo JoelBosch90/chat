@@ -8,10 +8,9 @@ import styles from './Chat.module.scss'
 
 /**
  *  Functional component that displays the entire chat application.
- *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default function Chat(props) {
+export default function Chat() {
   
   /**
    *  Function to connect to the message server to start receiving messages.
@@ -24,9 +23,7 @@ export default function Chat(props) {
     const protocol = window.location.protocol.startsWith('https') ? 'wss' : 'ws'
 
     // Construct the socket connection object.
-    const socket = new Socket(`${protocol}://${window.location.host}/api/socket`, {
-      params: {},
-    })
+    const socket = new Socket(`${protocol}://${window.location.host}/api/socket`)
 
     // Connect to the server.
     socket.connect()
@@ -52,12 +49,8 @@ export default function Chat(props) {
    */
   const currentRoom = () => {
 
-    // Can only get the current room if we remember its name and if there's
-    // rooms to begin with.
-    if (!currentRoomName || !rooms || !Object.keys(rooms).length) return null
-
     // Get the current room from the rooms object if we can.
-    return rooms[currentRoomName] ?? null
+    return currentRoomName && rooms && rooms[currentRoomName] ? rooms[currentRoomName] : null
   }
 
   /**
@@ -99,7 +92,7 @@ export default function Chat(props) {
 
     // Use the channel for the current room to send the message and the current
     // name of the sender to the server.
-    else channels[currentRoomName].push("new_message", {
+    channels[currentRoomName].push("new_message", {
       text,
       sender_name: room.senderName
     })
