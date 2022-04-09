@@ -26,7 +26,7 @@ export default function ChatNavigationRoom(props) {
     >
       <div className={styles.top}>
         <span className={styles.name}>{name}</span>
-        <TimeStamp className={styles.timer} time={last ? new Date(last.time) : undefined } />
+        <span className={styles.time}><TimeStamp time={last ? new Date(last.time) : undefined } /></span>
       </div>
       <div className={styles.bottom}>
         <span className={styles.sender}>{lastSender}{lastText ? ':' : ''}</span>

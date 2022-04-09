@@ -6,6 +6,9 @@
   // Use Flexbox to create a horizontal layout.
   display: flex;
 
+  // Make sure nothing escapes this container.
+  overflow: hidden;
+
   // Spread out the control groups.
   justify-content: space-between;
 
@@ -31,21 +34,33 @@
     var(--font-opacity)
   );
 
-  // Target only the room name.
-  .name
-  {
-    // Show the room name slightly larger than the controls.
-    font-size: 1.5em;
-  }
-
   // Target the control groups.
-  .group
+  .start, .end
   {
     // Use Flexbox to position the controls within the group.
     display: flex;
 
     // Make sure the controls don't touch each other.
     gap: 1em;
+  }
+  // Target only the control group at the start.
+  .start
+  {
+    // Make this element shrink first.
+    flex-shrink: 2;
+    min-width: 0;
+
+    // Target only the room name.
+    .name
+    {
+      // Show the room name slightly larger than the controls.
+      font-size: 1.5em;
+
+      // Truncate the title if it gets too long.
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   // Hide controls that make no sense on desktop.

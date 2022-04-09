@@ -17,7 +17,7 @@ export default function ChatBoxMessage(props) {
     <div className={`${styles.message} ${self ? styles.self : ''}`}>
       <div className={styles.top}>
         <span className={styles.sender}>{sender}</span>
-        <TimeStamp time={time} />
+        <span className={styles.time}><TimeStamp time={time} /></span>
       </div>
       <div className={styles.bottom}>
         <span>{text}</span>

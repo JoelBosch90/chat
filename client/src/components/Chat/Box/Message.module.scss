@@ -59,14 +59,22 @@
     // Use all space that we have in the top row.
     justify-content: space-between;
 
-    // Make sure that we only use a single line to display text.
-    white-space: nowrap;
+    // Target all separate text elements in the message top.
+    > span
+    {
+      // Make sure that we only use a single line to display text.
+      white-space: nowrap;
+  
+      // Cut off text where we need to.
+      overflow: hidden;
+  
+      // Show where we cut off text.
+      text-overflow: ellipsis;
 
-    // Cut off text where we need to.
-    overflow: hidden;
-
-    // Show where we cut off text.
-    text-overflow: ellipsis;
+      // Make sure that the time is always visible, no matter how long the sender
+      // name.
+      &.time { flex-shrink: 0; }
+    }
   }
 
   // Target the bottom row containing the message.

@@ -16,13 +16,13 @@ export default function ChatBoxControls(props) {
   
   return (
     <header className={styles.controls}>
-      <span className={styles.group}>
+      <span className={styles.start}>
         <button title="To overview" className={styles.mobile} onClick={deselectRoom}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <span className={styles.name}>{roomName}</span>
       </span>
-      <span className={styles.group}>
+      <span className={styles.end}>
         <button title="Share room">
           <FontAwesomeIcon icon={faShareFromSquare} />
         </button>

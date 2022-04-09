@@ -35,6 +35,6 @@ export default function TimeStamp(props) {
   }
 
   return (
-    <span>{format(time)}</span>
+    <>{format(time)}</>
   )
 }
