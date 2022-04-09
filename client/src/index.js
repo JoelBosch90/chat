@@ -10,4 +10,4 @@ ReactDOM.render(
     <Chat />
   </React.StrictMode>,
   document.getElementById('root')
-);
+)

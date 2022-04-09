@@ -41,7 +41,7 @@ export default function Overlay(props) {
   const submit = event => {
 
     // Make sure that we do not reload the page.
-    event.preventDefault();
+    event.preventDefault()
 
     // Only call the on submit method when we have input to share.
     if (input) onSubmit(input)
@@ -57,20 +57,15 @@ export default function Overlay(props) {
   const cancel = event => {
 
     // Don't do anything if no cancel method is installed.
-    if (!onCancel) return;
+    if (!onCancel) return
 
     // Otherwise, call that cancel method.
-    onCancel(event);
+    onCancel(event)
   }
-
-  /**
-   *  Function to focus the input element.
-   */
-  const setFocus = () => { if (visible) inputRef.current.focus() }
 
   // Refocus the input element when the overlay becomes visible or is
   // specifically refocused.
-  useEffect(setFocus, [visible])
+  useEffect(() => { if (visible) inputRef.current.focus() }, [visible, inputRef])
 
   return (
     <form

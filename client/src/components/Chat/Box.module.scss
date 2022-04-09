@@ -3,8 +3,14 @@
  */
 .box
 {
-  // Use a dark background color.
-  background-color: #333333;
+  // Use a lighter version of the default background color for some proper
+  // contrast.
+  background-color: hsla(
+    var(--background-hue),
+    var(--background-saturation),
+    calc(var(--background-lightness) + var(--lightness-step) * 3),
+    var(--background-opacity)
+  );
 
   // Use Flexbox to create a layout.
   display: grid;

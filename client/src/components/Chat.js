@@ -5,32 +5,32 @@ import ChatNavigation from './Chat/Navigation.js'
 import ChatBox from './Chat/Box.js'
 import Overlay from './Overlay.js'
 import styles from './Chat.module.scss'
+  
+/**
+ *  Function to connect to the message server to start receiving messages.
+ *  @return {Object}
+ */
+const connect = () => {
+
+  // If the website is running over HTTPS, we should also secure our
+  // websocket connections.
+  const protocol = window.location.protocol.startsWith('https') ? 'wss' : 'ws'
+
+  // Construct the socket connection object.
+  const socket = new Socket(`${protocol}://${window.location.host}/api/socket`)
+
+  // Connect to the server.
+  socket.connect()
+
+  // Expose the socket.
+  return socket
+}
 
 /**
  *  Functional component that displays the entire chat application.
  *  @returns  {JSX.Element}
  */
 export default function Chat() {
-  
-  /**
-   *  Function to connect to the message server to start receiving messages.
-   *  @return {Object}
-   */
-  const connect = () => {
-
-    // If the website is running over HTTPS, we should also secure our
-    // websocket connections.
-    const protocol = window.location.protocol.startsWith('https') ? 'wss' : 'ws'
-
-    // Construct the socket connection object.
-    const socket = new Socket(`${protocol}://${window.location.host}/api/socket`)
-
-    // Connect to the server.
-    socket.connect()
-
-    // Expose the socket.
-    return socket
-  }
 
   // Create the state values that we want to back up locally.
   const [ currentRoomName, setCurrentRoomName ] = useLocalState('currentRoomName', '')
@@ -41,7 +41,7 @@ export default function Chat() {
   const [ channels, setChannels ] = useState({})
 
   // Define the default room settings.
-  const defaultRoom = { senderName: null, messages: [] }
+  const emptyRoom = { senderName: null, messages: [] }
 
   /**
    *  Function to get the current room object.
@@ -114,7 +114,7 @@ export default function Chat() {
     setRooms(rooms => {
 
       // Check if this room already exists. If not, use the default room.
-      const currentRoom = rooms[roomName] ?? defaultRoom
+      const currentRoom = rooms[roomName] ?? emptyRoom
       
       // Construct the message object.
       const newMessage = {
@@ -181,7 +181,7 @@ export default function Chat() {
     joinChannel(name)
     
     // Add an empty room with this name.
-    setRooms(rooms => ({...rooms, [name]: defaultRoom }))
+    setRooms(rooms => ({...rooms, [name]: emptyRoom }))
 
     // Also immediately select the new room.
     setCurrentRoomName(name)

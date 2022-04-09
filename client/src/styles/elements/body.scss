@@ -7,6 +7,9 @@
 
 body
 {
+  // Reset the default browser margins.
+  margin: 0;
+
   // Give the entire thing an interesting background color in case the window
   // is too big for the app.
   background-color: #46A7EC;

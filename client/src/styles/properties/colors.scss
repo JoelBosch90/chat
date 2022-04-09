@@ -1,0 +1,44 @@
+/**
+ *  This file contains the definitions for global styling properties related to
+ *  colors.
+ *  For most colors, we simply CSS variables for all 4 different parts of HSLA
+ *  to allow for fine-grained control over each of those parts separately
+ *  throughout the app while we can still decide base levels centrally.
+ */
+:root
+{
+  // We set a base saturation level for all colours. We should use this base for
+  // all colours and we should not or hardly vary saturation to ensure a
+  // matching colour scheme across our application so we set a very small step
+  // that can be used to increment or decrement the saturation level.
+  // Note that the saturation is set on a scale of 0 to 100%.
+  --saturation-base: 50%;
+  --saturation-step: 1%;
+
+  // We set a base lightness level for all colours. We want to use this to
+  // have some control over the entire app's brightness level, but it is okay
+  // and often useful to vary the lightness for individual elements.
+  // Note that the lightness is set on a scale of 0 to 100%.
+  --lightness-base: 50%;
+  --lightness-step: 12.5%;
+
+  // We also set a base opacity level for all colours. We want to use this to
+  // have some control over the entire app's opacity level, but we set this to 
+  // be fully opaque by default which means no transparency at all.
+  // Note that the opacity is set on a scale of 0 to 1.
+  --opacity-base: 1;
+  --opacity-step: 0.1;
+
+  // For the basic background, we want a dark, neutral color.
+  --background-hue: 0;
+  --background-saturation: 0%;
+  --background-lightness: 5%;
+  --background-opacity: var(--opacity-base);
+
+  // For the basic font, we want a neutral color that contrasts well against the
+  // background.
+  --font-hue: 0;
+  --font-saturation: 0%;
+  --font-lightness: calc(var(--background-lightness) + 55%);
+  --font-opacity: var(--opacity-base);
+}

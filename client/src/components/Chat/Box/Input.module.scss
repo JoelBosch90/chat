@@ -3,11 +3,21 @@
  */
 .input
 {
-  // Use a dark background color.
-  background-color: #1F1F1F;
+  // Use a slightly lighter background color.
+  background-color: hsla(
+    var(--background-hue),
+    var(--background-saturation),
+    calc(var(--background-lightness) + var(--lightness-step)),
+    var(--background-opacity)
+  );
   
-  // Provide a contrasting color for text.
-  color: #858585;
+  // Match the font color for proper contrast.
+  color: hsla(
+    var(--font-hue),
+    var(--font-saturation),
+    calc(var(--font-lightness) + var(--lightness-step)),
+    var(--font-opacity)
+  );
 
   // Take up full width.
   width: 100%;
@@ -28,17 +38,22 @@
   // input.
   grid-template-columns: 1fr max-content;
 
+  // Subtly light up the input field when the cursor hovers it or when it is
+  // selected to show that it is an interactive element.
+  &:hover { filter: brightness(125%); }
+
   // Target the input's placeholder text and the button when no text has been
   // entered.
   input::placeholder, input:placeholder-shown + button
   {
     // Make these elements stand out a little less.
-    color: #5C5C5C;
-  }
+    color: hsla(
+      var(--font-hue),
+      var(--font-saturation),
+      var(--font-lightness),
+      var(--font-opacity)
+    );
 
-  // Target the button when no text has been entered.
-  input:placeholder-shown + button
-  {
     // Indicate that the button is currently not clickable.
     cursor: auto;
 

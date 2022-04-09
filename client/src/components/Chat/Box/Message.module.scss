@@ -7,11 +7,21 @@
   // message is right or left aligned.
   max-width: 80%;
 
-  // Use a dark background color.
-  background-color: #1F1F1F;
+  // Use a slightly lighter background color.
+  background-color: hsla(
+    var(--background-hue),
+    var(--background-saturation),
+    calc(var(--background-lightness) + var(--lightness-step)),
+    var(--background-opacity)
+  );
 
-  // Provide a contrasting color for text.
-  color: #ADADAD;
+  // Match the font color for proper contrast.
+  color: hsla(
+    var(--font-hue),
+    var(--font-saturation),
+    calc(var(--font-lightness) + var(--lightness-step) * 2),
+    var(--font-opacity)
+  );
 
   // Give each text message a more friendly text-bubble appearance with rounded
   // corners.
@@ -37,8 +47,14 @@
     // owner and the time.
     column-gap: 1ch;
 
-    // Make the color for message 
-    color: #858585;
+    // Draw less attention to the message title elements by decreasing the
+    // lightness.
+    color: hsla(
+      var(--font-hue),
+      var(--font-saturation),
+      var(--font-lightness),
+      var(--font-opacity)
+    );
 
     // Use all space that we have in the top row.
     justify-content: space-between;

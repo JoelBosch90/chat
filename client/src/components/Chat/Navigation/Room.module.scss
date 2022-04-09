@@ -13,11 +13,21 @@
   font-family: inherit;
   font-size: inherit;
 
-  // Use a dark background color.
-  background-color: #1F1F1F;
+  // Use a slightly lighter background color.
+  background-color: hsla(
+    var(--background-hue),
+    var(--background-saturation),
+    calc(var(--background-lightness) + var(--lightness-step)),
+    var(--background-opacity)
+  );
 
-  // Provide a contrasting color for text.
-  color: #5C5C5C;
+  // Make the font color a little lighter for good contrast.
+  color: hsla(
+    var(--font-hue),
+    var(--font-saturation),
+    calc(var(--font-lightness) + var(--lightness-step) * 2),
+    var(--font-opacity)
+  );
 
   // Take up all horizontal space.
   width: 100%;
@@ -53,26 +63,31 @@
       // Make sure that the first item takes as much space as it needs.
       &:first-child { flex-shrink: 0; }
     }
+  }
 
-    // Target only the top row of content.
-    &.top
-    {
-      // Make sure that we use all space and align the time to the right.
-      justify-content: space-between;
+  // Target only the top row of content.
+  .top
+  {
+    // Make sure that we use all space and align the time to the right.
+    justify-content: space-between;
 
-      // Use a slightly more constrasting text color.
-      color: #ADADAD;
-    }
+    // Use a slightly more constrasting text color.
+    color: hsla(
+      var(--font-hue),
+      var(--font-saturation),
+      var(--font-lightness),
+      var(--font-opacity)
+    );
+  }
 
-    // Target only the bottom row of content.
-    &.bottom
-    {    
-      // Align all text to the start.
-      justify-content: flex-start;
-  
-      // Keep some space between the sender and the text.
-      column-gap: 1ch;
-    }
+  // Target only the bottom row of content.
+  .bottom
+  {    
+    // Align all text to the start.
+    justify-content: flex-start;
+
+    // Keep some space between the sender and the text.
+    column-gap: 1ch;
   }
 
   // Target the room when the cursor hovers over it, or when it is selected.
@@ -87,9 +102,31 @@
   {
     // Use a background-color similar to the chat itself to indicate that this
     // chat room belong to the currently open chat.
-    background-color: #333333;
+    background-color: hsla(
+      var(--background-hue),
+      var(--background-saturation),
+      calc(var(--background-lightness) + var(--lightness-step) * 3),
+      var(--background-opacity)
+    );
 
-    // Provide a contrasting color for text.
-    color: #858585;
+    // Match the lightness increase for the font.
+    color: hsla(
+      var(--font-hue),
+      var(--font-saturation),
+      calc(var(--font-lightness) + var(--lightness-step) * 3),
+      var(--font-opacity)
+    );
+
+    // Target only the top row of content.
+    .top
+    {
+      // Use a slightly less constrasting text color.
+      color: hsla(
+        var(--font-hue),
+        var(--font-saturation),
+        calc(var(--font-lightness) + var(--lightness-step) * 2),
+        var(--font-opacity)
+      );
+    }
   }
 }

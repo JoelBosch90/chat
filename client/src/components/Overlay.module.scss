@@ -30,11 +30,21 @@
   // Keep a minimal distance from the edge of the overlay.
   padding: 1em;
 
-  // Use a dark background color.
-  background-color: #0A0A0A;
+  // Use the default background color.
+  background-color: hsla(
+    var(--background-hue), 
+    var(--background-saturation), 
+    var(--background-lightness), 
+    var(--background-opacity)
+  );
   
   // Provide a contrasting color for text.
-  color: #858585;
+  color: hsla(
+    var(--font-hue),
+    var(--font-saturation),
+    var(--font-lightness),
+    var(--font-opacity)
+  );
 
   // Target the title.
   h1
@@ -52,8 +62,22 @@
   // Target only the input.
   input
   {
-    // Use a dark background color.
-    background-color: #1F1F1F;
+    // Use a lighter version of the default background color for some proper
+    // contrast.
+    background-color: hsla(
+      var(--background-hue),
+      var(--background-saturation),
+      calc(var(--background-lightness) + var(--lightness-step) * 2),
+      var(--background-opacity)
+    );
+
+    // Match the change in background color to keep contrast with the text.
+    color: hsla(
+      var(--font-hue),
+      var(--font-saturation),
+      calc(var(--font-lightness) + var(--lightness-step) * 2),
+      var(--font-opacity)
+    );
 
     // Use all width that's available.
     width: 100%;
@@ -80,7 +104,12 @@
   input::placeholder, input:placeholder-shown + button
   {
     // Make these elements stand out a little less.
-    color: #5C5C5C;
+    color: hsla(
+      var(--font-hue),
+      var(--font-saturation),
+      var(--font-lightness),
+      var(--font-opacity)
+    );
   }
 
   // Target the button when no text has been entered.

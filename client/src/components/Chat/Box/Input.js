@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import styles from './Input.module.scss'
@@ -32,7 +32,7 @@ export default function ChatBoxInput(props) {
   const submit = event => {
 
     // Make sure that we do not reload the page.
-    event.preventDefault();
+    event.preventDefault()
 
     // Only send a message if there's something to send.
     if (input) sendMessage(input)

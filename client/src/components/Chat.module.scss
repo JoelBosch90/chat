@@ -18,18 +18,23 @@
     // Use all available height.
     height: 100%;
 
-    // Use a dark background color.
-    background-color: #0A0A0A;
+    // Use the default background color.
+    background-color: hsla(
+      var(--background-hue),
+      var(--background-saturation),
+      var(--background-lightness),
+      var(--background-opacity)
+    );
 
     // Use grid to create a layout for the different parts of the app.
     display: grid;
   
-    // Give the chat list all the room it needs, then use the rest for the
+    // Give the navigation all the room it needs, then use the rest for the
     // chatbox.
     grid-template-columns: max-content 3fr;
 
     // Make sure our interface does not grow ridiculously large.
-    max-width: 60em;
+    max-width: 80em;
   
     // Give the interface some rounded corners for a friendlier look.
     border-radius: 1em;
