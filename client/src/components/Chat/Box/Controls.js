@@ -12,24 +12,24 @@ import styles from './Controls.module.scss'
 export default function ChatBoxControls(props) {
 
   // Extract the props that we want to use.
-  const { roomName, leaveRoom } = props
+  const { roomName, deselectRoom, leaveRoom, rename } = props
   
   return (
     <header className={styles.controls}>
       <span className={styles.group}>
-        <button className={styles.mobile} onClick={leaveRoom}>
+        <button title="To overview" className={styles.mobile} onClick={deselectRoom}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
         <span className={styles.name}>{roomName}</span>
       </span>
       <span className={styles.group}>
-        <button>
+        <button title="Share room">
           <FontAwesomeIcon icon={faShareFromSquare} />
         </button>
-        <button>
+        <button title="Change name" onClick={rename}>
           <FontAwesomeIcon icon={faPenToSquare} />
         </button>
-        <button>
+        <button title="Leave room" onClick={leaveRoom}>
           <FontAwesomeIcon icon={faArrowRightFromBracket} />
         </button>
       </span>

@@ -74,6 +74,7 @@ export default function ChatNavigation(props) {
       </ol>
       <div className={styles.buttons}>
         <button
+          title="Join room"
           onClick={showOverlay}
         >
           <FontAwesomeIcon icon={faPlus} />

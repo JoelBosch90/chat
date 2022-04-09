@@ -17,7 +17,7 @@ import styles from './Box.module.scss'
 export default function ChatBox(props) {
 
   // Extract the props that we want to use.
-  const { messages, senderName, roomName, updateName, sendMessage, leaveRoom } = props
+  const { messages, senderName, roomName, updateName, sendMessage, deselectRoom, leaveRoom, rename } = props
 
   // Create references to set the correct focus.
   const [ overlayRef, inputRef] = [ useRef(), useRef() ]
@@ -51,7 +51,7 @@ export default function ChatBox(props) {
   useEffect(reFocus, [roomName, senderName])
 
   return (
-    <section className={styles.box}>
+    <section className={`${styles.box} ${roomName ? '' : styles.hidden}`}>
       <Overlay
         visible={!senderName}
         title={`What should we call you in room '${roomName}'?`}
@@ -62,7 +62,9 @@ export default function ChatBox(props) {
       />
       <ChatBoxControls 
         roomName={roomName}
+        deselectRoom={deselectRoom}
         leaveRoom={leaveRoom}
+        rename={rename}
       />
       <div className={styles.messages}>
         {messageElements}

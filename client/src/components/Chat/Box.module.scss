@@ -53,4 +53,8 @@
     // Keep some distance from the edges of the container.
     padding: 1em;
   }
+
+  // Hide the box when requested. We do want it to keep occupying its place in
+  // the DOM, so we don't want to change the display here.
+  &.hidden { visibility: hidden; }
 }

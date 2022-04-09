@@ -27,6 +27,29 @@ const connect = () => {
 }
 
 /**
+ *  Function to delete a property from an object created with the useState hook.
+ *  @param  {string}    property  Name of the property to remove from the state
+ *                                object.
+ *  @param  {Function}  setter    The second argument that's returned by the
+ *                                useState hook that's used to update the state
+ *                                object.
+ */
+const deleteStateProperty = (property, setter) => {
+  setter(oldObject => {
+
+    // Create a local copy we can safely manipulate.
+    const copy = { ...oldObject }
+
+    // Delete the property.
+    delete copy[property]
+
+    // Return the copy.
+    return copy
+  })
+
+}
+
+/**
  *  Functional component that displays the entire chat application.
  *  @returns  {JSX.Element}
  */
@@ -77,6 +100,11 @@ export default function Chat() {
     // Update the sender name for the current room.
     setRooms(rooms => ({ ...rooms, [currentRoomName]: { ...rooms[currentRoomName], senderName } }))
   }
+
+  /**
+   *  Function to unset the sender name for the current room.
+   */
+  const rename = () => void setCurrentRoomSenderName(null)
 
   /**
    *  Function to send a message.
@@ -188,12 +216,28 @@ export default function Chat() {
   }
 
   /**
-   *  Function to leave a room.
+   *  Function to deselect the current room.
    */
-  const leaveRoom = () => {
+  const deselectRoom = () => {
 
     // Unset the current room name.
     setCurrentRoomName('')
+  }
+
+  /**
+   *  Function to leave the current room.
+   */
+  const leaveRoom = () => {
+
+    // Make sure we remember the current room's name.
+    const roomName = currentRoomName
+
+    // Then deselect the current room.
+    deselectRoom()
+
+    // Remove both the room and the channel.
+    deleteStateProperty(roomName, setRooms)
+    deleteStateProperty(roomName, setChannels)
   }
 
   // On page load, make sure that we have a channel for each room.
@@ -214,7 +258,9 @@ export default function Chat() {
           senderName={currentRoomSenderName()}
           sendMessage={sendMessage}
           updateName={setCurrentRoomSenderName}
+          deselectRoom={deselectRoom}
           leaveRoom={leaveRoom}
+          rename={rename}
         />
         <Overlay
           visible={!rooms || !Object.keys(rooms).length}
