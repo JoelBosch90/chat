@@ -9,6 +9,9 @@ button
   // Get rid of the border.
   border: none;
 
+  // We don't need padding by default.
+  padding: 0;
+
   // Get rid of the default outline.
   outline: none;
 

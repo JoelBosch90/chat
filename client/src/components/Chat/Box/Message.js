@@ -13,12 +13,6 @@ export default function ChatBoxMessage(props) {
   // Extract the props that we want to use.
   const { time, self, sender, text } = props
   
-  // Format the time.
-  const timeObject = new Date(time)
-  const hours = ("0" + timeObject.getHours()).slice(-2)
-  const minutes = ("0" + timeObject.getMinutes()).slice(-2)
-  const timeStamp = `${hours}:${minutes}`
-
   return (
     <div className={`${styles.message} ${self ? styles.self : ''}`}>
       <div className={styles.top}>

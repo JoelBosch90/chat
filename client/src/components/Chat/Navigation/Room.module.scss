@@ -25,7 +25,7 @@
   color: hsla(
     var(--font-hue),
     var(--font-saturation),
-    calc(var(--font-lightness) + var(--lightness-step) * 2),
+    calc(var(--font-lightness)),
     var(--font-opacity)
   );
 
@@ -65,19 +65,18 @@
     }
   }
 
+  // Target only the room's name.
+  .name
+  {
+    // Slightly increase the font size to make the name stand out.
+    font-size: 1.25em;
+  }
+
   // Target only the top row of content.
   .top
   {
     // Make sure that we use all space and align the time to the right.
     justify-content: space-between;
-
-    // Use a slightly more constrasting text color.
-    color: hsla(
-      var(--font-hue),
-      var(--font-saturation),
-      var(--font-lightness),
-      var(--font-opacity)
-    );
   }
 
   // Target only the bottom row of content.
@@ -109,24 +108,14 @@
       var(--background-opacity)
     );
 
-    // Match the lightness increase for the font.
+    // The text needs to be lighter for sufficient contrast, but does not need
+    // to match the increase of the background exactly because this text won't
+    // need to draw the most attention..
     color: hsla(
       var(--font-hue),
       var(--font-saturation),
       calc(var(--font-lightness) + var(--lightness-step) * 3),
       var(--font-opacity)
     );
-
-    // Target only the top row of content.
-    .top
-    {
-      // Use a slightly less constrasting text color.
-      color: hsla(
-        var(--font-hue),
-        var(--font-saturation),
-        calc(var(--font-lightness) + var(--lightness-step) * 2),
-        var(--font-opacity)
-      );
-    }
   }
 }

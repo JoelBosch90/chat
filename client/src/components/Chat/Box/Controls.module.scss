@@ -1,0 +1,53 @@
+/**
+ *  Styling for the chat box controls bar.
+ */
+.controls
+{
+  // Use Flexbox to create a horizontal layout.
+  display: flex;
+
+  // Spread out the control groups.
+  justify-content: space-between;
+
+  // Use padding to prevent the content from touching the edges of the bar.
+  padding: 1em;
+
+  // Slightly increase the font size for the controls.
+  font-size: 1.25em;
+  
+  // Use a slightly lighter background color.
+  background-color: hsla(
+    var(--background-hue),
+    var(--background-saturation),
+    calc(var(--background-lightness) + var(--lightness-step)),
+    var(--background-opacity)
+  );
+
+  // Match the font color for proper contrast.
+  color: hsla(
+    var(--font-hue),
+    var(--font-saturation),
+    calc(var(--font-lightness) + var(--lightness-step) * 2),
+    var(--font-opacity)
+  );
+
+  // Target only the room name.
+  .name
+  {
+    // Show the room name slightly larger than the controls.
+    font-size: 1.5em;
+  }
+
+  // Target the control groups.
+  .group
+  {
+    // Use Flexbox to position the controls within the group.
+    display: flex;
+
+    // Make sure the controls don't touch each other.
+    gap: 1em;
+  }
+
+  // Hide controls that make no sense on desktop.
+  .mobile { @media (min-width: 40em) { display: none; } }
+}

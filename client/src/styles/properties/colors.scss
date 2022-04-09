@@ -8,35 +8,37 @@
 :root
 {
   // We set a base saturation level for all colours. We should use this base for
-  // all colours and we should not or hardly vary saturation to ensure a
-  // matching colour scheme across our application so we set a very small step
-  // that can be used to increment or decrement the saturation level.
-  // Note that the saturation is set on a scale of 0 to 100%.
-  --saturation-base: 50%;
-  --saturation-step: 1%;
+  // all colours and we should not vary saturation to ensure a
+  // matching colour scheme across our application.
+  --saturation-base: 80%;
 
   // We set a base lightness level for all colours. We want to use this to
   // have some control over the entire app's brightness level, but it is okay
   // and often useful to vary the lightness for individual elements.
-  // Note that the lightness is set on a scale of 0 to 100%.
-  --lightness-base: 50%;
-  --lightness-step: 12.5%;
+  --lightness-base: 40%;
+  --lightness-step: 10%;
 
   // We also set a base opacity level for all colours. We want to use this to
   // have some control over the entire app's opacity level, but we set this to 
   // be fully opaque by default which means no transparency at all.
-  // Note that the opacity is set on a scale of 0 to 1.
   --opacity-base: 1;
   --opacity-step: 0.1;
 
+  // Declare the base color hues.
+  --hue-red: 0;
+  --hue-orange: 30;
+  --hue-green: 120;
+  --hue-blue: 205;
+  --hue-purple: 290;
+
   // For the basic background, we want a dark, neutral color.
-  --background-hue: 0;
+  --background-hue: var(--hue-blue);
   --background-saturation: 0%;
   --background-lightness: 5%;
   --background-opacity: var(--opacity-base);
 
   // For the basic font, we want a neutral color that contrasts well against the
-  // background.
+  // defeault background.
   --font-hue: 0;
   --font-saturation: 0%;
   --font-lightness: calc(var(--background-lightness) + 55%);

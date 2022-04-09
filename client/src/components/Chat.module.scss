@@ -3,9 +3,6 @@
  */
 .chat
 {
-  // Make sure we keep some minimal distance from the edge of the window.
-  padding: 2em;
-
   // Use all available height.
   height: 100%;
 
@@ -29,16 +26,9 @@
     // Use grid to create a layout for the different parts of the app.
     display: grid;
   
-    // Give the navigation all the room it needs, then use the rest for the
-    // chatbox.
-    grid-template-columns: max-content 3fr;
-
-    // Make sure our interface does not grow ridiculously large.
-    max-width: 80em;
+    // Show only the navigation by default.
+    grid-template-columns: 100% 0%;
   
-    // Give the interface some rounded corners for a friendlier look.
-    border-radius: 1em;
-
     // Hide all overflow.
     overflow: hidden;
 
@@ -47,5 +37,29 @@
 
     // Anchor absolute child components to this container.
     position: relative;
+
+    // Show the chatbox instead when the showRoom class is added.
+    &.showRoom { grid-template-columns: 0% 100%; }
+  }
+
+  // Target the chat on larger screens.
+  @media (min-width: 40em)
+  {
+    // Make sure we keep some minimal distance from the edge of the window.
+    padding: 2em;
+
+    // Target the container that houses the main content.
+    > main, > main.showRoom {
+  
+      // Give the navigation all the room it needs, then use the rest for the
+      // chatbox.
+      grid-template-columns: min(25em, 35%) 3fr;
+
+      // Make sure our interface does not grow ridiculously large.
+      max-width: 80em; 
+      
+      // Give the interface some rounded corners for a friendlier look.
+      border-radius: var(--border-radius);
+    }
   }
 }

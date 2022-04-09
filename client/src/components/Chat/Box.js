@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react'
-import ChatBoxInput from './Box/Input.js'
+import ChatBoxControls from './Box/Controls.js'
 import ChatBoxMessage from './Box/Message.js'
+import ChatBoxInput from './Box/Input.js'
 import Overlay from '../Overlay.js'
 import styles from './Box.module.scss'
 
@@ -16,7 +17,7 @@ import styles from './Box.module.scss'
 export default function ChatBox(props) {
 
   // Extract the props that we want to use.
-  const { messages, senderName, roomName, updateName, sendMessage } = props
+  const { messages, senderName, roomName, updateName, sendMessage, leaveRoom } = props
 
   // Create references to set the correct focus.
   const [ overlayRef, inputRef] = [ useRef(), useRef() ]
@@ -58,6 +59,10 @@ export default function ChatBox(props) {
         button="Select name"
         onSubmit={updateName}
         focusRef={overlayRef}
+      />
+      <ChatBoxControls 
+        roomName={roomName}
+        leaveRoom={leaveRoom}
       />
       <div className={styles.messages}>
         {messageElements}

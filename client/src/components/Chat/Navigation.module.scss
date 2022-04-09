@@ -4,7 +4,7 @@
 .navigation
 {
   // Stick to a fixed width to display the chatroom navigation.
-  width: 25em;
+  width: 100%;
 
   // Make sure none of the list items can escape this container.
   overflow-y: auto;
@@ -29,7 +29,7 @@
     flex-direction: column;
     
     // Display a tiny gap to distinguish different rooms.
-    gap: 1px;
+    gap: 2px;
 
     // We should always have a single column.
     flex-wrap: nowrap;

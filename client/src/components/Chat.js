@@ -187,12 +187,21 @@ export default function Chat() {
     setCurrentRoomName(name)
   }
 
+  /**
+   *  Function to leave a room.
+   */
+  const leaveRoom = () => {
+
+    // Unset the current room name.
+    setCurrentRoomName('')
+  }
+
   // On page load, make sure that we have a channel for each room.
   for (const roomName in rooms) joinChannel(roomName)
 
   return (
     <div className={styles.chat}>
-      <main>
+      <main className={currentRoomName ? styles.showRoom : ''}>
         <ChatNavigation
           rooms={rooms}
           currentRoom={currentRoomName}
@@ -205,6 +214,7 @@ export default function Chat() {
           senderName={currentRoomSenderName()}
           sendMessage={sendMessage}
           updateName={setCurrentRoomSenderName}
+          leaveRoom={leaveRoom}
         />
         <Overlay
           visible={!rooms || !Object.keys(rooms).length}

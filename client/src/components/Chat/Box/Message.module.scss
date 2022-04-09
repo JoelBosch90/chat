@@ -1,5 +1,5 @@
 /**
- *  Styling for the list of chat messages.
+ *  Styling for a single chat message.
  */
 .message
 {
@@ -25,7 +25,7 @@
 
   // Give each text message a more friendly text-bubble appearance with rounded
   // corners.
-  border-radius: 1em;
+  border-radius: var(--border-radius);
 
   // Give the message some padding to give it some text balloon appearance.
   padding: .75em 1.5em;
