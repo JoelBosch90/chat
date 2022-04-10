@@ -49,12 +49,6 @@ const shareTitle = () => {
  */
 const share = () => {
 
-  console.log({
-    title: shareTitle(),
-    url: shareURL(),
-    text: shareText(),
-  })
-
   // Check if we have access to native share functionality.
   if (navigator?.share) return navigator.share({
     title: shareTitle(),
