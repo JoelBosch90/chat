@@ -11,9 +11,11 @@
     "react-dom": "^17.0.2",
     "react-helmet-async": "^1.2.3",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.0",
-    "sass": "^1.49.7",
     "tar": "^6.1.11"
+  },
+  "devDependencies": {
+    "react-scripts": "5.0.0",
+    "sass": "^1.49.7"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -55,6 +55,9 @@
       // chatbox.
       grid-template-columns: min(25em, 35%) 3fr;
 
+      // Make the difference between components more defined.
+      gap: 1px;
+
       // Make sure our interface does not grow ridiculously large.
       max-width: 80em; 
       

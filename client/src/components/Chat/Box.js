@@ -47,7 +47,7 @@ export default function ChatBox(props) {
 
   // Refocus the input element when the overlay becomes visible or is
   // specifically refocused.
-  useEffect(reFocus, [roomName, senderName])
+  useEffect(reFocus, [roomName, senderName, inputRef, overlayRef])
 
   return (
     <section className={`${styles.box} ${roomName ? '' : styles.hidden}`}>

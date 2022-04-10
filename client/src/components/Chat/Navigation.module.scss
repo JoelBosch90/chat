@@ -28,8 +28,8 @@
     // List the room vertically by default.
     flex-direction: column;
     
-    // Display a tiny gap to distinguish different rooms.
-    gap: 2px;
+    // Make the difference between rooms more defined.
+    gap: 1px;
 
     // We should always have a single column.
     flex-wrap: nowrap;

@@ -18,6 +18,9 @@
   // Create a vertical layout that gives the controls bar and the input all the
   // room they need, then use all that's left to display messages.
   grid-template-rows: max-content 1fr max-content;
+  
+  // Make the difference between components more defined.
+  gap: 1px;
 
   // Prevent elements from leaving this container.
   overflow: hidden;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 /**
  *  This function is simply JSON.parse, but it doesn't crash on undefined.
