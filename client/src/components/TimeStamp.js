@@ -12,7 +12,8 @@ export default function TimeStamp(props) {
   const { time } = props
 
   /**
-   *  Helper function to format a time stamp into a human readable format.
+   *  Helper function to format a short and a long time stamp into a human
+   *  readable format.
    *  @param    {string}  time  A time string format that Date() can recognize.
    *  @returns  {string}
    */
@@ -31,10 +32,13 @@ export default function TimeStamp(props) {
     const minutes = ("0" + timeObject.getMinutes()).slice(-2)
 
     // Combine both with a colon to construct a regular time stamp.
-    return `${hours}:${minutes}`
+    return [`${hours}:${minutes}`, timeObject.toLocaleString()]
   }
 
-  return (
-    <>{format(time)}</>
-  )
+  // Get both the short and the long format.
+  const [short, long] = format(time)
+
+  // We want to always display the short timestamp directly and the extended
+  // format on hover as a title attribute.
+  return ( <span title={long}>{short}</span> )
 }

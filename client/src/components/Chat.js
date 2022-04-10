@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import useLocalState from '../hooks/useLocalState.js'
 import { Socket } from 'phoenix'
+import ChatMeta from './Chat/Meta.js'
 import ChatNavigation from './Chat/Navigation.js'
 import ChatBox from './Chat/Box.js'
 import Overlay from './Overlay.js'
@@ -46,7 +47,6 @@ const deleteStateProperty = (property, setter) => {
     // Return the copy.
     return copy
   })
-
 }
 
 /**
@@ -54,6 +54,10 @@ const deleteStateProperty = (property, setter) => {
  *  @returns  {JSX.Element}
  */
 export default function Chat() {
+
+  // We need to make sure that we listen to location change effects only once to
+  // prevent memory leaks.
+  const [ listeningToNavigation, setListeningToNavigation ] = useState(false)
 
   // Create the state values that we want to back up locally.
   const [ currentRoomName, setCurrentRoomName ] = useLocalState('currentRoomName', '')
@@ -67,14 +71,10 @@ export default function Chat() {
   const emptyRoom = { senderName: null, messages: [] }
 
   /**
-   *  Function to get the current room object.
-   *  @returns  {Object}
+   *  Function to get the current room from the rooms object if we can.
+   *  @returns  {Object|undefined}
    */
-  const currentRoom = () => {
-
-    // Get the current room from the rooms object if we can.
-    return currentRoomName && rooms && rooms[currentRoomName] ? rooms[currentRoomName] : null
-  }
+  const currentRoom = () => rooms ? rooms[currentRoomName] : undefined
 
   /**
    *  Function to find the messages for the current room.
@@ -95,7 +95,7 @@ export default function Chat() {
   const setCurrentRoomSenderName = senderName => {
 
     // Cannot set the sender name for the current room if no room is selected.
-    if (!(currentRoomName in rooms)) return
+    if (!currentRoom()) return
 
     // Update the sender name for the current room.
     setRooms(rooms => ({ ...rooms, [currentRoomName]: { ...rooms[currentRoomName], senderName } }))
@@ -104,7 +104,7 @@ export default function Chat() {
   /**
    *  Function to unset the sender name for the current room.
    */
-  const rename = () => void setCurrentRoomSenderName(null)
+  const renameSender = () => void setCurrentRoomSenderName(null)
 
   /**
    *  Function to send a message.
@@ -201,31 +201,69 @@ export default function Chat() {
    */
   const joinRoom = name => {
 
-    // If the room already exists and has a valid channel object, we can
-    // immediately select it instead.
-    if (rooms?.name && channels[name]) return setCurrentRoomName(name)
+    // We should have a valid name to join a room.
+    if (!name) return
 
-    // Join the channel for this room.
-    joinChannel(name)
+    // Join the channel for this room if we haven't already.
+    if (!channels[name]) joinChannel(name)
     
-    // Add an empty room with this name.
-    setRooms(rooms => ({...rooms, [name]: emptyRoom }))
-
-    // Also immediately select the new room.
-    setCurrentRoomName(name)
+    // Add an empty room with this name if we haven't already.
+    if (!rooms[name]) setRooms(rooms => ({...rooms, [name]: emptyRoom }))
   }
 
   /**
-   *  Function to deselect the current room.
+   *  Function to select a room.
+   *  @param  {string}  name  The name of the room to join.
+   */
+  const selectRoom = name => {
+
+    // Make sure that we join this room.
+    joinRoom(name)
+
+    // Update the state.
+    setCurrentRoomName(name)
+
+    // Update the URL.
+    window.history.pushState({}, '', encodeURI(`/room/${name}`))
+  }
+
+  /**
+   *  Function to select a room from the current URL.
+   */
+  const selectRoomFromLocation = () => {
+
+    // This function only joins rooms.
+    if (!window.location.pathname?.startsWith('/room/')) return
+
+    // Get the name of the room from the pathname.
+    const room = decodeURI(window.location.pathname?.split('/')[2])
+
+    // No need to join anything if we're already in the correct room.
+    if (room === currentRoomName) return
+
+    // Make sure that we join this room.
+    joinRoom(room)
+
+    // Update the current room state.
+    setCurrentRoomName(room)
+  }
+
+  /**
+   *  Function to deselect the current room. This will navigate away from the
+   *  room, but keep its state for future reference.
    */
   const deselectRoom = () => {
 
     // Unset the current room name.
     setCurrentRoomName('')
+
+    // Update the URL.
+    window.history.pushState({}, '', '/')
   }
 
   /**
-   *  Function to leave the current room.
+   *  Function to leave the current room. This will navigate away from the room
+   *  and forget its state.
    */
   const leaveRoom = () => {
 
@@ -240,17 +278,42 @@ export default function Chat() {
     deleteStateProperty(roomName, setChannels)
   }
 
+  /**
+   *  Function to start listening to navigation changes. This only watches
+   *  changes that don't trigger a page refresh, like using the back button.
+   */
+  const listenToNavigation = () => {
+
+    // Disregard if we are already listening.
+    if (listeningToNavigation) return
+
+    // Select a room from the current location when the user navigates back.
+    window.addEventListener('popstate', selectRoomFromLocation)
+
+    // Now register that we're listening.
+    setListeningToNavigation(true)
+  }
+
   // On page load, make sure that we have a channel for each room.
   for (const roomName in rooms) joinChannel(roomName)
 
+  // Start listening for navigation changes.
+  listenToNavigation()
+
+  // Check if we should join a room based on the current location.
+  selectRoomFromLocation()
+
   return (
     <div className={styles.chat}>
+      <ChatMeta
+        roomName={currentRoomName} 
+        messages={currentRoomMessages()} 
+      />
       <main className={currentRoomName ? styles.showRoom : ''}>
         <ChatNavigation
           rooms={rooms}
           currentRoom={currentRoomName}
-          selectRoom={setCurrentRoomName}
-          joinRoom={joinRoom}
+          selectRoom={selectRoom}
         />
         <ChatBox 
           roomName={currentRoomName}
@@ -260,14 +323,14 @@ export default function Chat() {
           updateName={setCurrentRoomSenderName}
           deselectRoom={deselectRoom}
           leaveRoom={leaveRoom}
-          rename={rename}
+          renameSender={renameSender}
         />
         <Overlay
           visible={!rooms || !Object.keys(rooms).length}
           title="What is the first room you want to join?"
           placeholder="E.g. Lobby 1..."
           button="Join"
-          onSubmit={joinRoom}
+          onSubmit={selectRoom}
         />
       </main>
     </div>

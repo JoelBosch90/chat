@@ -10,14 +10,13 @@ import styles from './Box.module.scss'
  *  interface elements to interact with a single chat room. It contains the
  *  previously sent messages in a single room and contains all interface
  *  elements to interact with that room.
- * 
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
 export default function ChatBox(props) {
 
   // Extract the props that we want to use.
-  const { messages, senderName, roomName, updateName, sendMessage, deselectRoom, leaveRoom, rename } = props
+  const { messages, senderName, roomName, updateName, sendMessage, deselectRoom, leaveRoom, renameSender } = props
 
   // Create references to set the correct focus.
   const [ overlayRef, inputRef] = [ useRef(), useRef() ]
@@ -64,7 +63,7 @@ export default function ChatBox(props) {
         roomName={roomName}
         deselectRoom={deselectRoom}
         leaveRoom={leaveRoom}
-        rename={rename}
+        renameSender={renameSender}
       />
       <div className={styles.messages}>
         {messageElements}

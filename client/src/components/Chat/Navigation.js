@@ -10,14 +10,13 @@ import styles from './Navigation.module.scss'
  *  Functional component that displays a vertical navigation layout of
  *  chatrooms, allows a user to navigate between chatrooms, and join new
  *  chatrooms.
- * 
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
 export default function ChatNavigation(props) {
 
   // Extract the props that we want to use.
-  const { joinRoom, rooms, currentRoom, selectRoom } = props
+  const { rooms, currentRoom, selectRoom } = props
 
   // We're going to keep an internal value for when we want to show the overlay.
   const [ overlayVisible, setOverlayVisible ] = useState(false)
@@ -39,7 +38,7 @@ export default function ChatNavigation(props) {
   const join = room => {
 
     // Call the prop method to actually join the room.
-    joinRoom(room)
+    selectRoom(room)
 
     // Hide the overlay again.
     hideOverlay()
