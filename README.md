@@ -1,13 +1,10 @@
 # Chat
-My first ever programming project was a WebSocket based web chat built with a
-classic LAMP stack, just before I started studying Computer Science. Since then,
-I've built up a habit of continually redoing this project. My earlier attempts
-(that include vanilla JavaScript, PHP, VueJS, and NodeJS) were never properly
-documented, but I decided to pick that up from here.
+This project is mainly an excuse to try out React. Thus, the API is kept as
+simple as possible, although that was also a nice opportunity to try out the
+Phoenix framework.
 
-Now this has become my playground project to try out new technologies. In this
-iteration I'm playing with a more functional approach, featuring React and
-Phoenix.
+The end result is a very simple web chat that uses WebSocket connections to
+allow users to send and receive messages in specific rooms.
 
 
 ## Demo
