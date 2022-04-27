@@ -23,8 +23,26 @@ export default React.memo(function ChatBox(props) {
 
   console.log('Box', roomName, messages)
 
-  // Create a list of chat messages.
-  const messageElements = messages ? messages.map(message => {
+  /**
+   *  Helper function that adds a new message only if it is not already present
+   *  in the provided array of messages.
+   *  @param    {array}   messages      List of message.
+   *  @param    {Object}  newMessage    New message that is added only if it is
+   *                                    not already present.
+   *  @returns  {array}
+   */
+  const uniqueMessages = (messages, newMessage) => {
+
+    // Check if a message with this ID already exists in this array. If so, we
+    // don't add the new one.
+    if (messages.find(oldMessage => oldMessage.id === newMessage.id)) return messages
+
+    // Otherwise, we add the new one.
+    return [ ...messages, newMessage ]
+  }
+  
+  // Create a list of unique chat message elements.
+  const messageElements = messages ? messages.reduce(uniqueMessages, []).map(message => {
     return <ChatBoxMessage
       key={message.id}
       self={message.self}
