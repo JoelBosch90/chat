@@ -187,11 +187,11 @@ export default React.memo(function Chat() {
     let senderId = 0;
 
     // Forward chat messages to the receive message method.
-    channel.on('message', message => { console.log('message', name, message); receiveMessage(name, senderId, message) })
+    channel.on('message', message => void receiveMessage(name, senderId, message))
 
     // Join the room and start listening for messages. Update our sender id with
     // the response for joining each channel.
-    channel.join().receive('ok', response => { console.log('ok', name, response); senderId = response.sender_id })
+    channel.join().receive('ok', response => { senderId = response.sender_id })
 
     // Add the channel to our collection.
     setChannels(channels => ({ ...channels, [name]: channel }))

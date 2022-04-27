@@ -21,8 +21,6 @@ export default React.memo(function ChatBox(props) {
   // Create references to set the correct focus.
   const [ overlayRef, inputRef] = [ useRef(), useRef() ]
 
-  console.log('Box', roomName, messages)
-
   /**
    *  Helper function that adds a new message only if it is not already present
    *  in the provided array of messages.
