@@ -9,7 +9,7 @@ import styles from './Room.module.scss'
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default function ChatNavigationRoom(props) {
+export default React.memo(function ChatNavigationRoom(props) {
 
   // Extract the props that we want to use.
   const { messages, selected, onClick, name } = props
@@ -34,4 +34,4 @@ export default function ChatNavigationRoom(props) {
       </div>
     </button>
   )
-}
+})

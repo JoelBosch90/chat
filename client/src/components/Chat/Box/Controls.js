@@ -9,7 +9,7 @@ import styles from './Controls.module.scss'
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default function ChatBoxControls(props) {
+export default React.memo(function ChatBoxControls(props) {
 
   // Extract the props that we want to use.
   const { roomName, deselectRoom, leaveRoom, renameSender } = props
@@ -35,4 +35,4 @@ export default function ChatBoxControls(props) {
       </span>
     </header>
   )
-}
+})

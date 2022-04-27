@@ -6,7 +6,7 @@ import React from 'react'
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default function TimeStamp(props) {
+export default React.memo(function TimeStamp(props) {
 
   // Extract the props that we want to use.
   const { time } = props
@@ -41,4 +41,4 @@ export default function TimeStamp(props) {
   // We want to always display the short timestamp directly and the extended
   // format on hover as a title attribute.
   return ( <span title={long}>{short}</span> )
-}
+})

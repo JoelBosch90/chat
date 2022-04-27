@@ -13,7 +13,7 @@ import styles from './Box.module.scss'
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default function ChatBox(props) {
+export default React.memo(function ChatBox(props) {
 
   // Extract the props that we want to use.
   const { messages, senderName, roomName, updateName, sendMessage, deselectRoom, leaveRoom, renameSender } = props
@@ -75,4 +75,4 @@ export default function ChatBox(props) {
       />
     </section>
   )
-}
+})

@@ -11,7 +11,7 @@ import styles from './Overlay.module.scss'
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default function Overlay(props) {
+export default React.memo(function Overlay(props) {
 
   // Extract the props that we want to use.
   const { visible, placeholder, button, title, onSubmit, onCancel, focusRef } = props
@@ -88,4 +88,4 @@ export default function Overlay(props) {
       </button>
     </form>
   )
-}
+})
