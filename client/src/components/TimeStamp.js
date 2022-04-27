@@ -36,7 +36,7 @@ export default function TimeStamp(props) {
   }
 
   // Get both the short and the long format.
-  const [short, long] = format(time)
+  const [ short, long ] = format(time)
 
   // We want to always display the short timestamp directly and the extended
   // format on hover as a title attribute.

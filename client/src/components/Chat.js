@@ -166,7 +166,7 @@ export default function Chat() {
       const updatedRoom = { ...currentRoom, messages: [ newMessage, ...currentRoom.messages ], }
       
       // Add the new room to the existing rooms.
-      return {...rooms, [roomName]: updatedRoom }
+      return { ...rooms, [roomName]: updatedRoom }
     })
   }
 
@@ -208,7 +208,7 @@ export default function Chat() {
     if (!channels[name]) joinChannel(name)
     
     // Add an empty room with this name if we haven't already.
-    if (!rooms[name]) setRooms(rooms => ({...rooms, [name]: emptyRoom }))
+    if (!rooms[name]) setRooms(rooms => ({ ...rooms, [name]: emptyRoom }))
   }
 
   /**
