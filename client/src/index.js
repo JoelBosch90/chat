@@ -10,8 +10,8 @@ import './styles/global.scss'
 const root = createRoot(document.getElementById('root'))
 root.render(
   <HelmetProvider>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
       <Chat />
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </HelmetProvider>
 )

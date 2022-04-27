@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import useLocalState from '../hooks/useLocalState.js'
 import { Socket } from 'phoenix'
 import ChatMeta from './Chat/Meta.js'
@@ -53,11 +53,7 @@ const deleteStateProperty = (property, setter) => {
  *  Functional component that displays the entire chat application.
  *  @returns  {JSX.Element}
  */
-export default function Chat() {
-
-  // We need to make sure that we listen to location change effects only once to
-  // prevent memory leaks.
-  const [ listeningToNavigation, setListeningToNavigation ] = useState(false)
+export default React.memo(function Chat() {
 
   // Create the state values that we want to back up locally.
   const [ currentRoomName, setCurrentRoomName ] = useLocalState('currentRoomName', '')
@@ -183,16 +179,19 @@ export default function Chat() {
     // Construct a channel for this room.
     const channel = connection.channel(`room:${name}`, {})
 
+    // Initialize a sender ID for the current user to our receive message
+    // method.
+    let senderId = 0;
+
+    // Forward chat messages to the receive message method.
+    channel.on('message', message => void receiveMessage(name, senderId, message))
+
     // Join the room and start listening for messages. Update our sender id with
     // the response for joining each channel.
-    channel.join().receive('ok', response => {
-
-      // Forward chat messages to the receive message method.
-      channel.on('message', message => void receiveMessage(name, response.sender_id, message))
-    })
+    channel.join().receive('ok', response => { senderId = response.sender_id })
 
     // Add the channel to our collection.
-    setChannels({ ...channels, [name]: channel })
+    setChannels(channels => ({ ...channels, [name]: channel }))
   }
 
   /**
@@ -273,35 +272,27 @@ export default function Chat() {
     // Then deselect the current room.
     deselectRoom()
 
+    // Leave the channel for this room if it has one.
+    channels[roomName]?.leave()
+
     // Remove both the room and the channel.
     deleteStateProperty(roomName, setRooms)
     deleteStateProperty(roomName, setChannels)
   }
 
-  /**
-   *  Function to start listening to navigation changes. This only watches
-   *  changes that don't trigger a page refresh, like using the back button.
-   */
-  const listenToNavigation = () => {
+  // We want to do the following things only once, and not on ever rerender. We
+  // can do that by using a useEffect that never repeats.
+  useEffect(() => {
 
-    // Disregard if we are already listening.
-    if (listeningToNavigation) return
-
-    // Select a room from the current location when the user navigates back.
+    // On page load, make sure that we have a channel for each room.
+    for (const roomName in rooms) joinChannel(roomName)
+  
+    // Start listening for navigation changes.
     window.addEventListener('popstate', selectRoomFromLocation)
 
-    // Now register that we're listening.
-    setListeningToNavigation(true)
-  }
-
-  // On page load, make sure that we have a channel for each room.
-  for (const roomName in rooms) joinChannel(roomName)
-
-  // Start listening for navigation changes.
-  listenToNavigation()
-
-  // Check if we should join a room based on the current location.
-  selectRoomFromLocation()
+    // Check if we should join a room based on the current location.
+    selectRoomFromLocation()
+  }, [])
 
   return (
     <div className={styles.chat}>
@@ -335,4 +326,4 @@ export default function Chat() {
       </main>
     </div>
   )
-}
+})
