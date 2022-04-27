@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import useLocalState from '../hooks/useLocalState.js'
-import { Socket } from 'phoenix'
+import { Socket, Presence } from 'phoenix'
 import ChatMeta from './Chat/Meta.js'
 import ChatNavigation from './Chat/Navigation.js'
 import ChatBox from './Chat/Box.js'
@@ -114,6 +114,8 @@ export default React.memo(function Chat() {
     // We do need a room, otherwise we cannot send anything.
     if (!room) return
 
+    console.log('sendMessage', currentRoomName, text)
+
     // Use the channel for the current room to send the message and the current
     // name of the sender to the server.
     channels[currentRoomName].push("new_message", {
@@ -136,6 +138,8 @@ export default React.memo(function Chat() {
    */
   const receiveMessage = (roomName, senderId, message) => {
     setRooms(rooms => {
+
+      console.log('receiveMessage', roomName, senderId, message, JSON.stringify(rooms))
 
       // Check if this room already exists. If not, use the default room.
       const currentRoom = rooms[roomName] ?? emptyRoom
@@ -176,6 +180,8 @@ export default React.memo(function Chat() {
     // No need to join the channel if we've already joined it.
     if (channels[name]) return
 
+    console.log('joinChannel', name)
+
     // Construct a channel for this room.
     const channel = connection.channel(`room:${name}`, {})
 
@@ -203,6 +209,8 @@ export default React.memo(function Chat() {
     // We should have a valid name to join a room.
     if (!name) return
 
+    console.log('joinRoom', name)
+
     // Join the channel for this room if we haven't already.
     if (!channels[name]) joinChannel(name)
     
@@ -215,6 +223,8 @@ export default React.memo(function Chat() {
    *  @param  {string}  name  The name of the room to join.
    */
   const selectRoom = name => {
+
+    console.log('selectRoom', name)
 
     // Make sure that we join this room.
     joinRoom(name)
@@ -283,6 +293,8 @@ export default React.memo(function Chat() {
   // We want to do the following things only once, and not on ever rerender. We
   // can do that by using a useEffect that never repeats.
   useEffect(() => {
+
+    console.log('useEffect')
 
     // On page load, make sure that we have a channel for each room.
     for (const roomName in rooms) joinChannel(roomName)
