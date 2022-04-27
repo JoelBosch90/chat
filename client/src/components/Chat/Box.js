@@ -47,6 +47,21 @@ export default React.memo(function ChatBox(props) {
     else overlayRef.current.focus()
   }
 
+  /**
+   *  Function to refocus before sending a message.
+   *  @param    {...any}    args    Catch any possible arguments.
+   *  @returns  {any}
+   */
+  const sendAndFocus = (...args) => {
+
+    // First refocus the input as we may have lost it if the user clicked the
+    // button.
+    reFocus()
+
+    // Now send the message as usual.
+    return sendMessage(...args)
+  }
+
   // Refocus the input element when the overlay becomes visible or is
   // specifically refocused.
   useEffect(reFocus, [roomName, senderName, inputRef, overlayRef])
@@ -71,7 +86,7 @@ export default React.memo(function ChatBox(props) {
         {messageElements}
       </div>
       <ChatBoxInput
-        sendMessage={sendMessage}
+        sendMessage={sendAndFocus}
         roomName={roomName}
         focusRef={inputRef}
       />
