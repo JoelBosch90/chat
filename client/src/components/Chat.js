@@ -1,77 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import useLocalState from '../hooks/useLocalState.js'
-import { Socket } from 'phoenix'
+import shuffle from '../scripts/shuffle.js'
+import deleteStateProperty from '../scripts/deleteStateProperty.js'
+import connect from '../scripts/socket.js'
 import ChatMeta from './Chat/Meta.js'
 import ChatNavigation from './Chat/Navigation.js'
 import ChatBox from './Chat/Box.js'
 import Overlay from './Overlay.js'
 import styles from './Chat.module.scss'
-  
-/**
- *  Function to connect to the message server to start receiving messages.
- *  @return {Object}
- */
-const connect = () => {
-
-  // If the website is running over HTTPS, we should also secure our
-  // websocket connections.
-  const protocol = window.location.protocol.startsWith('https') ? 'wss' : 'ws'
-
-  // Construct the socket connection object.
-  const socket = new Socket(`${protocol}://${window.location.host}/api/socket`)
-
-  // Connect to the server.
-  socket.connect()
-
-  // Expose the socket.
-  return socket
-}
-
-/**
- *  Function to delete a property from an object created with the useState hook.
- *  @param  {string}    property  Name of the property to remove from the state
- *                                object.
- *  @param  {Function}  setter    The second argument that's returned by the
- *                                useState hook that's used to update the state
- *                                object.
- */
-const deleteStateProperty = (property, setter) => {
-  setter(oldObject => {
-
-    // Create a local copy we can safely manipulate.
-    const copy = { ...oldObject }
-
-    // Delete the property.
-    delete copy[property]
-
-    // Return the copy.
-    return copy
-  })
-}
-
-/**
- *  Function that randomly shuffles an array using the Durstenfeld shuffle.
- *  @param    {array}   array   The array to shuffle.
- *  @returns  {array}
- */
-const shuffleArray = array => {
-
-  // Create a local copy of the array that we can safely manipulate.
-  const copy = array.slice(0)
-
-  // Loop through all array indices.
-  for (let index = copy.length - 1; index > 0; index--) {
-
-    // Get a random index.
-    const randomIndex = Math.floor(Math.random() * (index + 1));
-
-    // Swap the entry at the current index with the entry at the random index.
-    [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]]
-  }
-
-  // Return the shuffled array.
-  return copy
-}
 
 /**
  *  Functional component that displays the entire chat application.
@@ -245,7 +181,7 @@ export default React.memo(function Chat() {
   const pickHue = room => {
 
     // List all supported hues. These hues are picked for legibility.
-    const supportedHues = shuffleArray([30, 60, 90, 120, 150, 180, 300, 330])
+    const supportedHues = shuffle([30, 60, 90, 120, 150, 180, 300, 330])
 
     // Get a list of hues that are already taken.
     const taken = (room.users ?  Object.values(room.users) : [ ])
