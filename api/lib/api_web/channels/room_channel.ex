@@ -1,8 +1,12 @@
 defmodule ApiWeb.RoomChannel do
   use Phoenix.Channel
+  alias ApiWeb.Presence
 
   # Allow users to join any room.
   def join("room:" <> _room_name, _message, socket) do
+
+    # Handle the after_join events.
+    send(self(), :after_join)
 
     # Reply with the current id to the user.
     {:ok, %{ sender_id: socket.assigns.sender_id }, socket}
@@ -32,6 +36,20 @@ defmodule ApiWeb.RoomChannel do
     })
 
     # We don't expect a reply to this broadcast.
+    {:noreply, socket}
+  end
+
+  # Handle additional information events.
+  def handle_info(:after_join, socket) do
+
+    # We use the Phoenix Presence object to inform about channel information
+    # events, so we should use it to track
+    {:ok, _} = Presence.track(socket, "#{socket.assigns.sender_id}", %{
+      online_at: DateTime.utc_now,
+    })
+
+    # Send the Presence list to the client in a 'presence_state' event.
+    push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}
   end
 

@@ -16,6 +16,7 @@ export default React.memo(function ChatNavigationRoom(props) {
 
   // Process the last message.
   const last = messages ? messages.at(0) : null
+  const lastSenderHue = last ? last.senderHue : 0
   const lastSender = last ? last.senderName : ''
   const lastText = last ? last.text : ''
 
@@ -29,7 +30,7 @@ export default React.memo(function ChatNavigationRoom(props) {
         <span className={styles.time}><TimeStamp time={last ? new Date(last.time) : undefined } /></span>
       </div>
       <div className={styles.bottom}>
-        <span className={styles.sender}>{lastSender}{lastText ? ':' : ''}</span>
+        <span className={styles.sender} style={{ '--user-hue': lastSenderHue }}>{lastSender}{lastText ? ':' : ''}</span>
         <span className={styles.text}>{lastText}</span>
       </div>
     </button>

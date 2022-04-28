@@ -11,12 +11,18 @@ import styles from './Message.module.scss'
 export default React.memo(function ChatBoxMessage(props) {
 
   // Extract the props that we want to use.
-  const { time, self, sender, text } = props
+  const { time, self, senderName, senderId, senderHue, text } = props
   
   return (
     <div className={`${styles.message} ${self ? styles.self : ''}`}>
       <div className={styles.top}>
-        <span className={styles.sender}>{sender}</span>
+        <span
+          className={styles.sender}
+          title={senderId}
+          style={{ '--user-hue': senderHue }}
+        >
+          {senderName}
+        </span>
         <span className={styles.time}><TimeStamp time={time} /></span>
       </div>
       <div className={styles.bottom}>

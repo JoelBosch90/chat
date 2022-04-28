@@ -16,7 +16,7 @@ import styles from './Box.module.scss'
 export default React.memo(function ChatBox(props) {
 
   // Extract the props that we want to use.
-  const { messages, senderName, roomName, updateName, sendMessage, deselectRoom, leaveRoom, renameSender } = props
+  const { roomName, messages, users, senderName, updateName, sendMessage, deselectRoom, leaveRoom, renameSender } = props
 
   // Create references to set the correct focus.
   const [ overlayRef, inputRef] = [ useRef(), useRef() ]
@@ -46,7 +46,9 @@ export default React.memo(function ChatBox(props) {
       self={message.self}
       text={message.text}
       time={message.time}
-      sender={message.senderName}
+      senderName={message.senderName}
+      senderId={message.senderId}
+      senderHue={message.senderHue}
     />
   }) : []
 
@@ -94,6 +96,7 @@ export default React.memo(function ChatBox(props) {
       />
       <ChatBoxControls 
         roomName={roomName}
+        users={users}
         deselectRoom={deselectRoom}
         leaveRoom={leaveRoom}
         renameSender={renameSender}

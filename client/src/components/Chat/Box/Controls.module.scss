@@ -3,14 +3,13 @@
  */
 .controls
 {
-  // Use Flexbox to create a horizontal layout.
+  // Use Flexbox to create a vertical layout for the top and bottom control
+  // groups.
   display: flex;
+  flex-direction: column;
 
   // Make sure nothing escapes this container.
   overflow: hidden;
-
-  // Spread out the control groups.
-  justify-content: space-between;
 
   // Use padding to prevent the content from touching the edges of the bar.
   padding: 1em;
@@ -34,32 +33,82 @@
     var(--font-opacity)
   );
 
-  // Target the control groups.
-  .start, .end
+  // Target the groups that vertically divide the control groups.
+  .top, .bottom
   {
-    // Use Flexbox to position the controls within the group.
+    // Use Flexbox to create the horizontal layout for the start and end control
+    // groups.
     display: flex;
 
-    // Make sure the controls don't touch each other.
-    gap: 1em;
-  }
-  // Target only the control group at the start.
-  .start
-  {
-    // Make this element shrink first.
-    flex-shrink: 2;
-    min-width: 0;
+    // Spread out the control groups.
+    justify-content: space-between;
 
-    // Target only the room name.
-    .name
+    // Target the control groups.
+    .start, .end
     {
-      // Show the room name slightly larger than the controls.
-      font-size: 1.5em;
+      // Use Flexbox to position the controls within the group.
+      display: flex;
+  
+      // Make sure the controls don't touch each other.
+      gap: 1em;
+    }
+  
+    // Target only the control group at the start.
+    .start
+    {
+      // Make this element shrink first.
+      flex-shrink: 2;
+      min-width: 0;
+  
+      // Target only the room name.
+      .name
+      {
+        // Show the room name slightly larger than the controls.
+        font-size: 1.5em;
+  
+        // Truncate the title if it gets too long.
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
 
-      // Truncate the title if it gets too long.
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    // Target the container displaying online users.
+    .online
+    {
+      // Users don't need to draw a lot of attention so their names can take up
+      // less space.
+      font-size: 0.85em;
+
+      // Target each individual online user.
+      .user
+      {
+        // Default to red to indicate that a custom hue is missing.
+        --user-hue: 0;
+
+        // Give each user its own color with all else to base values.
+        color: hsla(
+          var(--user-hue),
+          var(--saturation-base),
+          var(--lightness-base),
+          var(--opacity-base)
+        );
+      }
+
+      // Target each user that is preceeded by another user.
+      .user + .user::before
+      {
+        // Add a comma to separate the two.
+        content: ', ';
+
+        // Display the comma with the default colors.
+        color: hsla(
+          var(--font-hue),
+          var(--font-saturation),
+          calc(var(--font-lightness) + var(--lightness-step) * 2),
+          var(--font-opacity)
+        );
+      }
     }
   }
 

@@ -90,6 +90,21 @@
   // name.
   .time { flex-shrink: 0; }
 
+  // Target the sender name specifically.
+  .sender
+  {
+    // Default to red to indicate that a custom hue is missing.
+    --user-hue: 0;
+
+    // Give each user its own color with all else to base values.
+    color: hsla(
+      var(--user-hue),
+      var(--saturation-base),
+      var(--lightness-base),
+      var(--opacity-base)
+    );
+  }
+
   // Target the text preview.
   .text
   {

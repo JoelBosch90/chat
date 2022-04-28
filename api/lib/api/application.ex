@@ -12,8 +12,11 @@ defmodule Api.Application do
       ApiWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Api.PubSub},
+      # Start the presence module. This relies on the PubSub module and informs
+      # the Endpoint module, so it should be added in between.
+      ApiWeb.Presence,
       # Start the Endpoint (http/https)
-      ApiWeb.Endpoint
+      ApiWeb.Endpoint,
       # Start a worker by calling: Api.Worker.start_link(arg)
       # {Api.Worker, arg}
     ]
