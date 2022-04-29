@@ -28,15 +28,32 @@
   // Provide some padding.
   padding: 1em;
 
-  // Provide some distance between the text and the button.
-  gap: .5em;
+  // Use FlexBox to create a vertical layout.
+  display: flex;
+  flex-direction: column;
 
-  // Use grid to create a layout.
-  display: grid;
+  // Keep some distance between the two rows.
+  gap: 1em;
 
-  // Give the send button all the room it needs, then use the rest for the
-  // input.
-  grid-template-columns: 1fr max-content;
+  // Target the top row.
+  .top
+  {
+    // Hide when empty or explicitly hidden.
+    &:empty, &.hidden { display: none }
+  }
+
+  // Target the bottom row.
+  .bottom
+  {
+    // Provide some distance between the text and the button.
+    gap: 1em;
+  
+    // Use grid to create a layout.
+    display: grid;
+  
+    // Give the buttons all the room they need, then use the rest for the input.
+    grid-template-columns: max-content 1fr max-content;
+  }
 
   // Subtly light up the input field when the cursor hovers it or when it is
   // selected to show that it is an interactive element.
