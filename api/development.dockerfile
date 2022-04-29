@@ -1,5 +1,5 @@
 # Load up a lightweight Elixir image.
-FROM elixir:alpine
+FROM elixir:1.13-alpine
 
 # Create the working directory.
 WORKDIR /api

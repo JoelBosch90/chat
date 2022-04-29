@@ -1,5 +1,5 @@
 # Get a light NodeJS base image.
-FROM node:alpine as build
+FROM node:17-alpine as build
 
 # Create the working directory and give ownership to the node user.
 RUN mkdir -p /client && chown -R node:node /client

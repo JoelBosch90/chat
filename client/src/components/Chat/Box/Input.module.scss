@@ -10,7 +10,7 @@
     calc(var(--background-lightness) + var(--lightness-step)),
     var(--background-opacity)
   );
-  
+
   // Match the font color for proper contrast.
   color: hsla(
     var(--font-hue),
@@ -47,17 +47,17 @@
   {
     // Provide some distance between the text and the button.
     gap: 1em;
-  
+
     // Use grid to create a layout.
     display: grid;
-  
+
     // Give the buttons all the room they need, then use the rest for the input.
     grid-template-columns: max-content 1fr max-content;
   }
 
   // Subtly light up the input field when the cursor hovers it or when it is
   // selected to show that it is an interactive element.
-  &:hover { filter: brightness(125%); }
+  input:hover { filter: brightness(125%); }
 
   // Target the input's placeholder text and the button when no text has been
   // entered.

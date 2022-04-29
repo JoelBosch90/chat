@@ -45,7 +45,7 @@ export default React.memo(function Chat() {
    *  @returns  {array}
    */
   const currentRoomUsers = () =>  {
-    
+
     // Get a local copy of all users in the current room.
     const users = { ...(currentRoom()?.users || {}) }
 
@@ -106,7 +106,7 @@ export default React.memo(function Chat() {
       sender_name: room.senderName
     })
   }
-  
+
   /**
    *  Function to process receiving a new message.
    *  @param  {string}  roomName  Name of the chat room in which a message is
@@ -140,7 +140,7 @@ export default React.memo(function Chat() {
 
       // Check if this room already exists. If not, use the default room.
       const currentRoom = rooms[roomName] ?? emptyRoom
-      
+
       // Construct the message object.
       const newMessage = {
         id, time, text,
@@ -165,7 +165,7 @@ export default React.memo(function Chat() {
       // Add the new message to the current room. Make sure to also keep all
       // previous messages. Make sure to add the new message in front.
       const updatedRoom = { ...currentRoom, messages: [ newMessage, ...currentRoom.messages ] }
-      
+
       // Add the new room to the existing rooms.
       return { ...rooms, [roomName]: updatedRoom }
     })
@@ -226,7 +226,7 @@ export default React.memo(function Chat() {
 
       // Add the new user to the designated room.
       const updatedRoom = { ...room, users: { ...room.users, [userId]: updatedUser } }
-      
+
       // Add the new room to the existing rooms.
       return { ...rooms, [roomName]: updatedRoom }
     })
@@ -257,7 +257,7 @@ export default React.memo(function Chat() {
 
         // Get the latest online_at tag from the metas.
         lastOnline: user.metas.reduce((accumulator, current) => {
-          
+
           // Find the greatest date time tag.
           return current.online_at > accumulator ? current.online_at : accumulator
 
@@ -292,7 +292,7 @@ export default React.memo(function Chat() {
 
       // Update the targeted room.
       const updatedRoom = { ...room, users }
-      
+
       // Update the room in the existing rooms.
       return { ...rooms, [roomName]: updatedRoom }
     })
@@ -387,7 +387,7 @@ export default React.memo(function Chat() {
 
     // Join the channel for this room if we haven't already.
     if (!channels[name]) joinChannel(name)
-    
+
     // Add an empty room with this name if we haven't already.
     if (!rooms[name]) setRooms(rooms => ({ ...rooms, [name]: emptyRoom }))
   }
@@ -468,19 +468,24 @@ export default React.memo(function Chat() {
 
     // On page load, make sure that we have a channel for each room.
     for (const roomName in rooms) joinChannel(roomName)
-  
+
     // Start listening for navigation changes.
     window.addEventListener('popstate', selectRoomFromLocation)
 
     // Check if we should join a room based on the current location.
     selectRoomFromLocation()
+
+    // We can ignore warnings about the missing dependencies as this is supposed
+    // to run only on first render, regardless of any changes to dependencies.
+    // @todo: It would be nice to find a cleaner solution for this.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <div className={styles.chat}>
       <ChatMeta
-        roomName={currentRoomName} 
-        messages={currentRoomMessages()} 
+        roomName={currentRoomName}
+        messages={currentRoomMessages()}
       />
       <main className={currentRoomName ? styles.showRoom : ''}>
         <ChatNavigation
@@ -488,7 +493,7 @@ export default React.memo(function Chat() {
           currentRoom={currentRoomName}
           selectRoom={selectRoom}
         />
-        <ChatBox 
+        <ChatBox
           roomName={currentRoomName}
           messages={currentRoomMessages()}
           users={currentRoomUsers()}
