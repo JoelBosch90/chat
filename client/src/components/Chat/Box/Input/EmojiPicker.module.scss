@@ -10,13 +10,35 @@
   // Keep some distance between categories.
   gap: 1em;
 
-  // Make the emoji a little larger to make them easier to click.
-  font-size: 1.5em;
-
   // Don't allow the emoji to take up the entire chatbox if that's not
   // necessary.
   max-height: 8em;
 
   // Let the user scroll through the emoji if necessary.
   overflow-y: scroll;
+
+  // Target each category title.
+  h3
+  {
+    // We don't need a larger font here.
+    font-size: 1em;
+
+    // We don't need extra margins here.
+    margin: 0;
+
+    // We don't need this font to stand out too much.
+    color: hsla(
+      var(--font-hue),
+      var(--font-saturation),
+      var(--font-lightness),
+      var(--font-opacity)
+    );
+  }
+
+  // Target all emoji containers.
+  .emojis
+  {
+    // Make the emojis a little larger to make them easier to click.
+    font-size: 1.5em;
+  }
 }

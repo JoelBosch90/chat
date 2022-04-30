@@ -11,12 +11,54 @@ export default function EmojiPicker(props) {
   // Extract the props that we want to use.
   const { pick } = props
 
+  /**
+   *  Function to pick an emoji. This one also makes sure that emojis get added
+   *  to the recently used emoji category.
+   *  @param  {string}  emoji   Emoji to pick.
+   */
+  const pickEmoji = emoji => {
+
+    // First process picking the emoji.
+    pick(emoji)
+  }
+
+  /**
+   *  Function to create an emoji button.
+   *  @param    {string}  emoji   Emoji to create a button for.
+   *  @returns  {JSX}
+   */
+  const createEmojiButton = emoji => (
+    <button
+      key={emoji}
+      type='button'
+      onClick={() => pickEmoji(emoji)}
+      role='img'
+    >
+      {emoji}
+    </button>
+  )
+
+  /**
+   *  Function to create a category of emoji buttons.
+   *  @param    {string}  name      Name of the category to add.
+   *  @param    {array}   buttons   Emoji buttons to add to the category.
+   *  @returns  {JSX}
+   */
+  const createEmojiCategory = (name, buttons) => (
+    <div key ={name}>
+      <h3>{name}</h3>
+      <div className={styles.emojis}>
+        {buttons}
+      </div>
+    </div>
+  )
+
   // This is a list of the (hexadecimal) ranges of all emoji categories.
   const ranges = [
-    [128513, 128591], // Emoticons.
-    [128640, 128704], // Transport and map symbols.
-    [127744, 128278], // Miscellaneous.
-    [9986, 10160], // Dingbats.
+    { name: 'Emoticons', start: 128513, end: 128591 }, // Emoticons.
+    { name: 'Symbols', start: 128640, end: 128704 }, // Transport and map symbols.
+    { name: 'Miscellaneous', start: 127744, end: 128278 }, // Miscellaneous.
+    { name: 'Dingbats', start: 9986, end: 10160 }, // Dingbats.
   ]
 
   // Create a list of all emoji categories.
@@ -29,30 +71,17 @@ export default function EmojiPicker(props) {
     const buttons = []
 
     // Loop through all emoji values.
-    for (let code = category[0]; code < category[1]; code++) {
+    for (let code = category.start; code < category.end; code++) {
 
       // Construct the emoji unicode character.
       const emoji = String.fromCodePoint(code)
 
       // Add each emoji as a button that picks itself.
-      buttons.push((
-        <button
-          key={emoji}
-          type='button'
-          onClick={() => pick(emoji)}
-          role='img'
-        >
-          {emoji}
-        </button>
-      ))
+      buttons.push(createEmojiButton(emoji))
     }
 
-    // Add each category as a separate div.
-    categories.push((
-      <div key={category[0]}>
-        {buttons}
-      </div>
-    ))
+    // Add each category.
+    categories.push(createEmojiCategory(category.name, buttons))
   }
 
   return (
