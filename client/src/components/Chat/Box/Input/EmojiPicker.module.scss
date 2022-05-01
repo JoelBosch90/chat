@@ -11,8 +11,9 @@
   gap: 1em;
 
   // Don't allow the emoji to take up the entire chatbox if that's not
-  // necessary.
-  max-height: 8em;
+  // necessary. A value of 8.5 makes sure that we display at least two fill rows
+  // of emoji with category titles.
+  max-height: 8.5em;
 
   // Let the user scroll through the emoji if necessary.
   overflow-y: scroll;

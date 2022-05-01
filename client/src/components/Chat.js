@@ -51,6 +51,12 @@ export default React.memo(function Chat() {
     // Get a local copy of all users in the current room.
     const users = { ...(currentRoom()?.users || {}) }
 
+    // Get the name of the user in this channel.
+    const userName = currentRoomSenderName()
+
+    // Override the name of the sender.
+    if (senderId && users[senderId] && userName) users[senderId].name = userName
+
     // Prepare an empty array to fill with user data.
     const list = []
 
