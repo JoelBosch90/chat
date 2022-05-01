@@ -56,7 +56,11 @@ export default function ChatBoxInput(props) {
   const toggleEmojiPicker = () => showEmojiPicker(showing => !showing)
 
   return (
-    <form className={styles.input} onSubmit={submit}>
+    <form
+      className={styles.input}
+      onSubmit={submit}
+      autoComplete="off"
+    >
       <div className={`${styles.top} ${showingEmojiPicker ? '' : styles.hidden}`}>
         <EmojiPicker pick={addToInput} />
       </div>
