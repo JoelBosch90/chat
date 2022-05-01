@@ -23,6 +23,10 @@ button
   // Make sure that it is clear that this is clickable.
   cursor: pointer;
 
+  // Use an animation for hover and focus effects.
+  transition-duration: var(--animation-speed-quick);
+  transition-property: filter;
+
   // Subtly light up the button when the cursor hovers it or when it is selected
   // to show that it is an interactive element.
   &:hover, &:focus { filter: brightness(125%); }

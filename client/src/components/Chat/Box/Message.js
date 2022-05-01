@@ -14,20 +14,20 @@ export default React.memo(function ChatBoxMessage(props) {
   const { time, self, senderName, senderId, senderHue, text } = props
   
   return (
-    <div className={`${styles.message} ${self ? styles.self : ''}`}>
-      <div className={styles.top}>
-        <span
-          className={styles.sender}
-          title={senderId}
-          style={{ '--user-hue': senderHue }}
-        >
-          {senderName}
-        </span>
-        <span className={styles.time}><TimeStamp time={time} /></span>
+      <div className={`${styles.message} ${self ? styles.self : ''}`}>
+        <div className={styles.top}>
+          <span
+            className={styles.sender}
+            title={senderId}
+            style={{ '--user-hue': senderHue }}
+          >
+            {senderName}
+          </span>
+          <span className={styles.time}><TimeStamp time={time} /></span>
+        </div>
+        <div className={styles.bottom}>
+          <span>{text}</span>
+        </div>
       </div>
-      <div className={styles.bottom}>
-        <span>{text}</span>
-      </div>
-    </div>
   )
 })

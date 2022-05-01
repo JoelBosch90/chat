@@ -25,26 +25,43 @@
   // Make sure we include padding in the width.
   box-sizing: border-box;
 
-  // Provide some padding.
-  padding: 1em;
-
   // Use FlexBox to create a vertical layout.
   display: flex;
   flex-direction: column;
 
-  // Keep some distance between the two rows.
-  gap: 1em;
-
   // Target the top row.
   .top
   {
+    // Don't allow the emoji to take up the entire chatbox if that's not
+    // necessary.
+    max-height: 10em;
+
+    // Use an animation for hiding and showing the emoji picker.
+    transition-duration: var(--animation-speed-slow);
+    transition-property: max-height, visibility;
+
     // Hide when empty or explicitly hidden.
-    &:empty, &.hidden { display: none }
+    &:empty, &.hidden { 
+      visibility: hidden;
+      max-height: 0;
+    }
   }
 
   // Target the bottom row.
   .bottom
   {
+    z-index: 2;
+    // Use a slightly lighter background color.
+    background-color: hsla(
+      var(--background-hue),
+      var(--background-saturation),
+      calc(var(--background-lightness) + var(--lightness-step)),
+      var(--background-opacity)
+    );
+
+    // Provide some padding.
+    padding: 1em;
+
     // Provide some distance between the text and the button.
     gap: 1em;
 
@@ -54,10 +71,6 @@
     // Give the buttons all the room they need, then use the rest for the input.
     grid-template-columns: max-content 1fr max-content;
   }
-
-  // Subtly light up the input field when the cursor hovers it or when it is
-  // selected to show that it is an interactive element.
-  input:hover { filter: brightness(125%); }
 
   // Target the input's placeholder text and the button when no text has been
   // entered.

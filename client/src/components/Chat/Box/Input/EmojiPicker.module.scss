@@ -10,10 +10,8 @@
   // Keep some distance between categories.
   gap: 1em;
 
-  // Don't allow the emoji to take up the entire chatbox if that's not
-  // necessary. A value of 8.5 makes sure that we display at least two fill rows
-  // of emoji with category titles.
-  max-height: 8.5em;
+  // Keep some distance from the edges of the container.
+  padding: 1em;
 
   // Let the user scroll through the emoji if necessary.
   overflow-y: scroll;
@@ -44,5 +42,8 @@
   }
 
   // Hide hidden elements when requested.
-  .hidden { display: none; }
+  .hidden {
+    visibility: hidden;
+    max-height: 0;
+  }
 }
