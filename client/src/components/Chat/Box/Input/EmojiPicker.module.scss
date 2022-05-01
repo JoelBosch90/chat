@@ -41,4 +41,7 @@
     // Make the emojis a little larger to make them easier to click.
     font-size: 1.5em;
   }
+
+  // Hide hidden elements when requested.
+  .hidden { display: none; }
 }

@@ -24,7 +24,9 @@ export default React.memo(function Chat() {
   const [ channels, setChannels ] = useState({})
   const [ senderId, setSenderId ] = useState(0)
 
-  // Define the default room settings.
+  // Define the default room settings. We store messages in an array because 
+  // JSON doesn't handle maps well and we use JSON to locally store our room
+  // objects.
   const emptyRoom = { senderName: null, messages: [], users: {} }
 
   /**
