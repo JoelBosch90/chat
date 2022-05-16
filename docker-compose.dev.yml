@@ -56,9 +56,6 @@ services:
   client:
     container_name: chat.client.development
 
-    # We always want to restart when things go wrong.
-    restart: always
-
     # We want to build from the development dockerfile in the client directory.
     build:
       context: ./client/
@@ -95,9 +92,6 @@ services:
   ##############################################################################
   api:
     container_name: chat.api.development
-
-    # We always want to restart when things go wrong.
-    restart: always
 
     # We want to build from the development dockerfile in the API directory.
     build:

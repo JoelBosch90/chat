@@ -27,6 +27,9 @@ services:
     # We can use the latest version of Nginx.
     image: nginx:stable-alpine
 
+    # We always want to restart when things go wrong.
+    restart: always
+
     # We want to expose at port 8007.
     ports:
       - 8007:80
