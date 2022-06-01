@@ -1,7 +1,8 @@
 # Chat
 This project is mainly an excuse to try out React. Thus, the API is kept as
 simple as possible, although that was also a nice opportunity to try out the
-Phoenix framework.
+Phoenix framework. Because I wanted to get familiar with React itself, this
+project also does not feature things like NextJS or Redux.
 
 The end result is a very simple web chat that uses WebSocket connections to
 allow users to send and receive messages in specific rooms.
@@ -84,12 +85,12 @@ until you restart them.
 
 
 ## Set up your local environment variables.
-The server side of this service will require a few environment variables to be
-set with local access credentials. You should set these settings in a `.env`
-file in the main project directory (the one that has the docker-compose.yml
-files). This file should be in your `.gitignore` because it should not end up in
-the repository, because it contains exclusively local settings. The service
-expects the following environment variables:
+The server side of this service will require a few environment variables. You
+should set these settings in a `.env` file in the main project directory
+(the one that has the docker-compose.yml files). This file should be in your
+ `.gitignore` because it should not end up in the repository, because it contains
+exclusively local settings. The service expects the following environment
+variables:
 
 CLIENT_URL
  - Description:           The location where the client can be found.
