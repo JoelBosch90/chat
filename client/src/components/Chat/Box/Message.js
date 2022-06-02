@@ -8,7 +8,7 @@ import styles from './Message.module.scss'
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default React.memo(function ChatBoxMessage(props) {
+export default function ChatBoxMessage(props) {
 
   // Extract the props that we want to use.
   const { time, self, senderName, senderId, senderHue, text } = props
@@ -30,4 +30,4 @@ export default React.memo(function ChatBoxMessage(props) {
         </div>
       </div>
   )
-})
+}

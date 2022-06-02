@@ -13,7 +13,7 @@ import styles from './Chat.module.scss'
  *  Functional component that displays the entire chat application.
  *  @returns  {JSX.Element}
  */
-export default React.memo(function Chat() {
+export default function Chat() {
 
   // Create the state values that we want to back up locally.
   const [ currentRoomName, setCurrentRoomName ] = useLocalState('currentRoomName', '')
@@ -522,4 +522,4 @@ export default React.memo(function Chat() {
       </main>
     </div>
   )
-})
+}

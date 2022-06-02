@@ -13,7 +13,7 @@ import styles from './Navigation.module.scss'
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default React.memo(function ChatNavigation(props) {
+export default function ChatNavigation(props) {
 
   // Extract the props that we want to use.
   const { rooms, currentRoom, selectRoom } = props
@@ -81,4 +81,4 @@ export default React.memo(function ChatNavigation(props) {
       </div>
     </nav>
   )
-})
+}

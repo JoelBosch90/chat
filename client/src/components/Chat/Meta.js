@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet-async'
  *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default React.memo(function ChatMeta(props) {
+export default function ChatMeta(props) {
 
   // Extract the props that we want to use.
   const { roomName, messages } = props
@@ -72,4 +72,4 @@ export default React.memo(function ChatMeta(props) {
       <meta property="og:description" content={description} />
     </Helmet>
   )
-})
+}
