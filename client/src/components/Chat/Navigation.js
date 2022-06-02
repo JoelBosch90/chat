@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import ChatNavigationRoom from './Navigation/Room.js'
 import Overlay from '../Overlay.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -58,15 +58,21 @@ export default function ChatNavigation(props) {
     )
   }) : []
 
+  // Memoize functions and components that don't need to be rerendered for every
+  // new message.
+  const memoJoin = useCallback(join)
+  const memoHide = useCallback(hideOverlay)
+  const MemoOverlay = React.memo(Overlay)
+
   return (
     <nav className={styles.navigation}>
-      <Overlay
+      <MemoOverlay
         visible={overlayVisible}
         title="Which room do you want to join?"
         placeholder="E.g. Lobby 1..."
         button="Join"
-        onSubmit={join}
-        onCancel={hideOverlay}
+        onSubmit={memoJoin}
+        onCancel={memoHide}
       />
       <ol>
         {roomElements}
