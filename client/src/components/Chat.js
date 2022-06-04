@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import useLocalState from '../hooks/useLocalState.js'
 import shuffle from '../scripts/shuffle.js'
 import deleteStateProperty from '../scripts/deleteStateProperty.js'
@@ -57,15 +57,8 @@ export default function Chat() {
     // Override the name of the sender.
     if (senderId && users[senderId] && userName) users[senderId].name = userName
 
-    // Prepare an empty array to fill with user data.
-    const list = []
-
-    // Run through the user object to add the id to each user object, then add
-    // them to the array.
-    for(const [id, user] of Object.entries(users)) list.push({ ...user, id })
-
-    // Expose the list of users as an array.
-    return list
+    // Return an array of user objects with the id added.
+    return Object.entries(users).map(([id, user]) => ({ ...user, id }));
   }
 
   /**
@@ -489,12 +482,6 @@ export default function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Memoize functions and components that don't need to be rerendered for every
-  // new message.
-  const memoSelectRoom = useCallback(selectRoom, [rooms, channels, connection])
-  const MemoChatNavigation = React.memo(ChatNavigation)
-  const MemoOverlay = React.memo(Overlay)
-
   return (
     <div className={styles.chat}>
       <ChatMeta
@@ -502,10 +489,10 @@ export default function Chat() {
         messages={currentRoomMessages()}
       />
       <main className={currentRoomName ? styles.showRoom : ''}>
-        <MemoChatNavigation
+        <ChatNavigation
           rooms={rooms}
           currentRoom={currentRoomName}
-          selectRoom={memoSelectRoom}
+          selectRoom={selectRoom}
         />
         <ChatBox
           roomName={currentRoomName}
@@ -518,12 +505,12 @@ export default function Chat() {
           leaveRoom={leaveRoom}
           renameSender={renameSender}
         />
-        <MemoOverlay
+        <Overlay
           visible={!rooms || !Object.keys(rooms).length}
           title="What is the first room you want to join?"
           placeholder="E.g. Lobby 1..."
           button="Join"
-          onSubmit={memoSelectRoom}
+          onSubmit={selectRoom}
         />
       </main>
     </div>

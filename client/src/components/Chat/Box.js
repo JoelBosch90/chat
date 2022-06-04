@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react'
+import React, { useRef, useEffect } from 'react'
 import ChatBoxControls from './Box/Controls.js'
 import ChatBoxMessage from './Box/Message.js'
 import ChatBoxInput from './Box/Input.js'
@@ -84,18 +84,9 @@ export default function ChatBox(props) {
   // specifically refocused.
   useEffect(reFocus, [roomName, senderName, inputRef, overlayRef])
 
-  // Memoize components that don't need to be rerendered for every new message.
-  const MemoOverlay = React.memo(Overlay)
-  const MemoChatBoxControls = React.memo(ChatBoxControls)
-
-  // Memoize functions and components that don't need to be rerendered for every
-  // group update.
-  const memoSend = useCallback(sendAndFocus, [sendMessage])
-  const MemoChatBoxInput = React.memo(ChatBoxInput)
-
   return (
     <section className={`${styles.box} ${roomName ? '' : styles.hidden}`}>
-      <MemoOverlay
+      <Overlay
         visible={!senderName}
         title={`What should we call you in room '${roomName}'?`}
         placeholder="E.g. John Malkovich..."
@@ -103,7 +94,7 @@ export default function ChatBox(props) {
         onSubmit={updateName}
         focusRef={overlayRef}
       />
-      <MemoChatBoxControls 
+      <ChatBoxControls 
         roomName={roomName}
         users={users}
         deselectRoom={deselectRoom}
@@ -113,8 +104,8 @@ export default function ChatBox(props) {
       <div className={styles.messages}>
         {messageElements}
       </div>
-      <MemoChatBoxInput
-        sendMessage={memoSend}
+      <ChatBoxInput
+        sendMessage={sendAndFocus}
         roomName={roomName}
         focusRef={inputRef}
       />

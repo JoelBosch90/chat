@@ -1,10 +1,9 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import ChatNavigationRoom from './Navigation/Room.js'
 import Overlay from '../Overlay.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import styles from './Navigation.module.scss'
-
 
 /**
  *  Functional component that displays a vertical navigation layout of
@@ -56,21 +55,15 @@ export default function ChatNavigation(props) {
     </li>
   )) : []
 
-  // Memoize functions and components that don't need to be rerendered for every
-  // new message.
-  const memoJoin = useCallback(join, [selectRoom])
-  const memoHide = useCallback(hideOverlay, [overlayVisible])
-  const MemoOverlay = React.memo(Overlay)
-
   return (
     <nav className={styles.navigation}>
-      <MemoOverlay
+      <Overlay
         visible={overlayVisible}
         title="Which room do you want to join?"
         placeholder="E.g. Lobby 1..."
         button="Join"
-        onSubmit={memoJoin}
-        onCancel={memoHide}
+        onSubmit={join}
+        onCancel={hideOverlay}
       />
       <ol>
         {roomElements}
