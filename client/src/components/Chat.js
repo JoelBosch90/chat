@@ -491,7 +491,7 @@ export default function Chat() {
 
   // Memoize functions and components that don't need to be rerendered for every
   // new message.
-  const memoSelectRoom = useCallback(selectRoom)
+  const memoSelectRoom = useCallback(selectRoom, [rooms, channels, connection])
   const MemoChatNavigation = React.memo(ChatNavigation)
   const MemoOverlay = React.memo(Overlay)
 

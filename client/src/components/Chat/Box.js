@@ -40,17 +40,17 @@ export default function ChatBox(props) {
   }
   
   // Create a list of unique chat message elements.
-  const messageElements = messages ? messages.reduce(uniqueMessages, []).map(message => {
-    return <ChatBoxMessage
-      key={message.id}
-      self={message.self}
-      text={message.text}
-      time={message.time}
-      senderName={message.senderName}
-      senderId={message.senderId}
-      senderHue={message.senderHue}
-    />
-  }) : []
+  const messageElements = messages ? messages.reduce(uniqueMessages, []).map(message => (
+    <ChatBoxMessage
+        key={message.id}
+        self={message.self}
+        text={message.text}
+        time={message.time}
+        senderName={message.senderName}
+        senderId={message.senderId}
+        senderHue={message.senderHue}
+      />
+    )) : []
 
   /**
    *  Function to refocus the correct input.
@@ -90,7 +90,7 @@ export default function ChatBox(props) {
 
   // Memoize functions and components that don't need to be rerendered for every
   // group update.
-  const memoSend = useCallback(sendAndFocus)
+  const memoSend = useCallback(sendAndFocus, [sendMessage])
   const MemoChatBoxInput = React.memo(ChatBoxInput)
 
   return (

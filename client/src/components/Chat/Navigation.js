@@ -45,23 +45,21 @@ export default function ChatNavigation(props) {
   }
 
   // Initialize a list of chat room elements.
-  const roomElements = rooms ? Object.entries(rooms).map(([name, room]) => {
-    return (
-      <li key={name} >
-        <ChatNavigationRoom
-          selected={name === currentRoom}
-          name={name}
-          messages={room.messages}
-          onClick={() => selectRoom(name)}
-        />
-      </li>
-    )
-  }) : []
+  const roomElements = rooms ? Object.entries(rooms).map(([name, room]) => (
+    <li key={name} >
+      <ChatNavigationRoom
+        selected={name === currentRoom}
+        name={name}
+        messages={room.messages}
+        onClick={() => selectRoom(name)}
+      />
+    </li>
+  )) : []
 
   // Memoize functions and components that don't need to be rerendered for every
   // new message.
-  const memoJoin = useCallback(join)
-  const memoHide = useCallback(hideOverlay)
+  const memoJoin = useCallback(join, [selectRoom])
+  const memoHide = useCallback(hideOverlay, [overlayVisible])
   const MemoOverlay = React.memo(Overlay)
 
   return (
