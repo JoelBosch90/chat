@@ -1,6 +1,8 @@
-import React from 'react'
+// Import used scripts.
+import useLocalState from '../../../../hooks/useLocalState'
+
+// Import styles.
 import styles from './EmojiPicker.module.scss'
-import useLocalState from '../../../../hooks/useLocalState.js'
 
 /**
  *  Functional component that displays a box that can be used to pick emoji's.

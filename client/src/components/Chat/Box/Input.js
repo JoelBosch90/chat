@@ -1,8 +1,13 @@
+// Import React dependencies.
 import React, { useState } from 'react'
+
+// Import components.
+import EmojiPicker from './Input/EmojiPicker'
+
+// Import styles.
+import styles from './Input.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faFaceGrinBeam } from '@fortawesome/free-solid-svg-icons'
-import EmojiPicker from './Input/EmojiPicker.js'
-import styles from './Input.module.scss'
 
 /**
  *  Functional component that displays the input field in a chat box that is

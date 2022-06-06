@@ -1,5 +1,7 @@
-import React from 'react'
-import TimeStamp from '../../TimeStamp.js'
+// Import components.
+import TimeStamp from '../../TimeStamp'
+
+// Import styles.
 import styles from './Room.module.scss'
 
 /**

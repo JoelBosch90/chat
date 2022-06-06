@@ -1,7 +1,9 @@
-import React from 'react'
+// Import used scripts.
+import share from '../../../scripts/share'
+
+// Import styles.
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRightFromBracket, faArrowLeft, faPenToSquare, faShareFromSquare } from '@fortawesome/free-solid-svg-icons'
-import share from '../../../scripts/share.js'
 import styles from './Controls.module.scss'
 
 /**

@@ -1,4 +1,4 @@
-import React from 'react'
+// Import React dependencies.
 import { Helmet } from 'react-helmet-async'
 
 /**

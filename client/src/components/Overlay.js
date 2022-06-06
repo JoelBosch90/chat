@@ -1,4 +1,7 @@
+// Import React dependencies.
 import React, { useState, useEffect, useRef } from 'react'
+
+// Import styles.
 import styles from './Overlay.module.scss'
 
 /**

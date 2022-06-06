@@ -1,8 +1,13 @@
+// Import React dependencies.
 import React, { useRef, useEffect } from 'react'
-import ChatBoxControls from './Box/Controls.js'
-import ChatBoxMessage from './Box/Message.js'
-import ChatBoxInput from './Box/Input.js'
-import Overlay from '../Overlay.js'
+
+// Import components.
+import ChatBoxControls from './Box/Controls'
+import ChatBoxMessage from './Box/Message'
+import ChatBoxInput from './Box/Input'
+import Overlay from '../Overlay'
+
+// Import styles.
 import styles from './Box.module.scss'
 
 /**

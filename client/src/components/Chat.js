@@ -1,12 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import useLocalState from '../hooks/useLocalState.js'
-import shuffle from '../scripts/shuffle.js'
-import deleteStateProperty from '../scripts/deleteStateProperty.js'
-import connect from '../scripts/socket.js'
-import ChatMeta from './Chat/Meta.js'
-import ChatNavigation from './Chat/Navigation.js'
-import ChatBox from './Chat/Box.js'
-import Overlay from './Overlay.js'
+// Import React dependencies.
+import React, { useState, useEffect, useCallback } from 'react'
+
+// Import store dependencies.
+import { useSelector, useDispatch } from 'react-redux'
+import { roomSelected } from '../store/features/currentRoomName'
+import {
+  roomJoined, roomLeft, senderNameUpdated, messageReceived,
+  userUpdated, userRemoved, usersReset
+} from '../store/features/rooms'
+
+// Import used scripts.
+import shuffle from '../scripts/shuffle'
+import deleteStateProperty from '../scripts/deleteStateProperty'
+import connect from '../scripts/socket'
+
+// Import used components.
+import ChatMeta from './Chat/Meta'
+import ChatNavigation from './Chat/Navigation'
+import ChatBox from './Chat/Box'
+import Overlay from './Overlay'
+
+// Import styles.
 import styles from './Chat.module.scss'
 
 /**
@@ -14,10 +28,16 @@ import styles from './Chat.module.scss'
  *  @returns  {JSX.Element}
  */
 export default function Chat() {
+  
+  // Create the dispatch function to interact with the stores.
+  const dispatch = useDispatch()
 
-  // Create the state values that we want to back up locally.
-  const [ currentRoomName, setCurrentRoomName ] = useLocalState('currentRoomName', '')
-  const [ rooms, setRooms ] = useLocalState('rooms', {})
+  // Create the getter and setter for the current room name.
+  const currentRoomName = useSelector(state => state.currentRoomName)
+  const setCurrentRoomName = name => dispatch(roomSelected(name))
+
+  // Get access to the rooms object.
+  const rooms = useSelector(state => state.rooms)
 
   // Create the state values that need to be reset on page load.
   const [ connection ] = useState(connect())
@@ -54,11 +74,11 @@ export default function Chat() {
     // Get the name of the user in this channel.
     const userName = currentRoomSenderName()
 
-    // Override the name of the sender.
-    if (senderId && users[senderId] && userName) users[senderId].name = userName
+    // Override the name of the sender if we have it.
+    const withOwnName = senderId && users[senderId] && userName ? { ...users, [senderId]: { ...users[senderId], name: userName }} : users
 
     // Return an array of user objects with the id added.
-    return Object.entries(users).map(([id, user]) => ({ ...user, id }));
+    return Object.entries(withOwnName).map(([id, user]) => ({ ...user, id }));
   }
 
   /**
@@ -77,7 +97,7 @@ export default function Chat() {
     if (!currentRoom()) return
 
     // Update the sender name for the current room.
-    setRooms(rooms => ({ ...rooms, [currentRoomName]: { ...rooms[currentRoomName], senderName } }))
+    dispatch(senderNameUpdated({ roomName: currentRoomName, senderName }))
 
     // Also update the user's name in the list.
     updateUser(currentRoomName, senderId, { name: senderName })
@@ -86,7 +106,7 @@ export default function Chat() {
   /**
    *  Function to unset the sender name for the current room.
    */
-  const renameSender = () => void setCurrentRoomSenderName(null)
+  const resetSenderName = () => void setCurrentRoomSenderName(null)
 
   /**
    *  Function to send a message.
@@ -109,7 +129,7 @@ export default function Chat() {
   }
 
   /**
-   *  Function to process receiving a new message.
+   *  Callback to process receiving a new message.
    *  @param  {string}  roomName  Name of the chat room in which a message is
    *                              received.
    *  @param  {Object}  message   Received message object.
@@ -119,7 +139,7 @@ export default function Chat() {
    *    @property {Number}  sender_id     Unique sender identifier.
    *    @property {string}  sender_name   Sender's name.
    */
-  const receiveMessage = (roomName, { id, time, text, sender_id, sender_name }) => {
+  const receiveMessage = useCallback((roomName, { id, time, text, sender_id, sender_name }) => {
 
     // This function may be used inside of an event listener. In those cases,
     // a React state will still refer to the state's value when the event
@@ -136,41 +156,17 @@ export default function Chat() {
       lastOnline: time,
     })
 
-    // Now update the rooms.
-    setRooms(rooms => {
+    console.log('receiveMessage', currentRoomName)
 
-      // Check if this room already exists. If not, use the default room.
-      const currentRoom = rooms[roomName] ?? emptyRoom
-
-      // Construct the message object.
-      const newMessage = {
-        id, time, text,
-
-        // Remap the message to fit React naming conventions.
-        senderId: sender_id,
-        senderName: sender_name,
-
-        // Also pass along the hue for this user in this room.
-        senderHue: currentRoom.users[sender_id].hue,
-
-        // The sender id might change on a page refresh or disconnect,
-        // but we want to remember that the user sent this message, so
-        // we want to store a persistent boolean value here rather than
-        // a dynamically calculated value.
-        self: sender_id === ownId,
-      }
-
-      // Skip adding this message if we already have it.
-      if (currentRoom.messages.find(oldMessage => oldMessage.id === newMessage.id)) return rooms;
-
-      // Add the new message to the current room. Make sure to also keep all
-      // previous messages. Make sure to add the new message in front.
-      const updatedRoom = { ...currentRoom, messages: [ newMessage, ...currentRoom.messages ] }
-
-      // Add the new room to the existing rooms.
-      return { ...rooms, [roomName]: updatedRoom }
-    })
-  }
+    // Now add the message to the room.
+    dispatch(messageReceived({
+      roomName: currentRoomName,
+      id, time, text,
+      senderId: sender_id,
+      senderName: sender_name,
+      self: sender_id === ownId,
+    }))
+  }, [dispatch, currentRoomName])
 
   /**
    *  Function to pick a hue for the color of a new user in a specific room.
@@ -206,31 +202,31 @@ export default function Chat() {
    *  room.
    *  @param  {string}  roomName    Name of the chat room from which to update
    *                                the user.
-   *  @param  {integer} userId      A number that uniquely identifies the user
+   *  @param  {integer} id          A number that uniquely identifies the user
    *                                to update.
    *  @param  {Object}  properties  An object with user properties to update.
    */
-  const updateUser = (roomName, userId, properties) => {
-    setRooms(rooms => {
+  const updateUser = (roomName, id, properties) => {
 
-      // Check if this room already exists. If not, use the default room.
-      const room = rooms[roomName] ?? emptyRoom
+    // Check if this room already exists. If not, use the default room.
+    const room = rooms[roomName] ?? emptyRoom
 
-      // Get the existing user or generate a new one.
-      const existingUser = (room.users ? room.users[userId] : null) ?? {
-        hue: pickHue(room),
-        name: 'Anonymous',
-      }
+    // Get the existing user or generate a new one.
+    const existingUser = (room.users ? room.users[id] : null) ?? {
+      hue: pickHue(room),
+      name: 'Anonymous',
+    }
 
-      // Add the properties to the user.
-      const updatedUser = { ...existingUser, ...properties }
-
-      // Add the new user to the designated room.
-      const updatedRoom = { ...room, users: { ...room.users, [userId]: updatedUser } }
-
-      // Add the new room to the existing rooms.
-      return { ...rooms, [roomName]: updatedRoom }
-    })
+    // Update or add the user for this specific room.
+    dispatch(userUpdated({
+      roomName,
+      id, 
+      ...{
+        hue: existingUser.hue,
+        name: existingUser.name,
+      },
+      ...properties,
+    }))
   }
 
   /**
@@ -272,32 +268,10 @@ export default function Chat() {
    *  Function to remove user from an existing room.
    *  @param  {string}  roomName  Name of the chat room from which to remove the
    *                              user.
-   *  @param  {integer} userId    A number that uniquely identifies the user to
+   *  @param  {integer} id        A number that uniquely identifies the user to
    *                              remove.
    */
-  const removeUser = (roomName, userId) => {
-    setRooms(rooms => {
-
-      // Find the targeted room.
-      const room = rooms[roomName]
-
-      // No reason to remove a user if the room does not exist or does not have
-      // this user.
-      if (!room || !room.users || !room.users[userId]) return rooms
-
-      // Make a local copy of the users object.
-      const users = { ...room.users }
-
-      // Remove the targeted user.
-      delete users[userId]
-
-      // Update the targeted room.
-      const updatedRoom = { ...room, users }
-
-      // Update the room in the existing rooms.
-      return { ...rooms, [roomName]: updatedRoom }
-    })
-  }
+  const removeUser = (roomName, id) => void dispatch(userRemoved({ roomName, id }))
 
   /**
    *  Method to remove multiple users at the same time.
@@ -317,19 +291,7 @@ export default function Chat() {
    *  @param  {string}  roomName  Name of the chat room for which to reset the
    *                              users object.
    */
-  const resetUsers = roomName => {
-    setRooms(rooms => {
-
-      // Create a local copy of the rooms.
-      const updatedRooms = { ...rooms }
-
-      // Remove all users from the target room.
-      updatedRooms[roomName].users = {}
-
-      // Set the updated rooms object.
-      return updatedRooms
-    })
-  }
+  const resetUsers = roomName => void dispatch(usersReset({ roomName }))
 
   /**
    *  Function to join a channel.
@@ -390,7 +352,7 @@ export default function Chat() {
     if (!channels[name]) joinChannel(name)
 
     // Add an empty room with this name if we haven't already.
-    if (!rooms[name]) setRooms(rooms => ({ ...rooms, [name]: emptyRoom }))
+    if (!rooms[name]) dispatch(roomJoined(name))
   }
 
   /**
@@ -459,7 +421,7 @@ export default function Chat() {
     channels[roomName]?.leave()
 
     // Remove both the room and the channel.
-    deleteStateProperty(roomName, setRooms)
+    dispatch(roomLeft(roomName))
     deleteStateProperty(roomName, setChannels)
   }
 
@@ -503,7 +465,7 @@ export default function Chat() {
           updateName={setCurrentRoomSenderName}
           deselectRoom={deselectRoom}
           leaveRoom={leaveRoom}
-          renameSender={renameSender}
+          renameSender={resetSenderName}
         />
         <Overlay
           visible={!rooms || !Object.keys(rooms).length}

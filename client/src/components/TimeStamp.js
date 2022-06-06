@@ -1,5 +1,3 @@
-import React from 'react'
-
 /**
  *  Functional component that displays a single time stamp.
  * 

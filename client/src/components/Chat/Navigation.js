@@ -1,6 +1,11 @@
+// Import React dependencies.
 import React, { useState } from 'react'
-import ChatNavigationRoom from './Navigation/Room.js'
-import Overlay from '../Overlay.js'
+
+// Import components.
+import ChatNavigationRoom from './Navigation/Room'
+import Overlay from '../Overlay'
+
+// Import styles.
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import styles from './Navigation.module.scss'
