@@ -46,8 +46,6 @@ export default function Chat() {
 
   // Get access to the connection context.
   const { connection, channels, setChannels } = useContext(ConnectionContext)
-  
-  console.log('loaded', connection, channels)
 
   /**
    *  Function to add a new user to or update an existing user in an existing

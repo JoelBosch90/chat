@@ -16,9 +16,9 @@ import connect from '../scripts/requests/socket'
  */
 export const ConnectionContext = createContext({
   connection: false,
-  setConnection: () => {},
+  setConnection: () => undefined,
   channels: {},
-  setChannels: () => {},
+  setChannels: () => undefined,
 })
 
 /**
@@ -27,14 +27,13 @@ export const ConnectionContext = createContext({
  *    @property {Array}       children  Child components that will be installed.
  *  @returns  {JSX.Element}
  */
-export const ConnectionContextProvider = ({ children }) => {
+export default ({ children }) => {
 
-  // Create the state values that need to be reset on page load.
+  // Create the connection getters and setters that we want to provide in this
+  // context.
   const [ channels, setChannels ] = useState({})
   const [ connection, setConnection ] = useState(connect())
-  
-  console.log('original', connection, channels)
-  
+    
   // Create the object to share with the connection context.
   const connectionContext = useMemo(() => ({
     connection, setConnection, channels, setChannels

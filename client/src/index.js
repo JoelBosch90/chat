@@ -8,7 +8,7 @@ import { Provider } from 'react-redux'
 import store from './store/store'
 
 // Import components.
-import { ConnectionContextProvider } from './components/ConnectionContextProvider'
+import ConnectionContextProvider from './components/ConnectionContextProvider'
 import Chat from './components/Chat'
 
 // Import global styling.
