@@ -8,6 +8,7 @@ import { Provider } from 'react-redux'
 import store from './store/store'
 
 // Import components.
+import { ConnectionContextProvider } from './components/ConnectionContextProvider'
 import Chat from './components/Chat'
 
 // Import global styling.
@@ -19,7 +20,9 @@ root.render(
   <React.StrictMode>
     <HelmetProvider>
       <Provider store={store}>
-        <Chat />
+        <ConnectionContextProvider>
+          <Chat />
+        </ConnectionContextProvider>
       </Provider>
     </HelmetProvider>
   </React.StrictMode>

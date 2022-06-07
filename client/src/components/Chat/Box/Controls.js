@@ -1,5 +1,5 @@
 // Import used scripts.
-import share from '../../../scripts/share'
+import share from '../../../scripts/generic/share'
 
 // Import styles.
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

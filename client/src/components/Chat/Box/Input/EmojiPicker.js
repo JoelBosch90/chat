@@ -1,5 +1,5 @@
 // Import used scripts.
-import useLocalState from '../../../../hooks/useLocalState'
+import useLocalState from '../../../../scripts/hooks/useLocalState'
 
 // Import styles.
 import styles from './EmojiPicker.module.scss'

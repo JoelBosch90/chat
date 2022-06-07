@@ -1,7 +1,11 @@
 // Import React dependencies.
-import React, { useState } from 'react'
+import React, { useState, useContext, useCallback } from 'react'
+
+// Import store dependencies.
+import { useSelector } from 'react-redux'
 
 // Import components.
+import { ConnectionContext } from '../../ConnectionContextProvider'
 import EmojiPicker from './Input/EmojiPicker'
 
 // Import styles.
@@ -18,11 +22,45 @@ import { faPaperPlane, faFaceGrinBeam } from '@fortawesome/free-solid-svg-icons'
 export default function ChatBoxInput(props) {
 
   // Extract the props that we want to use.
-  const { value, sendMessage, focusRef } = props
+  const { focusRef } = props
+
+  // Get access to the name of the currently selected room, and the rooms object
+  // that contains the messages of which we want to show the latest.
+  const currentRoomName = useSelector(state => state.currentRoomName)
+  const rooms = useSelector(state => state.rooms)
+
+  // We need access to the current room's channel to send a message to the right
+  // place.
+  const { channels } = useContext(ConnectionContext)
+  
+  /**
+   *  Function to send a message.
+   *  @param  {string}  text    Text of the new message to send.
+   */
+  const sendMessage = useCallback(text => {
+
+    // First refocus the input as we may have lost it if the user clicked the
+    // button.
+    focusRef.current.focus()
+
+    // Get the current room.
+    const room = rooms[currentRoomName]
+
+    // We do need a room, otherwise we cannot send anything.
+    if (!room) return
+
+    // Use the channel for the current room to send the message and the current
+    // name of the sender to the server.
+    channels[currentRoomName].push("new_message", {
+      text,
+      sender_name: room.senderName
+    })
+  }, [rooms, currentRoomName, channels, focusRef])
+
 
   // We're going to keep an internal value for the input. Default to a string
   // so that we can set up a controlled component.
-  const [ input, setInput ] = useState(value || '')
+  const [ input, setInput ] = useState('')
 
   // Keep track of when we should show the emoji picker.
   const [ showingEmojiPicker, showEmojiPicker ] = useState(false)

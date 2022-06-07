@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet-async'
 import { useSelector } from 'react-redux'
 
 // Import script dependencies.
-import { activeTitle } from '../../scripts/title'
+import { dynamicTitle } from '../../scripts/title'
 import currentURL from '../../scripts/currentURL'
 
 /**
@@ -15,17 +15,19 @@ import currentURL from '../../scripts/currentURL'
  */
 export default function ChatMeta() {
 
-  // Get access to the name of the currently selected room, and the rooms object
-  // that contains the messages of which we want to show the latest.
+  // To construct the URL and the title, we need access to the name of the
+  // currently selected room.
   const currentRoomName = useSelector(state => state.currentRoomName)
-  const rooms = useSelector(state => state.rooms)
+
+  // To create an dynamic title, we 
+  const currentRoom = useSelector(state => state.rooms[currentRoomName])
 
   // Construct a basic description for the application.
   const description = "A very simple website that lets you chat anonymously in different chatrooms."
 
   // Get access to up to the up to date URL and title.
   const url = useCallback(() => currentURL(currentRoomName, document), [currentRoomName])
-  const title = useCallback(() => activeTitle(currentRoomName, rooms), [currentRoomName, rooms])
+  const title = useCallback(() => dynamicTitle(currentRoomName, currentRoom), [currentRoomName, currentRoom])
   
   return (
     <Helmet>

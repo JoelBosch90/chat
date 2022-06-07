@@ -1,20 +1,21 @@
 // Import React dependencies.
-import React, { useState, useEffect, useCallback, createContext, useContext, useMemo } from 'react'
+import React, { useEffect, useCallback, useContext } from 'react'
 
 // Import store dependencies.
 import { useSelector, useDispatch } from 'react-redux'
 import { roomSelected } from '../store/features/currentRoomName'
+import { senderIdUpdated } from '../store/features/senderId'
 import {
   roomJoined, roomLeft, senderNameUpdated, messageReceived,
-  userUpdated, userRemoved, usersReset
+  userUpdated, userRemoved, usersReset, 
 } from '../store/features/rooms'
 
 // Import used scripts.
-import shuffle from '../scripts/shuffle'
-import deleteStateProperty from '../scripts/deleteStateProperty'
-import connect from '../scripts/socket'
+import deleteStateProperty from '../scripts/generic/deleteStateProperty'
+import pickHue from '../scripts/pickHue'
 
 // Import used components.
+import { ConnectionContext } from './ConnectionContextProvider'
 import ChatMeta from './Chat/Meta'
 import ChatNavigation from './Chat/Navigation'
 import ChatBox from './Chat/Box'
@@ -22,23 +23,6 @@ import Overlay from './Overlay'
 
 // Import styles.
 import styles from './Chat.module.scss'
-
-/**
- *  There are some properties that we want to share with other components. The
- *  ones that are JSON serializable and need to persist over multiple sessions
- *  are shared through Redux.
- *  However, to send and receive messages, we also need to manage our WebSocket
- *  connection. This is done through objects that cannot be JSON serialized, and
- *  do not need to persist over multiple sessions. We still need to share these 
- *  objects with multiple components, so we create a context through which we'll
- *  make these available.
- */
-const ConnectionContext = createContext({
-  connection: false,
-  setConnection: () => {},
-  channels: {},
-  setChannels: () => {},
-})
 
 /**
  *  Functional component that displays the entire chat application.
@@ -52,50 +36,18 @@ export default function Chat() {
   // Create the getter and setter for the current room name.
   const currentRoomName = useSelector(state => state.currentRoomName)
   const setCurrentRoomName = name => dispatch(roomSelected(name))
+  
+  // Create the getter and setter for the current room name.
+  const senderId = useSelector(state => state.senderId)
+  const setSenderId = id => dispatch(senderIdUpdated(id))
 
   // Get access to the rooms object.
   const rooms = useSelector(state => state.rooms)
 
-  console.log(0, { currentRoomName, rooms })
-
-  // Create the state values that need to be reset on page load.
-  const [ channels, setChannels ] = useState({})
-  const [ senderId, setSenderId ] = useState(0)
-  const [ connection, setConnection ] = useState(connect())
-
-  // Create the object to share with the connection context.
-  const connectionContext = useMemo(() => ({
-    connection, setConnection, channels, setChannels
-  }), [connection, channels])
-
-  /**
-   *  Function to pick a hue for the color of a new user in a specific room.
-   *  This function tries to divide hues in such a way that as few users as
-   *  possible share a similar color. Returns a number between 0 and 360.
-   *  @param    {Object}    room  Room object for which to pick a hue.
-   *  @returns  {integer}
-   */
-  const pickHue = room => {
-
-    // List all supported hues. These hues are picked for legibility.
-    const supportedHues = shuffle([30, 60, 90, 120, 150, 180, 300, 330])
-
-    // Get a list of hues that are already taken.
-    const taken = (room.users ?  Object.values(room.users) : [ ])
-
-      // Hues wrap around a scale of 0 - 360, so we can use modulo here to
-      // simplify the numbers.
-      .map(user => user.hue % 360)
-
-    // Pick the least used support hue.
-    return supportedHues.sort((hueA, hueB) => {
-
-      // Sort supported hues by how often they're used.
-      return taken.filter(hue => hue === hueB).length - taken.filter(hue => hue === hueA).length
-
-    // The last entry should be the least frequent hue.
-    }).at(-1)
-  }
+  // Get access to the connection context.
+  const { connection, channels, setChannels } = useContext(ConnectionContext)
+  
+  console.log('loaded', connection, channels)
 
   /**
    *  Function to add a new user to or update an existing user in an existing
@@ -116,8 +68,6 @@ export default function Chat() {
       hue: pickHue(room),
       name: 'Anonymous',
     }
-
-    console.log({ rooms, roomName, room, id, existingUser })
 
     // Update or add the user for this specific room.
     dispatch(userUpdated({
@@ -253,26 +203,6 @@ export default function Chat() {
    *  Function to unset the sender name for the current room.
    */
   const resetSenderName = useCallback(() => void setCurrentRoomSenderName(null), [setCurrentRoomName])
-
-  /**
-   *  Function to send a message.
-   *  @param  {string}  text    Text of the new message to send.
-   */
-  const sendMessage = useCallback(text => {
-
-    // Get the current room.
-    const room = currentRoom()
-
-    // We do need a room, otherwise we cannot send anything.
-    if (!room) return
-
-    // Use the channel for the current room to send the message and the current
-    // name of the sender to the server.
-    channels[currentRoomName].push("new_message", {
-      text,
-      sender_name: room.senderName
-    })
-  }, [currentRoom, currentRoomName, channels])
 
   /**
    *  Callback to process receiving a new message.
@@ -464,35 +394,32 @@ export default function Chat() {
   }, [])
 
   return (
-    <ConnectionContext.Provider value={connectionContext}>
-      <div className={styles.chat}>
-        <ChatMeta />
-        <main className={currentRoomName ? styles.showRoom : ''}>
-          <ChatNavigation
-            rooms={rooms}
-            currentRoom={currentRoomName}
-            selectRoom={selectRoom}
-          />
-          <ChatBox
-            roomName={currentRoomName}
-            messages={currentRoomMessages()}
-            users={currentRoomUsers()}
-            senderName={currentRoomSenderName()}
-            sendMessage={sendMessage}
-            updateName={setCurrentRoomSenderName}
-            deselectRoom={deselectRoom}
-            leaveRoom={leaveRoom}
-            renameSender={resetSenderName}
-          />
-          <Overlay
-            visible={!rooms || !Object.keys(rooms).length}
-            title="What is the first room you want to join?"
-            placeholder="E.g. Lobby 1..."
-            button="Join"
-            onSubmit={selectRoom}
-          />
-        </main>
-      </div>
-    </ConnectionContext.Provider>
+    <div className={styles.chat}>
+      <ChatMeta />
+      <main className={currentRoomName ? styles.showRoom : ''}>
+        <ChatNavigation
+          rooms={rooms}
+          currentRoom={currentRoomName}
+          selectRoom={selectRoom}
+        />
+        <ChatBox
+          roomName={currentRoomName}
+          messages={currentRoomMessages()}
+          users={currentRoomUsers()}
+          senderName={currentRoomSenderName()}
+          updateName={setCurrentRoomSenderName}
+          deselectRoom={deselectRoom}
+          leaveRoom={leaveRoom}
+          renameSender={resetSenderName}
+        />
+        <Overlay
+          visible={!rooms || !Object.keys(rooms).length}
+          title="What is the first room you want to join?"
+          placeholder="E.g. Lobby 1..."
+          button="Join"
+          onSubmit={selectRoom}
+        />
+      </main>
+    </div>
   )
 }

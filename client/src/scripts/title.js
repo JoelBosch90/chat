@@ -15,18 +15,19 @@ export const staticTitle = (roomName) => {
 }
 
 /**
- *  Function to construct an active title with message updates.
+ *  Function to construct a dynamic title with message updates.
  *  @param    {string}      roomName    The name of the currently selected 
  *                                      room.
- *  @param    {Object}      rooms       The rooms object containing the
- *                                      messages for the currently selected
- *                                      room.
+ *  @param    {Object}      room        An object describing a room.
+ *    @property {Array}       messages    An array of message objects. Each
+ *                                        object should at least contain the
+ *                                        'senderName' and 'text' properties.
  *  @returns  {string}
  */
-export const activeTitle = (roomName, rooms) => {
+export const dynamicTitle = (roomName, room) => {
 
   // Get access to the messages in the current room.
-  const messages = rooms[roomName]?.messages
+  const messages = room?.messages
 
   // If we have messages, we should display the most recent one.
   if (messages && messages.length) {

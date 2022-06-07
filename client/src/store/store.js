@@ -13,11 +13,13 @@ import { configureStore } from '@reduxjs/toolkit'
 
 // Import reducers.
 import currentRoomName from './features/currentRoomName'
+import senderId from './features/senderId'
 import rooms from './features/rooms'
 
 export default configureStore({ 
   reducer: {
     currentRoomName,
-    rooms
+    senderId,
+    rooms,
   }
 })

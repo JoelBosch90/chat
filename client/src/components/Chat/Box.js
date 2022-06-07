@@ -21,7 +21,7 @@ import styles from './Box.module.scss'
 export default function ChatBox(props) {
 
   // Extract the props that we want to use.
-  const { roomName, messages, users, senderName, updateName, sendMessage, deselectRoom, leaveRoom, renameSender } = props
+  const { roomName, messages, users, senderName, updateName, deselectRoom, leaveRoom, renameSender } = props
 
   // Create references to set the correct focus.
   const [ overlayRef, inputRef] = [ useRef(), useRef() ]
@@ -70,20 +70,6 @@ export default function ChatBox(props) {
     else overlayRef.current.focus()
   }
 
-  /**
-   *  Function to refocus before sending a message.
-   *  @param    {...any}    args    Catch any possible arguments.
-   *  @returns  {any}
-   */
-  const sendAndFocus = (...args) => {
-
-    // First refocus the input as we may have lost it if the user clicked the
-    // button.
-    reFocus()
-
-    // Now send the message as usual.
-    return sendMessage(...args)
-  }
 
   // Refocus the input element when the overlay becomes visible or is
   // specifically refocused.
@@ -110,8 +96,6 @@ export default function ChatBox(props) {
         {messageElements}
       </div>
       <ChatBoxInput
-        sendMessage={sendAndFocus}
-        roomName={roomName}
         focusRef={inputRef}
       />
     </section>
