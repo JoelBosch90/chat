@@ -107,8 +107,6 @@ export const roomsSlice = createSlice ({
      */
     messageReceived: (state, action) => {
 
-      console.log('messageReceived', { state, action })
-
       // Extract the relevant properties.
       const { roomName, id, time, text, senderId, senderName, self } = action.payload
 
