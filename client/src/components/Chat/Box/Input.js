@@ -1,5 +1,5 @@
 // Import React dependencies.
-import React, { useState, useContext, useCallback } from 'react'
+import { useRef, useState, useContext, useCallback } from 'react'
 
 // Import store dependencies.
 import { useSelector } from 'react-redux'
@@ -17,17 +17,25 @@ import { faPaperPlane, faFaceGrinBeam } from '@fortawesome/free-solid-svg-icons'
  *  Functional component that displays the input field in a chat box that is
  *  used to send new messages.
  *  @param    {Object}  props   React props passed by the parent element.
+ *    @property {Object}  focusRef  Optional ref to access the input element.
  *  @returns  {JSX.Element}
  */
-export default function ChatBoxInput(props) {
+export default function ChatBoxInput(props = {}) {
 
-  // Extract the props that we want to use.
-  const { focusRef } = props
+  // Use the focus ref from the props if it was provided, otherwise we need a
+  // new ref to use. This makes it an option for a parent component to set the
+  // focus on our input element. In proper React, we'd use a prop for this, but
+  // we might want to set focus repeatedly and we're not really toggling
+  // anything so it does not make sense to rely on a state for this.
+  // Also note that we cannot call useRef() conditionally, so we always need to
+  // declare the interal ref as well.
+  const internalRef = useRef()
+  const focusRef = props.focusRef || internalRef
 
   // Get access to the name of the currently selected room, and the rooms object
   // that contains the messages of which we want to show the latest.
   const currentRoomName = useSelector(state => state.currentRoomName)
-  const rooms = useSelector(state => state.rooms)
+  const currentRoom = useSelector(state => state.rooms ? state.rooms[currentRoomName] : undefined)
 
   // We need access to the current room's channel to send a message to the right
   // place.
@@ -43,19 +51,16 @@ export default function ChatBoxInput(props) {
     // button.
     focusRef.current.focus()
 
-    // Get the current room.
-    const room = rooms[currentRoomName]
-
     // We do need a room, otherwise we cannot send anything.
-    if (!room) return
+    if (!currentRoom) return
 
     // Use the channel for the current room to send the message and the current
     // name of the sender to the server.
     channels[currentRoomName].push("new_message", {
       text,
-      sender_name: room.senderName
+      sender_name: currentRoom.senderName
     })
-  }, [rooms, currentRoomName, channels, focusRef])
+  }, [currentRoom, currentRoomName, channels, focusRef])
 
 
   // We're going to keep an internal value for the input. Default to a string

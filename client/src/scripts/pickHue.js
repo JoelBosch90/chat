@@ -15,13 +15,13 @@ import shuffle from './generic/shuffle'
  *                                        assigned to a user.
  *  @returns  {Number}
  */
-export default room => {
+const pickHue = room => {
 
   // List all supported hues. These hues are picked for legibility.
   const supportedHues = shuffle([30, 60, 90, 120, 150, 180, 300, 330])
 
   // Get a list of hues that are already taken.
-  const taken = (room.users ?  Object.values(room.users) : [ ])
+  const taken = (room.users ?  Object.values(room.users) : [])
 
     // Hues wrap around a scale of 0 - 360, so we can use modulo here to
     // simplify the numbers.
@@ -36,3 +36,5 @@ export default room => {
   // The last entry should be the least frequent hue.
   }).at(-1)
 }
+
+export default pickHue

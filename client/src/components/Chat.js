@@ -5,13 +5,9 @@ import React, { useEffect, useCallback, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { roomSelected } from '../store/features/currentRoomName'
 import { senderIdUpdated } from '../store/features/senderId'
-import {
-  roomJoined, roomLeft, senderNameUpdated, messageReceived,
-  userUpdated, userRemoved, usersReset, 
-} from '../store/features/rooms'
+import { roomJoined, messageReceived, userUpdated, userRemoved, usersReset } from '../store/features/rooms'
 
 // Import used scripts.
-import deleteStateProperty from '../scripts/generic/deleteStateProperty'
 import pickHue from '../scripts/pickHue'
 
 // Import used components.
@@ -30,18 +26,12 @@ import styles from './Chat.module.scss'
  */
 export default function Chat() {
   
-  // Create the dispatch function to interact with the stores.
+  // Create the dispatch function to interact with the store.
   const dispatch = useDispatch()
 
-  // Create the getter and setter for the current room name.
+  // Get access to the store variables we need.
   const currentRoomName = useSelector(state => state.currentRoomName)
-  const setCurrentRoomName = name => dispatch(roomSelected(name))
-  
-  // Create the getter and setter for the current room name.
   const senderId = useSelector(state => state.senderId)
-  const setSenderId = id => dispatch(senderIdUpdated(id))
-
-  // Get access to the rooms object.
   const rooms = useSelector(state => state.rooms)
 
   // Get access to the connection context.
@@ -58,11 +48,13 @@ export default function Chat() {
    */
   const updateUser = useCallback((roomName, id, properties) => {
 
+    console.log('updateUser', roomName, rooms)
+
     // Check if this room already exists. If not, use the default room.
     const room = rooms[roomName]
 
     // Get the existing user or generate a new one.
-    const existingUser = (room.users ? room.users[id] : null) ?? {
+    const existingUser = (room?.users ? room.users[id] : null) ?? {
       hue: pickHue(room),
       name: 'Anonymous',
     }
@@ -144,65 +136,6 @@ export default function Chat() {
   const resetUsers = useCallback(roomName => void dispatch(usersReset({ roomName })), [dispatch])
 
   /**
-   *  Function to get the current room from the rooms object if we can.
-   *  @returns  {Object|undefined}
-   */
-  const currentRoom = useCallback(() => rooms ? rooms[currentRoomName] : undefined, [rooms, currentRoomName])
-
-  /**
-   *  Function to find the messages for the current room.
-   *  @returns  {array}
-   */
-  const currentRoomMessages = useCallback(() =>  currentRoom()?.messages || [], [currentRoom])
-
-  /**
-   *  Function to find the sender name for the current room.
-   *  @returns  {string}
-   */
-  const currentRoomSenderName = useCallback(() => currentRoom()?.senderName || '', [currentRoom])
-
-  /**
-   *  Function to set a new sender name for the current room.
-   *  @param  {string} senderName   New sender name.
-   */
-  const setCurrentRoomSenderName = useCallback(senderName => {
-
-    // Cannot set the sender name for the current room if no room is selected.
-    if (!currentRoom()) return
-
-    // Update the sender name for the current room.
-    dispatch(senderNameUpdated({ roomName: currentRoomName, senderName }))
-
-    // Also update the user's name in the list.
-    updateUser(currentRoomName, senderId, { name: senderName })
-  }, [currentRoomName, dispatch, updateUser, senderId])
-
-  /**
-   *  Function to find the users for the current room excluding the current
-   *  user.
-   *  @returns  {array}
-   */
-  const currentRoomUsers = useCallback(() =>  {
-
-    // Get a local copy of all users in the current room.
-    const users = { ...(currentRoom()?.users || {}) }
-
-    // Get the name of the user in this channel.
-    const userName = currentRoomSenderName()
-
-    // Override the name of the sender if we have it.
-    const withOwnName = senderId && users[senderId] && userName ? { ...users, [senderId]: { ...users[senderId], name: userName }} : users
-
-    // Return an array of user objects with the id added.
-    return Object.entries(withOwnName).map(([id, user]) => ({ ...user, id }));
-  }, [currentRoom, currentRoomSenderName, senderId])
-
-  /**
-   *  Function to unset the sender name for the current room.
-   */
-  const resetSenderName = useCallback(() => void setCurrentRoomSenderName(null), [setCurrentRoomName])
-
-  /**
    *  Callback to process receiving a new message.
    *  @param  {string}  roomName  Name of the chat room in which a message is
    *                              received.
@@ -214,13 +147,6 @@ export default function Chat() {
    *    @property {string}  sender_name   Sender's name.
    */
   const receiveMessage = useCallback((roomName, { id, time, text, sender_id, sender_name }) => {
-
-    // This function may be used inside of an event listener. In those cases,
-    // a React state will still refer to the state's value when the event
-    // listener was installed. However, we can abuse the setState method to get
-    // a reliably up to date version of the state.
-    let ownId = 0
-    setSenderId(senderId => { ownId = senderId; return senderId })
 
     // The sender's name may have changed so we should update the user list. And
     // we can also use this message to update the timestamp for when the user
@@ -236,9 +162,9 @@ export default function Chat() {
       id, time, text,
       senderId: sender_id,
       senderName: sender_name,
-      self: sender_id === ownId,
+      self: sender_id === senderId,
     }))
-  }, [dispatch,  setSenderId, updateUser])
+  }, [dispatch, senderId, updateUser])
 
   /**
    *  Function to join a channel.
@@ -280,11 +206,11 @@ export default function Chat() {
 
     // Join the room and start listening for messages. Update our sender id with
     // the response for joining each channel.
-    channel.join().receive('ok', response => setSenderId(response.sender_id))
+    channel.join().receive('ok', response => dispatch(senderIdUpdated(response.sender_id)))
 
     // Add the channel to our collection.
     setChannels(channels => ({ ...channels, [name]: channel }))
-  }, [channels, connection, receiveMessage, resetUsers, updateUsers, removeUsers, setSenderId, setChannels])
+  }, [dispatch, channels, connection, receiveMessage, resetUsers, updateUsers, removeUsers, setChannels])
 
   /**
    *  Function to join a room.
@@ -300,7 +226,7 @@ export default function Chat() {
 
     // Add an empty room with this name if we haven't already.
     if (!rooms[name]) dispatch(roomJoined(name))
-  }, [channels, joinChannel, dispatch])
+  }, [dispatch, channels, joinChannel, rooms])
 
   /**
    *  Function to select a room.
@@ -312,11 +238,11 @@ export default function Chat() {
     joinRoom(name)
 
     // Update the state.
-    setCurrentRoomName(name)
+    dispatch(roomSelected(name))
 
     // Update the URL.
     window.history.pushState({}, '', encodeURI(`/room/${name}`))
-  }, [joinRoom, setCurrentRoomName])
+  }, [dispatch, joinRoom])
 
   /**
    *  Function to select a room from the current URL.
@@ -327,50 +253,17 @@ export default function Chat() {
     if (!window.location.pathname?.startsWith('/room/')) return
 
     // Get the name of the room from the pathname.
-    const room = decodeURI(window.location.pathname?.split('/')[2])
+    const roomName = decodeURI(window.location.pathname?.split('/')[2])
 
     // No need to join anything if we're already in the correct room.
-    if (room === currentRoomName) return
+    if (roomName === currentRoomName) return
 
     // Make sure that we join this room.
-    joinRoom(room)
+    joinRoom(roomName)
 
     // Update the current room state.
-    setCurrentRoomName(room)
-  }, [joinRoom, setCurrentRoomName])
-
-  /**
-   *  Function to deselect the current room. This will navigate away from the
-   *  room, but keep its state for future reference.
-   */
-  const deselectRoom = useCallback(() => {
-
-    // Unset the current room name.
-    setCurrentRoomName('')
-
-    // Update the URL.
-    window.history.pushState({}, '', '/')
-  }, [setCurrentRoomName])
-
-  /**
-   *  Function to leave the current room. This will navigate away from the room
-   *  and forget its state.
-   */
-  const leaveRoom = useCallback(() => {
-
-    // Make sure we remember the current room's name.
-    const roomName = currentRoomName
-
-    // Then deselect the current room.
-    deselectRoom()
-
-    // Leave the channel for this room if it has one.
-    channels[roomName]?.leave()
-
-    // Remove both the room and the channel.
-    dispatch(roomLeft(roomName))
-    deleteStateProperty(roomName, setChannels)
-  }, [currentRoomName, deselectRoom, channels, dispatch, setChannels])
+    dispatch(roomSelected(roomName))
+  }, [dispatch, joinRoom, currentRoomName])
 
   // We want to do the following things only once, and not on ever rerender. We
   // can do that by using a useEffect that never repeats.
@@ -396,20 +289,9 @@ export default function Chat() {
       <ChatMeta />
       <main className={currentRoomName ? styles.showRoom : ''}>
         <ChatNavigation
-          rooms={rooms}
-          currentRoom={currentRoomName}
           selectRoom={selectRoom}
         />
-        <ChatBox
-          roomName={currentRoomName}
-          messages={currentRoomMessages()}
-          users={currentRoomUsers()}
-          senderName={currentRoomSenderName()}
-          updateName={setCurrentRoomSenderName}
-          deselectRoom={deselectRoom}
-          leaveRoom={leaveRoom}
-          renameSender={resetSenderName}
-        />
+        <ChatBox />
         <Overlay
           visible={!rooms || !Object.keys(rooms).length}
           title="What is the first room you want to join?"

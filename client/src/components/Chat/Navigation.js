@@ -1,5 +1,8 @@
 // Import React dependencies.
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
+
+// Import store dependencies.
+import { useSelector } from 'react-redux'
 
 // Import components.
 import ChatNavigationRoom from './Navigation/Room'
@@ -20,7 +23,11 @@ import styles from './Navigation.module.scss'
 export default function ChatNavigation(props) {
 
   // Extract the props that we want to use.
-  const { rooms, currentRoom, selectRoom } = props
+  const { selectRoom } = props
+  
+  // Get access to the store variables we need here.
+  const currentRoomName = useSelector(state => state.currentRoomName)
+  const rooms = useSelector(state => state.rooms)
 
   // We're going to keep an internal value for when we want to show the overlay.
   const [ overlayVisible, setOverlayVisible ] = useState(false)
@@ -49,16 +56,16 @@ export default function ChatNavigation(props) {
   }
 
   // Initialize a list of chat room elements.
-  const roomElements = rooms ? Object.entries(rooms).map(([name, room]) => (
+  const roomElements = useCallback(() => rooms ? Object.entries(rooms).map(([name, room]) => (
     <li key={name} >
       <ChatNavigationRoom
-        selected={name === currentRoom}
+        selected={name === currentRoomName}
         name={name}
         messages={room.messages}
         onClick={() => selectRoom(name)}
       />
     </li>
-  )) : []
+  )) : [], [currentRoomName, rooms, selectRoom])
 
   return (
     <nav className={styles.navigation}>
@@ -71,7 +78,7 @@ export default function ChatNavigation(props) {
         onCancel={hideOverlay}
       />
       <ol>
-        {roomElements}
+        {roomElements()}
       </ol>
       <div className={styles.buttons}>
         <button

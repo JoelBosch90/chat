@@ -27,7 +27,7 @@ export const ConnectionContext = createContext({
  *    @property {Array}       children  Child components that will be installed.
  *  @returns  {JSX.Element}
  */
-export default ({ children }) => {
+const ConnectionContextProvider = ({ children }) => {
 
   // Create the connection getters and setters that we want to provide in this
   // context.
@@ -45,3 +45,5 @@ export default ({ children }) => {
     </ConnectionContext.Provider>
   )
 }
+
+export default ConnectionContextProvider

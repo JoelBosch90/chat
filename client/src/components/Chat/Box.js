@@ -1,5 +1,12 @@
 // Import React dependencies.
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useCallback } from 'react'
+
+// Import store dependencies.
+import { useSelector, useDispatch } from 'react-redux'
+import { userUpdated } from '../../store/features/rooms'
+
+// Import used scripts.
+import { uniqueMessages } from '../../scripts/rooms'
 
 // Import components.
 import ChatBoxControls from './Box/Controls'
@@ -15,34 +22,50 @@ import styles from './Box.module.scss'
  *  interface elements to interact with a single chat room. It contains the
  *  previously sent messages in a single room and contains all interface
  *  elements to interact with that room.
- *  @param    {Object}  props   React props passed by the parent element.
  *  @returns  {JSX.Element}
  */
-export default function ChatBox(props) {
-
-  // Extract the props that we want to use.
-  const { roomName, messages, users, senderName, updateName, deselectRoom, leaveRoom, renameSender } = props
+export default function ChatBox() {
 
   // Create references to set the correct focus.
-  const [ overlayRef, inputRef] = [ useRef(), useRef() ]
+  const [ overlayRef, inputRef ] = [ useRef(), useRef() ]
+
+  // Create the dispatch function to interact with the store.
+  const dispatch = useDispatch()
+
+  // Get access to the variables we need from the store.
+  const currentRoomName = useSelector(state => state.currentRoomName)
+  const senderName = useSelector(state => state.rooms[currentRoomName]?.senderName || '')
+  const messages = useSelector(state => state.rooms[currentRoomName]?.messages || '')
+  const senderId = useSelector(state => state.senderId)
 
   /**
-   *  Helper function that adds a new message only if it is not already present
-   *  in the provided array of messages.
-   *  @param    {array}   messages      List of message.
-   *  @param    {Object}  newMessage    New message that is added only if it is
-   *                                    not already present.
-   *  @returns  {array}
+   *  Function to update the sender name in the current room.
+   *  @param  {string}  name    New user name to install.
    */
-  const uniqueMessages = (messages, newMessage) => {
+  const updateSenderName = useCallback(name => {
+    dispatch(userUpdated({
+      roomName: currentRoomName,
+      id: senderId,
+      name,
+    }))
+  }, [dispatch, currentRoomName, senderId])
 
-    // Check if a message with this ID already exists in this array. If so, we
-    // don't add the new one.
-    if (messages.find(oldMessage => oldMessage.id === newMessage.id)) return messages
+  /**
+   *  Function to refocus the correct input.
+   */
+  const reFocus = useCallback(() => {
 
-    // Otherwise, we add the new one.
-    return [ ...messages, newMessage ]
-  }
+    // If we already have a sender name, we can focus the chat input.
+    if (senderName) inputRef.current.focus()
+
+    // Otherwise, the overlay is visible to get a sender name first. We should
+    // focus that instead.
+    else overlayRef.current.focus()
+  }, [senderName, inputRef, overlayRef])
+
+  // Refocus the input element when the overlay becomes visible or is
+  // specifically refocused.
+  useEffect(reFocus, [currentRoomName, reFocus])
   
   // Create a list of unique chat message elements.
   const messageElements = messages ? messages.reduce(uniqueMessages, []).map(message => (
@@ -57,41 +80,17 @@ export default function ChatBox(props) {
       />
     )) : []
 
-  /**
-   *  Function to refocus the correct input.
-   */
-  const reFocus = () => {
-
-    // If we already have a sender name, we can focus the chat input.
-    if (senderName) inputRef.current.focus()
-
-    // Otherwise, the overlay is visible to get a sender name first. We should
-    // focus that instead.
-    else overlayRef.current.focus()
-  }
-
-
-  // Refocus the input element when the overlay becomes visible or is
-  // specifically refocused.
-  useEffect(reFocus, [roomName, senderName, inputRef, overlayRef])
-
   return (
-    <section className={`${styles.box} ${roomName ? '' : styles.hidden}`}>
+    <section className={`${styles.box} ${currentRoomName ? '' : styles.hidden}`}>
       <Overlay
         visible={!senderName}
-        title={`What should we call you in room '${roomName}'?`}
+        title={`What should we call you in room '${currentRoomName}'?`}
         placeholder="E.g. John Malkovich..."
         button="Select name"
-        onSubmit={updateName}
+        onSubmit={updateSenderName}
         focusRef={overlayRef}
       />
-      <ChatBoxControls 
-        roomName={roomName}
-        users={users}
-        deselectRoom={deselectRoom}
-        leaveRoom={leaveRoom}
-        renameSender={renameSender}
-      />
+      <ChatBoxControls />
       <div className={styles.messages}>
         {messageElements}
       </div>
