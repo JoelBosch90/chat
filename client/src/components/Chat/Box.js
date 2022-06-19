@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useCallback } from 'react'
 
 // Import store dependencies.
 import { useSelector, useDispatch } from 'react-redux'
-import { userUpdated } from '../../store/features/rooms'
+import { userUpdated, senderNameUpdated } from '../../store/features/rooms'
 
 // Import used scripts.
 import { uniqueMessages } from '../../scripts/rooms'
@@ -33,22 +33,23 @@ export default function ChatBox() {
   const dispatch = useDispatch()
 
   // Get access to the variables we need from the store.
-  const currentRoomName = useSelector(state => state.currentRoomName)
-  const senderName = useSelector(state => state.rooms[currentRoomName]?.senderName || '')
-  const messages = useSelector(state => state.rooms[currentRoomName]?.messages || '')
-  const senderId = useSelector(state => state.senderId)
+  const roomName = useSelector(state => state.currentRoomName)
+  const senderName = useSelector(state => state.rooms[roomName]?.senderName || '')
+  const messages = useSelector(state => state.rooms[roomName]?.messages || '')
+  const id = useSelector(state => state.senderId)
 
   /**
    *  Function to update the sender name in the current room.
    *  @param  {string}  name    New user name to install.
    */
   const updateSenderName = useCallback(name => {
-    dispatch(userUpdated({
-      roomName: currentRoomName,
-      id: senderId,
-      name,
-    }))
-  }, [dispatch, currentRoomName, senderId])
+
+    // Update the user in this room.
+    dispatch(userUpdated({ roomName, id, name }))
+
+    // Update our sender name in this room.
+    dispatch(senderNameUpdated({ roomName, senderName: name }))
+  }, [dispatch, roomName, id])
 
   /**
    *  Function to refocus the correct input.
@@ -65,7 +66,7 @@ export default function ChatBox() {
 
   // Refocus the input element when the overlay becomes visible or is
   // specifically refocused.
-  useEffect(reFocus, [currentRoomName, reFocus])
+  useEffect(reFocus, [roomName, reFocus])
   
   // Create a list of unique chat message elements.
   const messageElements = messages ? messages.reduce(uniqueMessages, []).map(message => (
@@ -81,10 +82,10 @@ export default function ChatBox() {
     )) : []
 
   return (
-    <section className={`${styles.box} ${currentRoomName ? '' : styles.hidden}`}>
+    <section className={`${styles.box} ${roomName ? '' : styles.hidden}`}>
       <Overlay
         visible={!senderName}
-        title={`What should we call you in room '${currentRoomName}'?`}
+        title={`What should we call you in room '${roomName}'?`}
         placeholder="E.g. John Malkovich..."
         button="Select name"
         onSubmit={updateSenderName}

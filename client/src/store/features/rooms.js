@@ -30,7 +30,7 @@ export const roomsSlice = createSlice ({
     roomJoined: (state, action) => {
 
       // No need to create a room object if we already have one.
-      if (action.payload in state) return;
+      if (action.payload in state) return
 
       // Otherwise, we start with a fresh new room object.
       state[action.payload] = { senderName: null, messages: [], users: {} }
@@ -102,23 +102,24 @@ export const roomsSlice = createSlice ({
      *      @property {String}  text          Message text.
      *      @property {Number}  senderId      Unique sender identifier.
      *      @property {String}  senderName    Sender's name.
+     *      @property {Number}  senderHue     Sender's hue.
      *      @property {Boolean} self          Was this message sent by the
      *                                        current user?
      */
     messageReceived: (state, action) => {
 
       // Extract the relevant properties.
-      const { roomName, id, time, text, senderId, senderName, self } = action.payload
+      const { roomName, id, time, text, senderId, senderName, senderHue, self } = action.payload
 
       // We cannot receive a message on a room we don't have.
       if (!(roomName in state)) return
 
       // Make sure we don't add a duplicate message.
-      if (state[roomName].messages.find(message => message.id === id)) return;
+      if (state[roomName].messages.find(message => message.id === id)) return
 
       // Add the message to the front of the array.
       state[roomName].messages.unshift({
-        id, time, text, senderId, senderName, self
+        id, time, text, senderId, senderName, senderHue, self
       })
     },
 

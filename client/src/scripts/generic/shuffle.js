@@ -11,7 +11,8 @@ export default array => {
   // Loop through all array indices.
   for (let index = copy.length - 1; index > 0; index--) {
 
-    // Get a random index.
+    // Get a random index. Note that we need the semicolon here because of the 
+    // destructuring array on the next line.
     const randomIndex = Math.floor(Math.random() * (index + 1));
 
     // Swap the entry at the current index with the entry at the random index.

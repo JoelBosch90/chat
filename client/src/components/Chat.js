@@ -48,8 +48,6 @@ export default function Chat() {
    */
   const updateUser = useCallback((roomName, id, properties) => {
 
-    console.log('updateUser', roomName, rooms)
-
     // Check if this room already exists. If not, use the default room.
     const room = rooms[roomName]
 
@@ -63,10 +61,7 @@ export default function Chat() {
     dispatch(userUpdated({
       roomName,
       id, 
-      ...{
-        hue: existingUser.hue,
-        name: existingUser.name,
-      },
+      ...existingUser,
       ...properties,
     }))
   }, [dispatch, rooms])
@@ -269,6 +264,9 @@ export default function Chat() {
   // can do that by using a useEffect that never repeats.
   useEffect(() => {
 
+    // Skip out if we have already joined channels.
+    if (Object.keys(channels).length) return
+
     // On page load, make sure that we have a channel for each room.
     for (const roomName in rooms) joinChannel(roomName)
 
@@ -277,12 +275,7 @@ export default function Chat() {
 
     // Check if we should join a room based on the current location.
     selectRoomFromLocation()
-
-    // We can ignore warnings about the missing dependencies as this is supposed
-    // to run only on first render, regardless of any changes to dependencies.
-    // @todo: It would be nice to find a cleaner solution for this.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [joinChannel, selectRoomFromLocation, rooms, channels])
 
   return (
     <div className={styles.chat}>

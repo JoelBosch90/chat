@@ -16,7 +16,7 @@ export const users = (room = {}, senderId = 0) =>  {
   const withOwnName = senderId && users[senderId] && room.senderName ? { ...users, [senderId]: { ...users[senderId], name: room.senderName }} : users
 
   // Return an array of user objects with the id added.
-  return Object.entries(withOwnName).map(([id, user]) => ({ ...user, id }));
+  return Object.entries(withOwnName).map(([id, user]) => ({ ...user, id }))
 }
 
 /**
